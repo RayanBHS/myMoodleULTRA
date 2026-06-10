@@ -1,0 +1,97 @@
+/* myMoodle ULTRA - Navbar & Profile Menu overrides */
+
+/* --- Custom Profile Pill (Figma Navbar Alignment) --- */
+.ultramoodle-profile-pill {
+  background-color: #ffffff !important;
+  border-radius: 9999px !important;
+  padding: 4px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 44px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  cursor: pointer !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  margin-left: 12px !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.ultramoodle-profile-pill:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+.ultramoodle-profile-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  line-height: 1.2 !important;
+}
+
+.ultramoodle-profile-firstname {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  text-transform: capitalize !important;
+}
+
+.ultramoodle-profile-lastname {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  text-transform: uppercase !important;
+}
+
+.ultramoodle-profile-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 1.5px solid #e2e8f0 !important;
+  background-color: #e2e8f0 !important;
+}
+
+/* Force navbar content spacing and figma branding colors */
+#usernavigation {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.navbar.fixed-top {
+  background-color: #143361 !important; /* Deep Blue Efrei Mockup */
+  height: 64px !important;
+  border-bottom: none !important;
+}
+
+.navbar .nav-link {
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+}
+
+/* --- Mobile Navbar Adaptations (max-width: 768px) --- */
+@media (max-width: 768px) {
+  .ultramoodle-profile-text {
+    display: none !important; /* Hide name text to save width */
+  }
+
+  .ultramoodle-profile-pill {
+    padding: 0 !important;
+    width: 36px !important;
+    height: 36px !important;
+    margin-left: 8px !important;
+    justify-content: center !important;
+    border: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .ultramoodle-profile-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    border: 1.5px solid #ffffff !important; /* Stand out on blue nav */
+  }
+}

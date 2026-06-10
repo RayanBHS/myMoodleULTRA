@@ -1,0 +1,86 @@
+/* myMoodle ULTRA - General & Layout Overrides */
+
+/* Hide Moodle's native title headers on Dashboard to keep it clean */
+body.path-my #page-header h1 {
+  display: none !important;
+}
+
+/* Filter Hide Rules (Used by dynamic filtering with high specificity to override custom layouts) */
+.ultramoodle-course-hidden,
+#page .ultramoodle-course-hidden,
+#page .card.ultramoodle-course-hidden,
+#page .coc-course-box.ultramoodle-course-hidden,
+#page .ultramoodle-view-list .card.ultramoodle-course-hidden,
+#page .ultramoodle-view-list .coc-course-box.ultramoodle-course-hidden,
+[data-block="myoverview"] [data-region="course-content"] .card.ultramoodle-course-hidden,
+.block_myoverview [data-region="course-content"] .card.ultramoodle-course-hidden,
+[data-region="course-overview"] [data-region="course-content"] .card.ultramoodle-course-hidden,
+[data-block="myoverview"] .dashboard-card-deck .card.ultramoodle-course-hidden,
+.block_myoverview .dashboard-card-deck .card.ultramoodle-course-hidden,
+[data-region="course-overview"] .dashboard-card-deck .card.ultramoodle-course-hidden,
+[data-block="myoverview"] .coc-course-box.ultramoodle-course-hidden,
+.block_myoverview .coc-course-box.ultramoodle-course-hidden,
+[data-region="course-overview"] .coc-course-box.ultramoodle-course-hidden {
+  display: none !important;
+}
+
+.ultramoodle-container-hidden,
+#page .ultramoodle-container-hidden,
+#page .ultramoodle-view-list .dashboard-card-deck.ultramoodle-container-hidden,
+#page .ultramoodle-view-list .card-deck.ultramoodle-container-hidden {
+  display: none !important;
+}
+
+/* Strip background and borders from the #page container on dashboard to make hero borderless */
+body.path-my #page {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Re-apply Moodle's card border/background wrapper around only #page-content (below the search fold) */
+body.path-my #page-content {
+  background-color: var(--ultra-surface-page-content, #ffffff) !important;
+  border: 1px solid var(--ultra-border-page-content, #dee2e6) !important;
+  border-radius: 0.5rem !important;
+  padding: 20px !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  margin-top: 20px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  flex-wrap: wrap !important;
+}
+
+/* Hide Footer toggle class if enabled in settings */
+.ultramoodle-hide-footer #page-footer,
+.ultramoodle-hide-footer footer,
+.ultramoodle-hide-footer .footer {
+  display: none !important;
+}
+
+/* Hide native/custom floating scroll buttons to avoid redundancy with the centered pill button */
+.scroll-down,
+.scroll-down-btn,
+.scroll-to-bottom,
+.scroll-bottom,
+.goto-bottom,
+.go-to-bottom,
+.scroll-down-arrow,
+.scroll-to-bottom-btn,
+#scroll-down,
+#scroll-to-bottom,
+#scroll-bottom,
+#goto-bottom,
+#go-to-bottom,
+.back-to-top,
+#back-to-top,
+.scroll-to-top,
+#scroll-to-top,
+.gototop,
+#gototop,
+.tool-back-to-top,
+.scroll-top,
+#scroll-top {
+  display: none !important;
+}

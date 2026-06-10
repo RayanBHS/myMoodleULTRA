@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "myMoodle ULTRA",
+  "version": "1.0.0",
+  "description": "Une interface moderne, épurée et ultra-rapide pour le Moodle de l'EFREI.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "img/logoMyMoodleUltra.png",
+      "32": "img/logoMyMoodleUltra.png",
+      "48": "img/logoMyMoodleUltra.png",
+      "128": "img/logoMyMoodleUltra.png"
+    }
+  },
+  "icons": {
+    "16": "img/logoMyMoodleUltra.png",
+    "32": "img/logoMyMoodleUltra.png",
+    "48": "img/logoMyMoodleUltra.png",
+    "128": "img/logoMyMoodleUltra.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "img/logoMyMoodleUltra.png"
+      ],
+      "matches": [
+        "*://moodle.myefrei.fr/*"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://moodle.myefrei.fr/*"
+      ],
+      "js": [
+        "js/theme.js",
+        "js/navbar.js",
+        "js/hero.js",
+        "js/courses.js",
+        "js/main.js"
+      ],
+      "css": [
+        "css/variables.css",
+        "css/general.css",
+        "css/navbar.css",
+        "css/hero.css",
+        "css/courses.css"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

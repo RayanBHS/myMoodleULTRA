@@ -1,0 +1,42 @@
+/* myMoodle ULTRA - Design Tokens & CSS Variables */
+
+/* Import Inter Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root.ultramoodle-dark {
+  --ultra-bg: #0a0d14;               /* Deep Navy Black */
+  --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
+  --ultra-surface-hover: #1e2535;
+  --ultra-border: #1d2633;           /* Cold Border */
+  --ultra-text-main: #ffffff;
+  --ultra-text-sub: #8b95a5;
+  --ultra-accent: #ff8a00;           /* Orange from Logo */
+  --ultra-accent-rgb: 255, 138, 0;
+  --ultra-card-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ultra-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ultra-surface-page-content: var(--ultra-surface);
+  --ultra-border-page-content: var(--ultra-border);
+}
+
+:root.ultramoodle-light {
+  --ultra-bg: #f4f6f9;               /* Soft Cold Light Background */
+  --ultra-surface: #ffffff;          /* White Card */
+  --ultra-surface-hover: #ebf0f5;
+  --ultra-border: #e2e8f0;           /* Clean Light Gray Border */
+  --ultra-text-main: #0f172a;        /* Dark Slate Text */
+  --ultra-text-sub: #64748b;         /* Soft Slate Text */
+  --ultra-accent: #ff8a00;           /* Orange from Logo */
+  --ultra-accent-rgb: 255, 138, 0;
+  --ultra-card-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --ultra-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --ultra-surface-page-content: #ffffff;
+  --ultra-border-page-content: #dee2e6;
+}
+
+/* --- Clean Font Overrides for Custom Elements --- */
+.navbar,
+#usernavigation,
+#ultramoodle-hero,
+.ultramoodle-profile-pill {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}

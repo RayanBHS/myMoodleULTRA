@@ -1,0 +1,528 @@
+/* myMoodle ULTRA - Hero Landing Zone & Sticky Search Bar */
+
+.ultramoodle-hero-wrapper {
+  display: block !important;
+  width: 100% !important;
+  height: calc(100vh - 64px) !important;
+  flex: 0 0 calc(100vh - 64px) !important; /* Prevents shrinking inside Moodle's flex layout */
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important; /* Clips wrapping contents during height transitions */
+  
+  /* Smooth transition for height collapsing */
+  transition: 
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    flex 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed {
+  height: 80px !important;
+  flex: 0 0 80px !important;
+}
+
+.ultramoodle-hero-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 40px 20px !important;
+  background-color: var(--ultra-bg) !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  box-sizing: border-box !important;
+  animation: fadeInDown 0.5s ease-out;
+  gap: 40px !important; /* Stacked layout gap */
+  
+  /* Smooth transitions for collapsing into sticky bar */
+  transition: 
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.4s ease,
+    border-bottom-color 0.4s ease,
+    box-shadow 0.4s ease,
+    gap 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Large logo and stacked title */
+.ultramoodle-hero-brand {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 32px !important;
+  width: 100% !important; /* Stacks when 100% */
+  margin-bottom: 0 !important;
+  
+  /* Transition width, gap and margins */
+  transition: 
+    width 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+    gap 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+    margin-bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-hero-logo {
+  width: 180px !important;
+  height: 180px !important;
+  max-width: 180px !important;
+  max-height: 180px !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  
+  /* Transition sizes */
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-hero-title {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+  line-height: 1.05 !important;
+  
+  max-width: 500px !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+  transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+}
+
+.ultramoodle-hero-title .title-line1,
+.ultramoodle-hero-title .title-line2 {
+  font-size: 56px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--ultra-text-main) !important;
+}
+
+/* Thick Bordered Search Bar & Circle Calendar Button */
+.ultramoodle-search-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 680px !important;
+  
+  /* Transition max-width and gaps */
+  transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1), gap 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-search-bar {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
+  background-color: var(--ultra-surface) !important;
+  border: 2px solid var(--ultra-text-main) !important; /* Thick border */
+  border-radius: 9999px !important; /* Rounded pill style */
+  padding: 0 24px !important;
+  height: 60px !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  
+  /* Transition height and paddings */
+  transition: 
+    border-color 0.2s, 
+    box-shadow 0.2s, 
+    height 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-search-bar:focus-within {
+  border-color: var(--ultra-accent) !important;
+  box-shadow: 0 0 0 3px rgba(var(--ultra-accent-rgb), 0.12) !important;
+}
+
+.ultramoodle-search-icon {
+  color: var(--ultra-text-main) !important; /* Matches thick black border/text */
+  margin-right: 14px !important;
+  flex-shrink: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  
+  /* Transition size and margins */
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-search-input {
+  width: 100% !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--ultra-text-main) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  outline: none !important;
+  padding: 0 !important;
+  height: 100% !important;
+  
+  /* Transition font size */
+  transition: font-size 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-search-input::placeholder {
+  color: var(--ultra-text-sub) !important;
+  opacity: 0.6 !important;
+}
+
+/* Calendar Button (Matching circle with thick border) */
+.ultramoodle-calendar-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 60px !important;
+  height: 60px !important;
+  background-color: var(--ultra-surface) !important;
+  border: 2px solid var(--ultra-text-main) !important;
+  border-radius: 50% !important;
+  color: var(--ultra-text-main) !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  flex-shrink: 0 !important;
+  text-decoration: none !important;
+  
+  /* Transition size */
+  transition: all 0.2s ease, width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-calendar-btn:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  transform: scale(1.05) !important;
+}
+
+.ultramoodle-calendar-btn svg {
+  width: 24px !important;
+  height: 24px !important;
+  color: var(--ultra-text-main) !important;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.ultramoodle-feedback-text {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ultra-text-sub);
+  height: 18px;
+  transition: opacity 0.3s ease, margin-top 0.3s ease !important;
+}
+
+/* --- Sticky Search Header Bar (Figma Scroll/Type Effect) --- */
+@keyframes slideDownSticky {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Collapsed styles applied to container when wrapper is collapsed OR when container is sticky */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-container,
+.ultramoodle-hero-container.ultramoodle-hero-sticky {
+  height: 80px !important;
+  min-height: 80px !important;
+  padding: 0 32px !important;
+  gap: 24px !important; /* Horizontal layout gap */
+  flex-wrap: nowrap !important; /* Force single line in header */
+  border-bottom: 2px solid var(--ultra-border) !important;
+}
+
+.ultramoodle-hero-container.ultramoodle-hero-sticky {
+  position: fixed !important;
+  top: 64px !important; /* Sticks directly underneath EFREI's 64px navbar */
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  background-color: var(--ultra-bg) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  transform: translateY(0) !important;
+}
+
+/* If activated on scroll (and not typing), apply slideDown entrance animation */
+.ultramoodle-hero-container.ultramoodle-hero-sticky.ultramoodle-hero-scroll-trigger {
+  animation: slideDownSticky 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+/* Shrink brand section in collapsed/sticky bar */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-brand,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-brand {
+  width: 48px !important;
+  flex-shrink: 0 !important; /* Prevents squeezing the logo */
+  margin-bottom: 0 !important;
+  gap: 0px !important;
+}
+
+/* Smooth shrink title to zero */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-title,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-title {
+  max-width: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Shrink logo inside sticky bar */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-logo,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-logo {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+
+/* Align and compact the search bar and calendar button */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-row,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-row {
+  max-width: 520px !important;
+  gap: 12px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-bar,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-bar {
+  height: 48px !important;
+  padding: 0 16px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-icon,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 10px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-input,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-input {
+  font-size: 15px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-calendar-btn,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-calendar-btn {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-calendar-btn svg,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-calendar-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-feedback-text,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-feedback-text {
+  display: none !important; /* Hide feedback count to keep bar minimalist */
+}
+
+/* Disable transitions entirely when sticky to prevent elements from morphing/jumping on scroll */
+.ultramoodle-hero-container.ultramoodle-hero-sticky,
+.ultramoodle-hero-container.ultramoodle-hero-sticky * {
+  transition: none !important;
+}
+
+/* Floating Scroll Down Pill Button (Centered and Flat) */
+.ultramoodle-scroll-down-btn {
+  position: absolute !important;
+  bottom: 40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background-color: var(--ultra-accent) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 12px 24px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: none !important; /* Flat design, no shadow */
+  cursor: pointer !important;
+  z-index: 100 !important;
+  
+  /* Smooth transitions for fade/slide */
+  transition: 
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  opacity: 1;
+}
+
+.ultramoodle-scroll-down-btn:hover {
+  background-color: #e07a00 !important; /* Flat hover color */
+  box-shadow: none !important;
+  transform: translate(-50%, -2px) !important;
+}
+
+.ultramoodle-scroll-down-btn:active {
+  transform: translate(-50%, 0) !important;
+}
+
+/* Hidden state when scrolled or typing */
+.ultramoodle-scroll-down-btn.ultramoodle-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, 15px) !important;
+}
+
+/* Also hide if the wrapper is collapsed or sticky is active */
+.ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-scroll-down-btn,
+.ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-scroll-down-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, 15px) !important;
+}
+
+/* --- Mobile Layout Adaptations (max-width: 768px) --- */
+@media (max-width: 768px) {
+  .ultramoodle-hero-wrapper {
+    height: calc(100vh - 64px) !important;
+    flex: 0 0 calc(100vh - 64px) !important;
+  }
+  
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed {
+    height: 70px !important;
+    flex: 0 0 70px !important;
+  }
+
+  .ultramoodle-hero-container {
+    padding: 24px 16px !important;
+    gap: 30px !important;
+  }
+
+  .ultramoodle-hero-brand {
+    flex-direction: column !important; /* Stack logo and title on mobile */
+    gap: 16px !important;
+  }
+
+  .ultramoodle-hero-logo {
+    width: 120px !important;
+    height: 120px !important;
+    max-width: 120px !important;
+    max-height: 120px !important;
+  }
+
+  .ultramoodle-hero-title .title-line1,
+  .ultramoodle-hero-title .title-line2 {
+    font-size: 36px !important;
+    text-align: center !important;
+  }
+  
+  .ultramoodle-hero-title {
+    align-items: center !important;
+    max-width: 100% !important;
+  }
+
+  .ultramoodle-search-bar {
+    height: 50px !important;
+    padding: 0 16px !important;
+  }
+
+  .ultramoodle-search-input {
+    font-size: 15px !important;
+  }
+
+  .ultramoodle-calendar-btn {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .ultramoodle-search-icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 8px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-container,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky {
+    height: 70px !important;
+    min-height: 70px !important;
+    padding: 0 16px !important;
+    gap: 12px !important;
+  }
+
+  .ultramoodle-hero-container.ultramoodle-hero-sticky {
+    top: 64px !important; /* Matches mobile navbar */
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-logo,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-logo {
+    width: 36px !important;
+    height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-brand,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-brand {
+    width: 36px !important;
+    flex-direction: row !important; /* Override mobile column stack in sticky bar */
+    gap: 0px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-hero-title,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-hero-title {
+    max-width: 0 !important;
+    max-height: 0 !important; /* Prevents hidden title from bloating container height */
+    opacity: 0 !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-row,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-row {
+    gap: 8px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-bar,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-bar {
+    height: 40px !important;
+    padding: 0 12px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-icon,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-icon {
+    width: 16px !important;
+    height: 16px !important;
+    margin-right: 6px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-search-input,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-search-input {
+    font-size: 14px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-calendar-btn,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-calendar-btn {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .ultramoodle-hero-wrapper.ultramoodle-collapsed .ultramoodle-calendar-btn svg,
+  .ultramoodle-hero-container.ultramoodle-hero-sticky .ultramoodle-calendar-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .ultramoodle-scroll-down-btn {
+    bottom: 24px !important;
+    padding: 10px 18px !important;
+    font-size: 12px !important;
+  }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>myMoodle ULTRA Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <img class="logo" src="../img/logoMyMoodleUltra.png" width="28" height="28" alt="Logo" />
+      <h1>myMoodle <span class="ultra-text">ULTRA</span></h1>
+    </header>
+
+    <main class="popup-content">
+      <!-- Theme Selection -->
+      <section class="settings-section">
+        <h2>Apparence</h2>
+        <div class="theme-picker">
+          <label class="theme-option">
+            <input type="radio" name="theme" value="light" checked>
+            <span class="theme-card">
+              <span class="icon">☀️</span>
+              <span class="label">Clair</span>
+            </span>
+          </label>
+          <label class="theme-option">
+            <input type="radio" name="theme" value="dark">
+            <span class="theme-card">
+              <span class="icon">🌙</span>
+              <span class="label">Sombre</span>
+            </span>
+          </label>
+          <label class="theme-option">
+            <input type="radio" name="theme" value="auto">
+            <span class="theme-card">
+              <span class="icon">💻</span>
+              <span class="label">Auto</span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Configuration Options -->
+      <section class="settings-section">
+        <h2>Options d'affichage</h2>
+        <div class="toggle-option">
+          <label class="switch">
+            <input type="checkbox" id="hide-footer" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Masquer le pied de page (Footer)</span>
+        </div>
+        <div class="toggle-option">
+          <label class="switch">
+            <input type="checkbox" id="condensed-cards" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Affichage condensé des matières</span>
+        </div>
+        <div class="toggle-option">
+          <label class="switch">
+            <input type="checkbox" id="hide-sidebar" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Masquer le tiroir latéral par défaut</span>
+        </div>
+      </section>
+
+      <!-- EFREI Quick Links -->
+      <section class="settings-section">
+        <h2>Raccourcis EFREI</h2>
+        <div class="links-grid">
+          <a href="https://www.myefrei.fr/" target="_blank" class="shortcut-link">
+            <span class="link-icon">🎓</span> Portal
+          </a>
+          <a href="https://outlook.office.com/mail/" target="_blank" class="shortcut-link">
+            <span class="link-icon">✉️</span> Webmail
+          </a>
+          <a href="https://teams.microsoft.com/" target="_blank" class="shortcut-link">
+            <span class="link-icon">💬</span> Teams
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="popup-footer">
+      <span>Version 1.0.0 • Fait avec 💙 par Antigravity</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
