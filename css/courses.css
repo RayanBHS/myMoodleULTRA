@@ -93,19 +93,22 @@
   display: none !important;
   opacity: 0 !important;
   position: absolute !important;
-  top: 70px !important; /* Floats right below the blue banner relative to the block container */
-  right: 20px !important; /* Aligned with the entonnoir button */
+  top: 76px !important; /* Floats right below the blue banner relative to the block container */
+  left: 24px !important;
+  right: 24px !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
   z-index: 1050 !important;
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 16px !important;
   padding: 16px !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
-  flex-direction: column !important; /* Stack dropdowns vertically */
+  flex-direction: row !important; /* Layout horizontally */
+  flex-wrap: wrap !important;
+  align-items: center !important;
   gap: 12px !important;
-  width: 260px !important; /* Fixed compact width for the popup */
-  max-width: 260px !important;
-  min-width: 260px !important;
   box-sizing: border-box !important;
   transition: opacity 0.2s ease, transform 0.2s ease !important;
   transform: translateY(-5px);
@@ -117,32 +120,37 @@
   transform: translateY(0) !important;
 }
 
-/* Hide the search input container and clear search button explicitly */
-.ultramoodle-native-filter-bar [data-region="search-input"],
-.ultramoodle-native-filter-bar [data-action="clear-search"],
-.ultramoodle-native-filter-bar button[class*="clear"],
-.ultramoodle-native-filter-bar .clear-search,
-.ultramoodle-native-filter-bar input[type="search"],
-.ultramoodle-native-filter-bar input[placeholder*="Recherch"] {
+/* Hide the search input container only inside myoverview (course overview block) since hero search handles it */
+.block_myoverview .ultramoodle-native-filter-bar [data-region="search-input"],
+.block_myoverview .ultramoodle-native-filter-bar [data-action="clear-search"],
+.block_myoverview .ultramoodle-native-filter-bar button[class*="clear"],
+.block_myoverview .ultramoodle-native-filter-bar .clear-search,
+.block_myoverview .ultramoodle-native-filter-bar input[type="search"],
+.block_myoverview .ultramoodle-native-filter-bar input[placeholder*="Recherch"] {
   display: none !important;
 }
 
 /* Force filter dropdown selectors to be visible (overrides Moodle's responsive d-none/hidden classes) */
 .ultramoodle-native-filter-bar [data-region="filter-selector"],
-.ultramoodle-native-filter-bar [data-region="sorting-selector"] {
+.ultramoodle-native-filter-bar [data-region="sorting-selector"],
+.ultramoodle-native-filter-bar [data-region="search-input"] {
   display: block !important;
 }
 
-/* Strip Bootstrap grid styling inside the custom filter popup */
+/* Strip Bootstrap grid styling inside the custom filter popup and align horizontally */
 .ultramoodle-native-filter-bar .row,
 .ultramoodle-native-filter-bar > div,
 .ultramoodle-native-filter-bar [class*="col-"] {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  flex: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  width: auto !important;
+  max-width: none !important;
+  flex: 1 1 auto !important;
   margin: 0 !important;
   padding: 0 !important;
+  gap: 12px !important;
 }
 
 /* Style the native filter dropdown buttons to match myMoodle ULTRA's design system */
@@ -160,14 +168,16 @@
   padding: 10px 16px !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
   cursor: pointer !important;
-  width: 100% !important;
-  display: flex !important;
+  width: auto !important;
+  min-width: 150px !important;
+  max-width: 300px !important;
+  display: inline-flex !important;
   justify-content: space-between !important;
   align-items: center !important;
   text-align: left !important;
   box-sizing: border-box !important;
   transition: background-color 0.2s, transform 0.1s ease !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 0 !important;
 }
 
 .ultramoodle-native-filter-bar .btn:hover,
@@ -465,18 +475,28 @@
 }
 
 /* Custom layout toggle styles inside filter popup */
+.ultramoodle-custom-layout-selector-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: auto !important;
+  margin: 0 !important;
+  flex: 0 1 auto !important;
+}
+
 .ultramoodle-custom-layout-title {
   font-size: 11px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   color: var(--ultra-text-sub) !important;
-  display: block !important;
-  margin-bottom: 8px !important;
+  display: inline-block !important;
+  margin-bottom: 0 !important;
 }
 .ultramoodle-custom-layout-buttons {
   display: flex !important;
   gap: 8px !important;
-  width: 100% !important;
+  width: auto !important;
 }
 .ultramoodle-native-filter-bar .ultramoodle-layout-btn {
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
@@ -491,7 +511,8 @@
   text-align: center !important;
   transition: all 0.2s ease !important;
   box-shadow: none !important;
-  flex: 1 !important;
+  width: auto !important;
+  min-width: 60px !important;
   display: inline-block !important;
   box-sizing: border-box !important;
 }
@@ -899,43 +920,63 @@
    RECENTLY ACCESSED COURSES BLOCK (SLIDER)
    ========================================================================== */
 
-/* Style the custom slider container as a horizontal scroller */
+/* Style the custom slider container as a horizontal scroller spanning all the way to block borders */
 .ultramoodle-recent-slider {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  padding-top: 8px !important;     /* Space for hover translate animation */
-  padding-bottom: 16px !important;  /* Space for scrollbar and shadow */
+  margin-left: -24px !important;    /* Pull track to absolute left boundary of the block */
+  margin-right: -24px !important;   /* Pull track to absolute right boundary of the block */
+  padding-left: 0 !important;       /* Replaced with first-child margin for consistent snap padding */
+  padding-right: 0 !important;      /* Replaced with last-child margin for consistent snap padding */
+  padding-top: 8px !important;      /* Space for card shadow margins */
+  padding-bottom: 24px !important;  /* Restores the gap between cards and scrollbar (allocates 14px gap + 10px scrollbar) */
   margin-top: -8px !important;
+  margin-bottom: -16px !important;  /* Pull scrollbar closer to the block's bottom border while maintaining the gap */
   box-sizing: border-box !important;
   scroll-behavior: smooth !important;
-  scroll-snap-type: x mandatory !important;
+  scroll-snap-type: none !important;
   -webkit-overflow-scrolling: touch !important;
-  scrollbar-width: thin !important;
-  scrollbar-color: var(--ultra-border) transparent !important;
+  scrollbar-width: auto !important; /* Standard browser scrollbar styling override */
+  scrollbar-color: rgba(0, 0, 0, 0.35) transparent !important; /* Transparent track background */
+}
+:root.ultramoodle-dark .ultramoodle-recent-slider {
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent !important;
 }
 
 .ultramoodle-recent-slider::-webkit-scrollbar {
-  height: 6px !important;
+  height: 10px !important;       /* Made thicker */
+  display: block !important;     /* Force visibility */
+}
+.ultramoodle-recent-slider::-webkit-scrollbar-track {
+  background-color: transparent !important; /* Transparent track background */
+  border-radius: 9999px !important;
+}
+:root.ultramoodle-dark .ultramoodle-recent-slider::-webkit-scrollbar-track {
+  background-color: transparent !important;
 }
 .ultramoodle-recent-slider::-webkit-scrollbar-thumb {
-  background-color: var(--ultra-border) !important;
-  border-radius: 4px !important;
+  background-color: rgba(0, 0, 0, 0.35) !important; /* Darker thumb */
+  border-radius: 9999px !important;
+}
+:root.ultramoodle-dark .ultramoodle-recent-slider::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.35) !important;
+}
+.ultramoodle-recent-slider::-webkit-scrollbar-button {
+  display: none !important;       /* Hide scrollbar arrow buttons (< and >) */
 }
 
 /* Style cards inside our custom slider with full premium D.A */
 .ultramoodle-recent-slider .card,
 .ultramoodle-recent-slider .ultramoodle-card-customized {
-  flex: 0 0 calc(85% - 12px) !important; /* 85% width leaves 15% for the next card to peek */
-  max-width: calc(85% - 12px) !important;
-  min-width: calc(85% - 12px) !important;
+  flex: 0 0 calc(85% - 24px) !important; /* 85% width minus the margin offset for peeking */
+  max-width: calc(85% - 24px) !important;
+  min-width: calc(85% - 24px) !important;
   margin-right: 12px !important;
+  margin-left: 0 !important;
   margin-bottom: 4px !important;
-  scroll-snap-align: start !important;
   height: 170px !important;
   min-height: 170px !important;
   max-height: 170px !important;
@@ -947,14 +988,23 @@
   box-shadow: var(--ultra-card-shadow) !important;
   overflow: hidden !important;
   padding: 0 !important;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease !important;
+  transition: background-color 0.2s ease !important;
+}
+
+/* Apply consistent 32px padding-like space to the first and last cards at the slider extremes */
+.ultramoodle-recent-slider .card:first-of-type,
+.ultramoodle-recent-slider .ultramoodle-card-customized:first-of-type {
+  margin-left: 32px !important;
+}
+
+.ultramoodle-recent-slider .card:last-of-type,
+.ultramoodle-recent-slider .ultramoodle-card-customized:last-of-type {
+  margin-right: 32px !important;
 }
 
 /* Hover effects for recent cards */
 .ultramoodle-recent-slider .card:hover,
 .ultramoodle-recent-slider .ultramoodle-card-customized:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: var(--ultra-card-shadow-hover) !important;
   background-color: var(--ultra-surface-hover) !important;
 }
 

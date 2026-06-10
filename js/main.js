@@ -6,7 +6,7 @@ const init = () => {
   injectCustomProfilePill();
   if (isDashboard()) {
     ensureCardLayoutSelected();
-    injectCoursesHeader();
+    injectBlockHeaders();
     customizeMoodleCards();
     customizeRecentCourses();
     customizeTimeline();
@@ -15,20 +15,20 @@ const init = () => {
 
 // Global click handler to close active filter popups when clicking outside
 document.addEventListener('click', (e) => {
-  const header = document.getElementById('ultramoodle-courses-header');
-  if (!header) return;
-  
-  const toggleBtn = document.getElementById('ultramoodle-filter-toggle-btn');
-  const filterBar = header.associatedFilterBar;
-  
-  if (filterBar && filterBar.classList.contains('ultramoodle-filter-bar-visible')) {
-    if (!header.contains(e.target) && !filterBar.contains(e.target)) {
-      filterBar.classList.remove('ultramoodle-filter-bar-visible');
-      if (toggleBtn) {
-        toggleBtn.classList.remove('active');
+  const headers = document.querySelectorAll('.ultramoodle-block-header');
+  headers.forEach(header => {
+    const toggleBtn = header.querySelector('.ultramoodle-filter-toggle-btn');
+    const filterBar = header.associatedFilterBar;
+    
+    if (filterBar && filterBar.classList.contains('ultramoodle-filter-bar-visible')) {
+      if (!header.contains(e.target) && !filterBar.contains(e.target)) {
+        filterBar.classList.remove('ultramoodle-filter-bar-visible');
+        if (toggleBtn) {
+          toggleBtn.classList.remove('active');
+        }
       }
     }
-  }
+  });
 });
 
 // Try injecting immediately on DOMContentLoaded
@@ -63,7 +63,7 @@ const observer = new MutationObserver((mutations) => {
   if (isDashboard()) {
     injectDashboardLanding();
     ensureCardLayoutSelected();
-    injectCoursesHeader();
+    injectBlockHeaders();
     customizeMoodleCards();
     customizeRecentCourses();
     customizeTimeline();

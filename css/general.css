@@ -85,6 +85,23 @@ body.path-my .block .card-body {
   padding: 0 !important;
 }
 
+/* Hide native Moodle block headers on Dashboard to prevent layout shift */
+body.path-my .block [data-region="header"],
+body.path-my section[data-block] [data-region="header"],
+body.path-my .block .card-body > h2,
+body.path-my .block .card-body > h3,
+body.path-my .block .card-body > h4,
+body.path-my .block .card-body > h5,
+body.path-my .block .card-body > .card-title,
+body.path-my .block > h2,
+body.path-my .block > h3,
+body.path-my .block > h4,
+body.path-my .block > h5,
+body.path-my .block > .card-title,
+body.path-my .block .block-controls {
+  display: none !important;
+}
+
 /* Hide Footer toggle class if enabled in settings */
 .ultramoodle-hide-footer #page-footer,
 .ultramoodle-hide-footer footer,

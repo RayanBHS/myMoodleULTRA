@@ -327,141 +327,205 @@ const hideNativeCourseOverviewTitle = (container) => {
   });
 };
 
-const injectCoursesHeader = () => {
+const injectBlockHeaders = () => {
   if (!isDashboard()) return;
-  
-  const courseOverview = getCourseOverviewContainer();
-  if (!courseOverview) return;
-  
-  hideNativeCourseOverviewTitle(courseOverview);
-  
-  // Force Card layout on Moodle's side so Moodle always renders full card info
-  ensureCardLayoutSelected();
-  
-  // Force selection of "Tout" on first load if it was set to "Favoris"
-  if (!hasForcedAll) {
-    ensureAllCoursesSelected();
-    hasForcedAll = true;
-  }
-  
-  // Apply our custom view class (grid or list) constantly to keep styling active
-  const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
-  if (!courseOverview.classList.contains(`ultramoodle-view-${currentLayout}`)) {
-    courseOverview.classList.remove('ultramoodle-view-grid', 'ultramoodle-view-list');
-    courseOverview.classList.add(`ultramoodle-view-${currentLayout}`);
-  }
-  
-  const searchInput = courseOverview.querySelector('input[placeholder*="Rechercher"], input[placeholder*="Search"], input[type="search"], [data-region="search-input"] input');
-  const filterSelector = courseOverview.querySelector('[data-region="filter-selector"]');
-  const filterBar = (searchInput ? searchInput.closest('.row, .bar, [data-region="filter-bar"], .justify-content-between') : null) ||
-                    (filterSelector ? filterSelector.closest('.row, .bar, [data-region="filter-bar"], .justify-content-between') : null) ||
-                    courseOverview.querySelector('[data-region="filter-bar"]') || 
-                    courseOverview.querySelector('.bar');
 
-  const existingHeader = document.getElementById('ultramoodle-courses-header');
-  if (existingHeader) {
-    // If the filter bar changed (e.g. Moodle AJAX layout/tab re-rendering), force re-injection
-    if (filterBar && existingHeader.associatedFilterBar !== filterBar) {
-      existingHeader.remove();
-    } else {
-      // Ensure the filterBar still has the class even if Moodle partially re-rendered it
-      if (filterBar && !filterBar.classList.contains('ultramoodle-native-filter-bar')) {
-        filterBar.classList.add('ultramoodle-native-filter-bar');
-      }
-      return;
+  const blocks = document.querySelectorAll('.block, section[data-block]');
+  blocks.forEach((block) => {
+    // Find the title text from native Moodle header
+    const headingEl = block.querySelector('h2, h3.card-title, h3, .block-title, [role="heading"]');
+    let titleText = '';
+    if (headingEl) {
+      titleText = headingEl.textContent.trim();
     }
-  }
-  
-  const header = document.createElement('div');
-  header.id = 'ultramoodle-courses-header';
-  header.className = 'ultramoodle-courses-header';
-  header.associatedFilterBar = filterBar;
-  header.innerHTML = `
-    <span class="ultramoodle-courses-header-title">Les cours</span>
-    <div id="ultramoodle-filter-toggle-btn" class="ultramoodle-filter-toggle-btn" title="Filtrer les cours" style="cursor: pointer;">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-      </svg>
-    </div>
-  `;
-  
-  const contentContainer = courseOverview.querySelector('[data-region="course-overview"]') || 
-                           courseOverview.querySelector('.card-body') || 
-                           courseOverview;
-  
-  contentContainer.insertBefore(header, contentContainer.firstChild);
-  
-  if (filterBar) {
-    filterBar.classList.add('ultramoodle-native-filter-bar');
-    
-    // Inject our custom layout selector inside the popup
-    if (!document.getElementById('ultramoodle-custom-layout-selector')) {
-      const selectorWrapper = document.createElement('div');
-      selectorWrapper.id = 'ultramoodle-custom-layout-selector';
-      selectorWrapper.className = 'ultramoodle-custom-layout-selector-wrapper';
-      selectorWrapper.innerHTML = `
-        <span class="ultramoodle-custom-layout-title">Affichage</span>
-        <div class="ultramoodle-custom-layout-buttons">
-          <button id="ultramoodle-btn-layout-grid" class="ultramoodle-layout-btn ${currentLayout === 'grid' ? 'active' : ''}">Carte</button>
-          <button id="ultramoodle-btn-layout-list" class="ultramoodle-layout-btn ${currentLayout === 'list' ? 'active' : ''}">Liste</button>
-        </div>
-      `;
-      filterBar.appendChild(selectorWrapper);
-      
-      const gridBtn = document.getElementById('ultramoodle-btn-layout-grid');
-      const listBtn = document.getElementById('ultramoodle-btn-layout-list');
-      
-      if (gridBtn && listBtn) {
-        gridBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          localStorage.setItem('ultramoodle-layout-pref', 'grid');
-          gridBtn.classList.add('active');
-          listBtn.classList.remove('active');
-          courseOverview.classList.remove('ultramoodle-view-list');
-          courseOverview.classList.add('ultramoodle-view-grid');
-          window.dispatchEvent(new Event('resize'));
-        });
-        
-        listBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          localStorage.setItem('ultramoodle-layout-pref', 'list');
-          listBtn.classList.add('active');
-          gridBtn.classList.remove('active');
-          courseOverview.classList.remove('ultramoodle-view-grid');
-          courseOverview.classList.add('ultramoodle-view-list');
-          window.dispatchEvent(new Event('resize'));
-        });
+
+    // Map Moodle blocks to their custom names if not found or for normalization
+    if (!titleText) {
+      if (block.classList.contains('block_myoverview') || block.querySelector('[data-region="course-overview"]')) {
+        titleText = "Les cours";
+      } else if (block.classList.contains('block_recentlyaccessedcourses')) {
+        titleText = "Récemment consultés";
+      } else if (block.classList.contains('block_timeline')) {
+        titleText = "Chronologie";
+      } else if (block.classList.contains('block_private_files')) {
+        titleText = "Fichiers personnels";
+      } else {
+        return; // Skip blocks without title that we can't identify
       }
     }
-  }
-  
-  const toggleBtn = document.getElementById('ultramoodle-filter-toggle-btn');
-  if (toggleBtn) {
-    toggleBtn.classList.remove('active');
+
+    const lowerTitle = titleText.toLowerCase();
+    if (lowerTitle.includes("vue d'ensemble des cours") || lowerTitle === "course overview") {
+      titleText = "Les cours";
+    } else if (lowerTitle.includes("récemment") || lowerTitle.includes("recently accessed")) {
+      titleText = "Récemment consultés";
+    } else if (lowerTitle.includes("chronologie") || lowerTitle.includes("timeline")) {
+      titleText = "Chronologie";
+    } else if (lowerTitle.includes("fichiers personnels") || lowerTitle.includes("private files") || lowerTitle.includes("fichiers privés")) {
+      titleText = "Fichiers personnels";
+    }
+
+    // Hide native headings
+    if (headingEl) {
+      headingEl.style.setProperty('display', 'none', 'important');
+    }
+    block.querySelectorAll('.card-title, h5.card-title, h3.card-title, h2.card-title').forEach(h => {
+      // Don't hide our own title inside our custom header
+      if (!h.closest('.ultramoodle-courses-header')) {
+        h.style.setProperty('display', 'none', 'important');
+      }
+    });
+
+    // Special configuration for course overview block
+    const isOverview = block.classList.contains('block_myoverview') || block.querySelector('[data-region="course-overview"]');
+    if (isOverview) {
+      ensureCardLayoutSelected();
+      if (!hasForcedAll) {
+        ensureAllCoursesSelected();
+        hasForcedAll = true;
+      }
+      const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
+      if (!block.classList.contains(`ultramoodle-view-${currentLayout}`)) {
+        block.classList.remove('ultramoodle-view-grid', 'ultramoodle-view-list');
+        block.classList.add(`ultramoodle-view-${currentLayout}`);
+      }
+    }
+
+    // Detect if the block has filter/search controls
+    let filterBar = null;
+    if (isOverview) {
+      const searchInput = block.querySelector('input[placeholder*="Rechercher"], input[placeholder*="Search"], input[type="search"], [data-region="search-input"] input');
+      const filterSelector = block.querySelector('[data-region="filter-selector"]');
+      filterBar = (searchInput ? searchInput.closest('.row, .bar, [data-region="filter-bar"], .justify-content-between') : null) ||
+                  (filterSelector ? filterSelector.closest('.row, .bar, [data-region="filter-bar"], .justify-content-between') : null) ||
+                  block.querySelector('[data-region="filter-bar"]') || 
+                  block.querySelector('.bar');
+    } else if (block.classList.contains('block_timeline') || block.querySelector('[data-region="timeline"]')) {
+      const sortSelector = block.querySelector('[data-region="sorting-selector"]');
+      const dateSelector = block.querySelector('[data-region="filter-selector"]');
+      const searchSelector = block.querySelector('[data-region="search-input"]');
+      filterBar = (sortSelector ? sortSelector.closest('.row, .bar, [data-region="filter-bar"], .d-flex, .justify-content-between') : null) ||
+                  (dateSelector ? dateSelector.closest('.row, .bar, [data-region="filter-bar"], .d-flex, .justify-content-between') : null) ||
+                  (searchSelector ? searchSelector.closest('.row, .bar, [data-region="filter-bar"], .d-flex, .justify-content-between') : null) ||
+                  block.querySelector('[data-region="timeline"] .row, [data-region="timeline"] .bar');
+    }
+
+    // Force relative position and overflow visible on the block wrapper so the floating absolute popup works
+    block.style.setProperty('position', 'relative', 'important');
+    block.style.setProperty('overflow', 'visible', 'important');
+
+    const contentContainer = block.querySelector('.card-body') || block.querySelector('.content') || block;
+    contentContainer.style.setProperty('position', 'relative', 'important');
+    contentContainer.style.setProperty('overflow', 'visible', 'important');
+
+    // Handle existing header
+    let existingHeader = block.querySelector('.ultramoodle-block-header');
+    if (existingHeader) {
+      if (filterBar && existingHeader.associatedFilterBar !== filterBar) {
+        existingHeader.remove();
+        existingHeader = null;
+      } else {
+        if (filterBar && !filterBar.classList.contains('ultramoodle-native-filter-bar')) {
+          filterBar.classList.add('ultramoodle-native-filter-bar');
+        }
+        return;
+      }
+    }
+
+    const header = document.createElement('div');
+    header.className = 'ultramoodle-courses-header ultramoodle-block-header';
+    header.associatedFilterBar = filterBar;
+
+    const hasFilters = !!filterBar;
+
+    header.innerHTML = `
+      <span class="ultramoodle-courses-header-title">${titleText}</span>
+      ${hasFilters ? `
+      <div class="ultramoodle-filter-toggle-btn" title="Filtrer" style="cursor: pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+      </div>
+      ` : ''}
+    `;
+
+    contentContainer.insertBefore(header, contentContainer.firstChild);
+
     if (filterBar) {
-      filterBar.classList.remove('ultramoodle-filter-bar-visible');
-    }
-    
-    // Stop event propagation in bubble phase to prevent Moodle event delegation from catching interactions
-    const interactionEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
-    interactionEvents.forEach(evtName => {
-      toggleBtn.addEventListener(evtName, (e) => {
-        e.stopPropagation();
-      });
-    });
-    
-    // Handle toggle logic
-    toggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (filterBar) {
-        filterBar.classList.toggle('ultramoodle-filter-bar-visible');
-        toggleBtn.classList.toggle('active');
+      filterBar.classList.add('ultramoodle-native-filter-bar');
+
+      // If this is the course overview, inject our custom layout selector inside the filter popup
+      if (isOverview) {
+        if (!filterBar.querySelector('#ultramoodle-custom-layout-selector')) {
+          const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
+          const selectorWrapper = document.createElement('div');
+          selectorWrapper.id = 'ultramoodle-custom-layout-selector';
+          selectorWrapper.className = 'ultramoodle-custom-layout-selector-wrapper';
+          selectorWrapper.innerHTML = `
+            <span class="ultramoodle-custom-layout-title">Affichage</span>
+            <div class="ultramoodle-custom-layout-buttons">
+              <button id="ultramoodle-btn-layout-grid" class="ultramoodle-layout-btn ${currentLayout === 'grid' ? 'active' : ''}">Carte</button>
+              <button id="ultramoodle-btn-layout-list" class="ultramoodle-layout-btn ${currentLayout === 'list' ? 'active' : ''}">Liste</button>
+            </div>
+          `;
+          filterBar.appendChild(selectorWrapper);
+
+          const gridBtn = filterBar.querySelector('#ultramoodle-btn-layout-grid');
+          const listBtn = filterBar.querySelector('#ultramoodle-btn-layout-list');
+
+          if (gridBtn && listBtn) {
+            gridBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              localStorage.setItem('ultramoodle-layout-pref', 'grid');
+              gridBtn.classList.add('active');
+              listBtn.classList.remove('active');
+              const courseOverview = getCourseOverviewContainer();
+              if (courseOverview) {
+                courseOverview.classList.remove('ultramoodle-view-list');
+                courseOverview.classList.add('ultramoodle-view-grid');
+              }
+              window.dispatchEvent(new Event('resize'));
+            });
+
+            listBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              localStorage.setItem('ultramoodle-layout-pref', 'list');
+              listBtn.classList.add('active');
+              gridBtn.classList.remove('active');
+              const courseOverview = getCourseOverviewContainer();
+              if (courseOverview) {
+                courseOverview.classList.remove('ultramoodle-view-grid');
+                courseOverview.classList.add('ultramoodle-view-list');
+              }
+              window.dispatchEvent(new Event('resize'));
+            });
+          }
+        }
       }
-    });
-  }
-};
+
+      const toggleBtn = header.querySelector('.ultramoodle-filter-toggle-btn');
+      if (toggleBtn) {
+        toggleBtn.classList.remove('active');
+        filterBar.classList.remove('ultramoodle-filter-bar-visible');
+
+        const interactionEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
+        interactionEvents.forEach(evtName => {
+          toggleBtn.addEventListener(evtName, (e) => {
+            e.stopPropagation();
+          });
+        });
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          filterBar.classList.toggle('ultramoodle-filter-bar-visible');
+          toggleBtn.classList.toggle('active');
+        });
+      }
+    }
+  });
+};;
 
 const getCourseLinkEl = (card) => {
   if (card.tagName === 'A' && card.href && card.href.includes('/course/view.php?id=')) {
@@ -471,9 +535,17 @@ const getCourseLinkEl = (card) => {
 };
 
 const buildCard = (card, apiCourse) => {
+  let courseUrl = '';
   const linkEl = getCourseLinkEl(card);
-  if (!linkEl) return;
-  const courseUrl = linkEl.href;
+  if (linkEl) {
+    courseUrl = linkEl.href;
+  } else if (apiCourse && apiCourse.viewurl) {
+    courseUrl = apiCourse.viewurl;
+  } else if (apiCourse && apiCourse.id) {
+    courseUrl = `/course/view.php?id=${apiCourse.id}`;
+  } else {
+    return;
+  }
 
   let fullname, subtitle, progress, imageUrl;
 
@@ -569,57 +641,100 @@ const customizeMoodleCards = () => {
   });
 };
 
+let _recentCoursesCache = null;
+let _recentCoursesFetchPromise = null;
+
+const fetchRecentCourses = () => {
+  if (_recentCoursesCache) return Promise.resolve(_recentCoursesCache);
+  if (_recentCoursesFetchPromise) return _recentCoursesFetchPromise;
+  const sesskey = getMoodleSesskey();
+  if (!sesskey) return Promise.resolve(null);
+  
+  _recentCoursesFetchPromise = fetch(
+    `/lib/ajax/service.php?sesskey=${sesskey}&info=core_course_get_recent_courses`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([{
+        index: 0,
+        methodname: 'core_course_get_recent_courses',
+        args: { limit: 12 } // Retrieve up to 12 recently accessed courses
+      }])
+    }
+  )
+  .then(r => r.json())
+  .then(data => {
+    if (data?.[0]?.error === false && data[0].data) {
+      _recentCoursesCache = data[0].data;
+      return _recentCoursesCache;
+    }
+    return null;
+  })
+  .catch(() => null);
+  return _recentCoursesFetchPromise;
+};
+
 const customizeRecentCourses = () => {
   const block = document.querySelector('.block_recentlyaccessedcourses');
   if (!block) return;
 
-  // Check if our custom slider is already injected
-  if (block.querySelector('.ultramoodle-recent-slider')) {
-    return; // Already customized
+  // Check if our custom slider is already injected or currently loading
+  if (block.querySelector('.ultramoodle-recent-slider') || block.dataset.ultramoodleLoading === 'true') {
+    return; // Already customized or loading
   }
 
-  // Find all cards inside the block (both customized and uncustomized)
-  const nativeCards = block.querySelectorAll('.card, [data-purpose="course-card"]');
-  if (nativeCards.length === 0) return;
+  block.dataset.ultramoodleLoading = 'true';
 
-  // Filter to keep only real cards with valid course links (ignores Moodle's loading skeletons)
-  const realCards = Array.from(nativeCards).filter(card => getCourseLinkEl(card) !== null);
-  if (realCards.length === 0) return;
-
+  // Find the contentArea to clear and inject our slider
   const contentArea = block.querySelector('.card-text.content') || block.querySelector('.card-body') || block;
 
-  fetchMoodleCourses().then(courseData => {
+  // Fetch both enrolled classifications and recent courses to merge data
+  Promise.all([fetchMoodleCourses(), fetchRecentCourses()]).then(([enrolledData, recentCourses]) => {
+    block.dataset.ultramoodleLoading = 'false';
+    if (!recentCourses || recentCourses.length === 0) return;
+
     // Check again to avoid race conditions
     if (block.querySelector('.ultramoodle-recent-slider')) return;
 
-    // Create a new clean container for our slider
     const sliderContainer = document.createElement('div');
     sliderContainer.className = 'ultramoodle-recent-slider';
 
-    realCards.forEach(card => {
-      // Find course URL
-      const linkEl = getCourseLinkEl(card);
-      if (!linkEl) return;
-      const courseUrl = linkEl.href;
-      
-      const idMatch = courseUrl.match(/\/course\/view\.php\?id=(\d+)/);
-      const courseId = idMatch ? parseInt(idMatch[1]) : null;
-      const apiCourse = (courseData && courseId) ? courseData[courseId] : null;
-
-      // Clone native card to preserve structures for buildCard
-      const cardClone = card.cloneNode(true);
-      cardClone.removeAttribute('style');
-      cardClone.className = 'card dashboard-card';
-
-      // Append it to the sliderContainer FIRST so it has a parentNode for replaceChild
-      sliderContainer.appendChild(cardClone);
-
-      // Build the card inside our slider
-      buildCard(cardClone, apiCourse);
+    // Prevent Moodle's native carousel delegation from intercepting slider interactions
+    const stopEvents = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend'];
+    stopEvents.forEach(evtName => {
+      sliderContainer.addEventListener(evtName, (e) => {
+        // If click is on native dropdown menus/toggles, let it bubble so Bootstrap can open it.
+        // Otherwise, stop propagation to isolate from Moodle native carousel scroll resets.
+        if (e.target.closest('.dropdown, .dropdown-menu, .dropdown-toggle')) {
+          return;
+        }
+        e.stopPropagation();
+      }, { passive: true });
     });
 
-    // Clear content area and append our slider
-    contentArea.innerHTML = '';
+    recentCourses.forEach(recentCourse => {
+      // Find full classifications (progress, category) from enrolled courses cache
+      const enrolledCourse = enrolledData ? enrolledData[recentCourse.id] : null;
+      
+      // Merge properties (category name, progress, startdate, image, etc.)
+      const apiCourse = Object.assign({}, recentCourse, enrolledCourse);
+
+      const customCard = document.createElement('div');
+      customCard.className = 'card dashboard-card';
+      
+      // Append card to sliderContainer first so buildCard replacement parentNode check succeeds
+      sliderContainer.appendChild(customCard);
+      
+      // Custom card build from merged data
+      buildCard(customCard, apiCourse);
+    });
+
+    // Clear native Moodle elements and inject our custom slider, preserving our custom header
+    Array.from(contentArea.children).forEach(child => {
+      if (!child.classList.contains('ultramoodle-block-header')) {
+        child.remove();
+      }
+    });
     contentArea.appendChild(sliderContainer);
   });
 };
