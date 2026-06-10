@@ -8,6 +8,8 @@ const init = () => {
     ensureCardLayoutSelected();
     injectCoursesHeader();
     customizeMoodleCards();
+    customizeRecentCourses();
+    customizeTimeline();
   }
 };
 
@@ -63,6 +65,8 @@ const observer = new MutationObserver((mutations) => {
     ensureCardLayoutSelected();
     injectCoursesHeader();
     customizeMoodleCards();
+    customizeRecentCourses();
+    customizeTimeline();
   }
   cleanNavbarLinks();
   injectCustomProfilePill();

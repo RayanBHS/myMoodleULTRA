@@ -463,8 +463,15 @@ const injectCoursesHeader = () => {
   }
 };
 
+const getCourseLinkEl = (card) => {
+  if (card.tagName === 'A' && card.href && card.href.includes('/course/view.php?id=')) {
+    return card;
+  }
+  return card.querySelector('a[href*="/course/view.php?id="]');
+};
+
 const buildCard = (card, apiCourse) => {
-  const linkEl = card.querySelector('a[href*="/course/view.php?id="]');
+  const linkEl = getCourseLinkEl(card);
   if (!linkEl) return;
   const courseUrl = linkEl.href;
 
@@ -489,6 +496,17 @@ const buildCard = (card, apiCourse) => {
   let cleanTitle = fullname.replace(cleanRegex, '').replace(/\s*\(P\d[^)]*\)\s*$/g, '').trim() || fullname;
 
   const nativeDropdown = card.querySelector('.dropdown');
+
+  // If the card is an A tag, replace it with a DIV tag to avoid nested A tags and preserve click behaviors
+  if (card.tagName === 'A') {
+    const divCard = document.createElement('div');
+    for (const attr of card.attributes) {
+      divCard.setAttribute(attr.name, attr.value);
+    }
+    divCard.removeAttribute('href');
+    card.parentNode.replaceChild(divCard, card);
+    card = divCard;
+  }
 
   // Store full name for search BEFORE overwriting innerHTML
   card.dataset.ultramoodleTitle = fullname;
@@ -540,7 +558,7 @@ const customizeMoodleCards = () => {
   fetchMoodleCourses().then(courseData => {
     uncustomized.forEach(card => {
       if (card.classList.contains('ultramoodle-card-customized')) return;
-      const linkEl = card.querySelector('a[href*="/course/view.php?id="]');
+      const linkEl = getCourseLinkEl(card);
       if (!linkEl) return;
       const idMatch = linkEl.href.match(/\/course\/view\.php\?id=(\d+)/);
       const courseId = idMatch ? parseInt(idMatch[1]) : null;
@@ -548,6 +566,61 @@ const customizeMoodleCards = () => {
       buildCard(card, apiCourse);
     });
     makeCardsFillRow();
+  });
+};
+
+const customizeRecentCourses = () => {
+  const block = document.querySelector('.block_recentlyaccessedcourses');
+  if (!block) return;
+
+  // Check if our custom slider is already injected
+  if (block.querySelector('.ultramoodle-recent-slider')) {
+    return; // Already customized
+  }
+
+  // Find all cards inside the block (both customized and uncustomized)
+  const nativeCards = block.querySelectorAll('.card, [data-purpose="course-card"]');
+  if (nativeCards.length === 0) return;
+
+  // Filter to keep only real cards with valid course links (ignores Moodle's loading skeletons)
+  const realCards = Array.from(nativeCards).filter(card => getCourseLinkEl(card) !== null);
+  if (realCards.length === 0) return;
+
+  const contentArea = block.querySelector('.card-text.content') || block.querySelector('.card-body') || block;
+
+  fetchMoodleCourses().then(courseData => {
+    // Check again to avoid race conditions
+    if (block.querySelector('.ultramoodle-recent-slider')) return;
+
+    // Create a new clean container for our slider
+    const sliderContainer = document.createElement('div');
+    sliderContainer.className = 'ultramoodle-recent-slider';
+
+    realCards.forEach(card => {
+      // Find course URL
+      const linkEl = getCourseLinkEl(card);
+      if (!linkEl) return;
+      const courseUrl = linkEl.href;
+      
+      const idMatch = courseUrl.match(/\/course\/view\.php\?id=(\d+)/);
+      const courseId = idMatch ? parseInt(idMatch[1]) : null;
+      const apiCourse = (courseData && courseId) ? courseData[courseId] : null;
+
+      // Clone native card to preserve structures for buildCard
+      const cardClone = card.cloneNode(true);
+      cardClone.removeAttribute('style');
+      cardClone.className = 'card dashboard-card';
+
+      // Append it to the sliderContainer FIRST so it has a parentNode for replaceChild
+      sliderContainer.appendChild(cardClone);
+
+      // Build the card inside our slider
+      buildCard(cardClone, apiCourse);
+    });
+
+    // Clear content area and append our slider
+    contentArea.innerHTML = '';
+    contentArea.appendChild(sliderContainer);
   });
 };
 
@@ -614,9 +687,18 @@ const filterCourses = (query) => {
   let matchCount = 0;
   cards.forEach(card => {
     const title = getCourseTitle(card);
+    const subtitle = getCardSubtitle(card);
+    
     if (title) {
-      const normalizedTitle = normalizeText(title);
-      const isMatch = normalizedTitle.includes(cleanQuery);
+      let searchableText = title + ' ' + subtitle;
+      const semester = extractSemester(title);
+      if (semester !== null) {
+        searchableText += ' semestre ' + semester + ' s' + semester;
+      }
+      
+      const normalizedSearchable = normalizeText(searchableText);
+      const isMatch = normalizedSearchable.includes(cleanQuery);
+      
       if (isMatch) {
         card.classList.remove('ultramoodle-course-hidden');
         matchCount++;

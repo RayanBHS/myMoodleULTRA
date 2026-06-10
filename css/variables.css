@@ -19,7 +19,7 @@
 }
 
 :root.ultramoodle-light {
-  --ultra-bg: #f4f6f9;               /* Soft Cold Light Background */
+  --ultra-bg: #f0f0f0;               /* Soft Cold Light Background */
   --ultra-surface: #ffffff;          /* White Card */
   --ultra-surface-hover: #ebf0f5;
   --ultra-border: #e2e8f0;           /* Clean Light Gray Border */

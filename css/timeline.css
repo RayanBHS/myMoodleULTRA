@@ -1,0 +1,158 @@
+/* myMoodle ULTRA - Timeline Customization */
+
+/* Style native date grouping titles as large pills */
+[data-region="timeline"] h5,
+[data-region="timeline"] h6 {
+  display: inline-block !important;
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 24px !important;
+  padding: 12px 24px !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+  margin-top: 28px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  text-transform: capitalize;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+:root.ultramoodle-dark [data-region="timeline"] h5,
+:root.ultramoodle-dark [data-region="timeline"] h6 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-region="timeline"] .list-group-item {
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 12px !important;
+  background: transparent !important;
+}
+
+/* Base custom card for timeline events */
+.ultramoodle-timeline-card {
+  display: flex;
+  background-color: var(--ultra-surface);
+  border: 1px solid var(--ultra-border);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none !important;
+  color: var(--ultra-text-main) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: var(--ultra-card-shadow);
+  padding: 12px;
+  gap: 16px;
+  align-items: center;
+  position: relative;
+}
+
+.ultramoodle-timeline-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ultra-card-shadow-hover);
+  border-color: rgba(var(--ultra-accent-rgb), 0.3);
+  background-color: var(--ultra-surface-hover);
+}
+
+/* Image container (Course Image or Icon) */
+.ultramoodle-timeline-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: var(--ultra-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ultramoodle-timeline-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Content area */
+.ultramoodle-timeline-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ultramoodle-timeline-course {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ultra-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ultramoodle-timeline-title {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ultra-text-main);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+/* Footer / Pills area */
+.ultramoodle-timeline-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* Same pill style as courses */
+.ultramoodle-timeline-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--ultra-bg);
+  color: var(--ultra-text-sub);
+  border: 1px solid var(--ultra-border);
+}
+
+.ultramoodle-timeline-pill.due {
+  color: #ef4444; /* Red for due items */
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Hide original content but keep it in DOM just in case */
+.block_timeline .ultramoodle-timeline-hidden-original,
+[data-region="timeline"] .ultramoodle-timeline-hidden-original,
+.list-group-item .ultramoodle-timeline-hidden-original {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Dark mode specific tweaks if necessary */
+:root.ultramoodle-dark .ultramoodle-timeline-pill.due {
+  background-color: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}

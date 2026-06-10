@@ -32,24 +32,57 @@ body.path-my #page-header h1 {
 }
 
 /* Strip background and borders from the #page container on dashboard to make hero borderless */
-body.path-my #page {
+body.path-my #page,
+body.path-my #page-wrapper,
+body.path-my #page-content,
+body.path-my #region-main-box,
+body.path-my #region-main,
+body.path-my .region-main-content,
+body.path-my .region_main_settings_menu_proxy,
+body.path-my [data-region="blocks-column"],
+body.path-my .container,
+body.path-my .container-fluid,
+body.path-my .course-content,
+body.path-my div[role="main"] {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.path-my #region-main > .card,
+body.path-my #region-main > .card > .card-body,
+body.path-my .region-main-content > .card,
+body.path-my .region-main-content > .card > .card-body {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
 }
 
-/* Re-apply Moodle's card border/background wrapper around only #page-content (below the search fold) */
-body.path-my #page-content {
-  background-color: var(--ultra-surface-page-content, #ffffff) !important;
-  border: 1px solid var(--ultra-border-page-content, #dee2e6) !important;
-  border-radius: 0.5rem !important;
-  padding: 20px !important;
+body {
+  background-color: var(--ultra-bg) !important;
+}
+
+/* Wrap each category/block in its own white popup instead of a global wrapper */
+body.path-my .block,
+body.path-my section[data-block] {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
   box-shadow: var(--ultra-card-shadow) !important;
-  margin-top: 20px !important;
-  width: 100% !important;
+  margin-bottom: 24px !important;
   box-sizing: border-box !important;
-  flex-wrap: wrap !important;
+}
+
+/* Ensure course cards don't have double spacing if they are inside a block */
+body.path-my .block [data-region="course-overview"] {
+  padding: 0 !important;
+}
+
+/* Remove double padding if the block uses Moodle's native .card-body */
+body.path-my .block .card-body {
+  padding: 0 !important;
 }
 
 /* Hide Footer toggle class if enabled in settings */
