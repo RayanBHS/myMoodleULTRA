@@ -68,11 +68,18 @@ body.path-my .block,
 body.path-my section[data-block] {
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
-  border-radius: 16px !important;
+  border-radius: 48px !important; /* Pronounced rounded corners to match the header pill shape */
   padding: 24px !important;
   box-shadow: var(--ultra-card-shadow) !important;
   margin-bottom: 24px !important;
   box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  body.path-my .block,
+  body.path-my section[data-block] {
+    border-radius: 24px !important; /* Slightly less round on small devices to fit mobile aesthetic */
+  }
 }
 
 /* Ensure course cards don't have double spacing if they are inside a block */
@@ -85,21 +92,327 @@ body.path-my .block .card-body {
   padding: 0 !important;
 }
 
-/* Hide native Moodle block headers on Dashboard to prevent layout shift */
-body.path-my .block [data-region="header"],
-body.path-my section[data-block] [data-region="header"],
-body.path-my .block .card-body > h2,
-body.path-my .block .card-body > h3,
-body.path-my .block .card-body > h4,
-body.path-my .block .card-body > h5,
-body.path-my .block .card-body > .card-title,
-body.path-my .block > h2,
-body.path-my .block > h3,
-body.path-my .block > h4,
-body.path-my .block > h5,
-body.path-my .block > .card-title,
-body.path-my .block .block-controls {
+/* Hide native Moodle block headers on Dashboard to prevent layout shift when NOT editing */
+body.path-my:not(.editing) .block [data-region="header"],
+body.path-my:not(.editing) section[data-block] [data-region="header"],
+body.path-my:not(.editing) .block .card-body > h2,
+body.path-my:not(.editing) .block .card-body > h3,
+body.path-my:not(.editing) .block .card-body > h4,
+body.path-my:not(.editing) .block .card-body > h5,
+body.path-my:not(.editing) .block .card-body > .card-title,
+body.path-my:not(.editing) .block > h2,
+body.path-my:not(.editing) .block > h3,
+body.path-my:not(.editing) .block > h4,
+body.path-my:not(.editing) .block > h5,
+body.path-my:not(.editing) .block > .card-title,
+body.path-my:not(.editing) .block .block-controls {
   display: none !important;
+}
+
+/* --- Premium Editing Mode Layout & Drag Handles --- */
+body.editing .block,
+body.editing section[data-block] {
+  position: relative !important;
+}
+
+/* Shift block controls to sit inside the custom blue header, vertically centered and aligned next to the filter button */
+body.editing .block:has(.ultramoodle-block-header) .block-controls,
+body.editing section[data-block]:has(.ultramoodle-block-header) .block-controls {
+  display: flex !important;
+  position: absolute !important;
+  top: 12px !important; /* Shifted up to align perfectly in the vertical center of the capsule */
+  right: 104px !important; /* To the left of the filter button */
+  z-index: 1020 !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  margin: 0 !important; /* Reset native margins */
+}
+
+/* If there is no filter button in the custom header, align controls on the far right */
+body.editing .block:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls,
+body.editing section[data-block]:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls {
+  right: 56px !important;
+}
+
+/* Hide screen-reader and native helper text inside drag handles to prevent layout distortion and allow perfect centering */
+body.editing .moodle-core-dragdrop-draghandle span,
+body.editing .drag-handle span,
+body.editing .move span,
+body.editing [data-key="move"] span,
+body.editing [data-action="move"] span,
+body.editing [class*="dragdrop-draghandle"] span,
+body.editing .editing_move span,
+body.editing .dragicon span,
+body.editing .moodle-core-dragdrop-draghandle .accesshide,
+body.editing .drag-handle .accesshide,
+body.editing .move .accesshide,
+body.editing [data-key="move"] .accesshide,
+body.editing [data-action="move"] .accesshide,
+body.editing [class*="dragdrop-draghandle"] .accesshide,
+body.editing .editing_move .accesshide,
+body.editing .dragicon .accesshide {
+  display: none !important;
+}
+
+/* Make buttons inside custom header block controls transparent white to match filter button */
+body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .move,
+body.editing .block:has(.ultramoodle-block-header) .block-controls [data-key="move"],
+body.editing .block:has(.ultramoodle-block-header) .block-controls [class*="dragdrop-draghandle"],
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle {
+  background-color: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  width: 30px !important; /* Reduced from 36px to make hover zone clean and tight */
+  height: 30px !important;
+  border-radius: 50% !important; /* Circular buttons to match filter toggle button */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s, transform 0.2s !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important; /* Clip any overflowing text nodes */
+}
+
+body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle:hover,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle:hover,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .move:hover,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle:hover,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+/* Force images/icons inside custom header controls to be white */
+body.editing .block:has(.ultramoodle-block-header) .block-controls img,
+body.editing .block:has(.ultramoodle-block-header) .block-controls i,
+body.editing .block:has(.ultramoodle-block-header) .block-controls svg {
+  width: 14px !important; /* Reduced from 18px to look proportionally clean inside 30px hover rings */
+  height: 14px !important;
+  color: #ffffff !important;
+  filter: brightness(0) invert(1) !important;
+}
+
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle::after {
+  display: none !important; /* Hide down caret */
+}
+
+/* Standard floating block controls for blocks without custom headers */
+body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls,
+body.editing section[data-block]:not(:has(.ultramoodle-block-header)) .block-controls {
+  display: flex !important;
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 1020 !important;
+  background-color: var(--ultra-surface-hover) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 12px !important;
+  padding: 4px 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* General styling for drag handles (sections, activities, and standard blocks) */
+body.editing .moodle-core-dragdrop-draghandle,
+body.editing .drag-handle,
+body.editing .move,
+body.editing [data-key="move"],
+body.editing [data-action="move"],
+body.editing [class*="dragdrop-draghandle"],
+body.editing .editing_move,
+body.editing .dragicon {
+  display: inline-flex !important;
+  cursor: move !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  color: var(--ultra-text-main) !important;
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 8px !important;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  margin: 0 4px !important;
+  padding: 0 !important;
+  text-decoration: none !important;
+  overflow: hidden !important; /* Prevent text stretch */
+}
+
+/* Accessibility reordering arrow buttons styling */
+body.editing .moveup,
+body.editing .movedown,
+body.editing [data-action="moveup"],
+body.editing [data-action="movedown"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  color: var(--ultra-text-main) !important;
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 8px !important;
+  transition: background-color 0.2s, border-color 0.2s !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  margin: 0 4px !important;
+  padding: 0 !important;
+}
+
+body.editing .moodle-core-dragdrop-draghandle:hover,
+body.editing .drag-handle:hover,
+body.editing .move:hover,
+body.editing [data-action="move"]:hover,
+body.editing .editing_move:hover,
+body.editing .dragicon:hover,
+body.editing .moveup:hover,
+body.editing .movedown:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  border-color: var(--ultra-text-sub) !important;
+  transform: scale(1.05) !important;
+  color: var(--ultra-text-main) !important;
+}
+
+body.editing .moodle-core-dragdrop-draghandle img,
+body.editing .drag-handle img,
+body.editing .move img,
+body.editing [data-action="move"] img,
+body.editing .editing_move img,
+body.editing .dragicon img,
+body.editing .moodle-core-dragdrop-draghandle i,
+body.editing .drag-handle i,
+body.editing .move i,
+body.editing [data-action="move"] i,
+body.editing .editing_move i,
+body.editing .dragicon i,
+body.editing .moveup i,
+body.editing .movedown i,
+body.editing .moodle-core-dragdrop-draghandle svg,
+body.editing .drag-handle svg {
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--ultra-text-main) !important;
+  filter: brightness(var(--ultra-icon-brightness, 1)) !important;
+}
+
+/* Adjustments for Course Index sidebar items */
+body.editing .course-index .drag-handle,
+body.editing .course-index-item .drag-handle,
+body.editing .course-index [data-action="move"],
+body.editing .course-index-item [data-action="move"] {
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 4px !important;
+  border-radius: 6px !important;
+}
+
+body.editing .course-index .drag-handle img,
+body.editing .course-index-item .drag-handle img,
+body.editing .course-index [data-action="move"] img,
+body.editing .course-index-item [data-action="move"] img {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/* General styling for cogs/dropdown menus on sections and activities (outside custom headers) */
+body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle,
+body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle,
+body.editing .activity-actions .dropdown-toggle,
+body.editing .activity-actions .action-menu a.dropdown-toggle,
+body.editing .section-actions .dropdown-toggle,
+body.editing .section-actions .action-menu a.dropdown-toggle,
+body.editing .activity-item .dropdown-toggle,
+body.editing .activity-item .action-menu a.dropdown-toggle,
+body.editing .section-item .dropdown-toggle,
+body.editing .section-item .action-menu a.dropdown-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background-color: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--ultra-text-main) !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s, border-color 0.2s !important;
+  margin: 0 4px !important;
+  padding: 0 !important;
+}
+
+body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle:hover,
+body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle:hover,
+body.editing .activity-actions .dropdown-toggle:hover,
+body.editing .activity-actions .action-menu a.dropdown-toggle:hover,
+body.editing .section-actions .dropdown-toggle:hover,
+body.editing .section-actions .action-menu a.dropdown-toggle:hover,
+body.editing .activity-item .dropdown-toggle:hover,
+body.editing .activity-item .action-menu a.dropdown-toggle:hover,
+body.editing .section-item .dropdown-toggle:hover,
+body.editing .section-item .action-menu a.dropdown-toggle:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  border-color: var(--ultra-border) !important;
+}
+
+/* Custom premium style for "Add an activity or resource" button */
+body.editing .section-modchooser,
+body.editing .activity-add {
+  margin: 16px auto !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+body.editing .section-modchooser-link,
+body.editing button.section-modchooser-link,
+body.editing .activity-add-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background-color: var(--ultra-surface) !important;
+  border: 1px dashed var(--ultra-border-heavy, #143361) !important;
+  border-radius: 9999px !important; /* Premium capsule shape */
+  padding: 8px 20px !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ultra-text-main) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  text-decoration: none !important;
+}
+
+body.editing .section-modchooser-link:hover,
+body.editing button.section-modchooser-link:hover,
+body.editing .activity-add-btn:hover {
+  background-color: #143361 !important; /* Efrei Deep Blue on hover */
+  border-color: #143361 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(20, 51, 97, 0.2) !important;
+  text-decoration: none !important;
+}
+
+body.editing .section-modchooser-link .plusicon,
+body.editing .section-modchooser-link i {
+  font-size: 14px !important;
+  margin: 0 !important;
 }
 
 /* Hide Footer toggle class if enabled in settings */
@@ -133,4 +446,550 @@ body.path-my .block .block-controls {
 .scroll-top,
 #scroll-top {
   display: none !important;
+}
+
+/* --- Premium Modals & Dialogues (Moodle/Bootstrap/YUI) --- */
+.modal,
+.modal-dialog,
+.modal-content,
+.moodle-dialogue,
+.moodle-dialogue-wrap,
+.moodle-dialogue-content {
+  outline: none !important;
+  box-shadow: var(--ultra-card-shadow-hover) !important;
+}
+
+.modal:focus,
+.modal-dialog:focus,
+.modal-content:focus,
+.moodle-dialogue:focus,
+.moodle-dialogue-wrap:focus,
+.moodle-dialogue-content:focus {
+  outline: none !important;
+  box-shadow: var(--ultra-card-shadow-hover) !important;
+}
+
+.modal-content,
+.moodle-dialogue-wrap,
+.moodle-dialogue-content {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 24px !important;
+  color: var(--ultra-text-main) !important;
+  overflow: hidden !important;
+}
+
+:root.ultramoodle-dark .modal-content,
+:root.ultramoodle-dark .moodle-dialogue-wrap,
+:root.ultramoodle-dark .moodle-dialogue-content {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+}
+
+.modal-header,
+.moodle-dialogue-hd {
+  background-color: var(--ultra-surface) !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  padding: 16px 24px !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.modal-title,
+.moodle-dialogue-hd h3 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.modal-body,
+.moodle-dialogue-bd {
+  padding: 24px !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  color: var(--ultra-text-main) !important;
+  line-height: 1.5 !important;
+}
+
+.modal-footer,
+.moodle-dialogue-ft {
+  background-color: var(--ultra-surface-hover) !important;
+  border-top: 1px solid var(--ultra-border) !important;
+  padding: 16px 24px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+}
+
+/* Close buttons styling */
+.modal-header .close,
+.moodle-dialogue-hd .closebutton,
+.moodle-dialogue-hd .close {
+  background-color: var(--ultra-surface-hover) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 12px !important;
+  color: var(--ultra-text-main) !important;
+  width: 36px !important;
+  height: 36px !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  transition: background-color 0.2s, border-color 0.2s !important;
+}
+
+.modal-header .close:hover,
+.moodle-dialogue-hd .closebutton:hover {
+  background-color: var(--ultra-border) !important;
+  border-color: var(--ultra-text-sub) !important;
+}
+
+/* --- Premium Modal Footer Buttons --- */
+.modal-footer .btn,
+.moodle-dialogue-ft .btn,
+.modal-footer input[type="button"],
+.moodle-dialogue-ft input[type="button"],
+.modal-footer input[type="submit"],
+.moodle-dialogue-ft input[type="submit"] {
+  border-radius: 9999px !important; /* Full pill shape */
+  padding: 8px 24px !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+/* Secondary Button (Cancel / Secondary) */
+.modal-footer .btn-secondary,
+.moodle-dialogue-ft .btn-secondary,
+.modal-footer [data-action="cancel"],
+.moodle-dialogue-ft [data-action="cancel"],
+.modal-footer input[type="button"] {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.modal-footer .btn-secondary:hover,
+.moodle-dialogue-ft .btn-secondary:hover,
+.modal-footer [data-action="cancel"]:hover,
+.moodle-dialogue-ft [data-action="cancel"]:hover,
+.modal-footer input[type="button"]:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  border-color: var(--ultra-text-sub) !important;
+}
+
+/* Primary Button (Confirm / Primary) */
+.modal-footer .btn-primary,
+.moodle-dialogue-ft .btn-primary,
+.modal-footer [data-action="accept"],
+.moodle-dialogue-ft [data-action="accept"],
+.modal-footer input[type="submit"] {
+  background-color: #143361 !important; /* Efrei Deep Blue */
+  border: 1px solid #143361 !important;
+  color: #ffffff !important;
+}
+
+.modal-footer .btn-primary:hover,
+.moodle-dialogue-ft .btn-primary:hover,
+.modal-footer [data-action="accept"]:hover,
+.moodle-dialogue-ft [data-action="accept"]:hover,
+.modal-footer input[type="submit"]:hover {
+  background-color: #1a427c !important; /* Slightly lighter Efrei Blue on hover */
+  border-color: #1a427c !important;
+  box-shadow: 0 4px 12px rgba(20, 51, 97, 0.25) !important;
+}
+
+/* Danger Button (e.g. Delete/Remove Block) */
+.modal-footer .btn-danger,
+.moodle-dialogue-ft .btn-danger,
+.modal-footer .btn-outline-danger {
+  background-color: #ef4444 !important; /* Premium red */
+  border: 1px solid #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.modal-footer .btn-danger:hover,
+.moodle-dialogue-ft .btn-danger:hover,
+.modal-footer .btn-outline-danger:hover {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Standard Moodle exception/notification modal styling overrides */
+.moodle-exception-title {
+  color: #ef4444 !important; /* Red color for exceptions/errors title */
+}
+
+/* --- Premium Dropdown Menus (Action Menu / Settings Menu) --- */
+.dropdown-menu,
+.action-menu .dropdown-menu,
+.block-controls .dropdown-menu,
+.moodle-actionmenu[data-owner] .menu {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 16px !important; /* Premium rounded corners */
+  padding: 8px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  min-width: 220px !important;
+  margin-top: 8px !important;
+}
+
+:root.ultramoodle-dark .dropdown-menu,
+:root.ultramoodle-dark .action-menu .dropdown-menu,
+:root.ultramoodle-dark .block-controls .dropdown-menu {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Style dropdown item links */
+.dropdown-menu a,
+.dropdown-menu .dropdown-item,
+.moodle-actionmenu[data-owner] .menu a,
+.moodle-actionmenu[data-owner] .menu .menu-action {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  color: var(--ultra-text-main) !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important; /* Soft corners for list item hover highlight */
+  transition: background-color 0.2s, color 0.2s !important;
+  text-decoration: none !important;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu a:active,
+.dropdown-menu .dropdown-item:active,
+.moodle-actionmenu[data-owner] .menu a:hover,
+.moodle-actionmenu[data-owner] .menu .menu-action:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  color: var(--ultra-text-main) !important;
+}
+
+/* Dropdown menu icons alignment and reset with high specificity to override block controls white-icon filters */
+body .dropdown-menu a img,
+body .dropdown-menu .dropdown-item img,
+body .dropdown-menu a i,
+body .dropdown-menu .dropdown-item i,
+body .dropdown-menu a svg,
+body .dropdown-menu .dropdown-item svg,
+body.editing .block-controls .dropdown-menu img,
+body.editing .block-controls .dropdown-menu i,
+body.editing .block-controls .dropdown-menu svg,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i,
+body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg,
+.moodle-actionmenu[data-owner] .menu a i,
+.moodle-actionmenu[data-owner] .menu a img {
+  width: 14px !important;
+  height: 14px !important;
+  color: var(--ultra-text-sub) !important;
+  filter: none !important; /* Force reset parent white-icon override in light mode */
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Dark mode specific override to invert dropdown icons to light colors */
+:root.ultramoodle-dark .dropdown-menu a img,
+:root.ultramoodle-dark .dropdown-menu .dropdown-item img,
+:root.ultramoodle-dark .dropdown-menu a i,
+:root.ultramoodle-dark .dropdown-menu .dropdown-item i,
+:root.ultramoodle-dark .dropdown-menu a svg,
+:root.ultramoodle-dark .dropdown-menu .dropdown-item svg,
+:root.ultramoodle-dark body.editing .block-controls .dropdown-menu img,
+:root.ultramoodle-dark body.editing .block-controls .dropdown-menu i,
+:root.ultramoodle-dark body.editing .block-controls .dropdown-menu svg,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i,
+:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg,
+:root.ultramoodle-dark .moodle-actionmenu[data-owner] .menu a i,
+:root.ultramoodle-dark .moodle-actionmenu[data-owner] .menu a img {
+  filter: brightness(0) invert(1) !important; /* Force white icons in dark mode */
+  color: #ffffff !important;
+}
+
+/* --- Premium Forms, Inputs & Selects inside Modals/Dialogues --- */
+.modal-body select,
+.modal-body input[type="text"],
+.modal-body input[type="password"],
+.modal-body input[type="email"],
+.modal-body input[type="number"],
+.modal-body textarea,
+.moodle-dialogue-bd select,
+.moodle-dialogue-bd input[type="text"],
+.moodle-dialogue-bd input[type="password"],
+.moodle-dialogue-bd input[type="email"],
+.moodle-dialogue-bd input[type="number"],
+.moodle-dialogue-bd textarea,
+.form-autocomplete-selection select,
+.form-autocomplete-suggestions {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 10px !important; /* Premium rounded input box */
+  padding: 8px 12px !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 14px !important;
+  color: var(--ultra-text-main) !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  height: auto !important; /* Reset default height rules */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  width: 100% !important; /* Ensure uniform size */
+  max-width: 450px !important; /* Cap width to align elegantly in grid columns */
+  box-sizing: border-box !important;
+}
+
+/* Hover and Focus states for inputs */
+.modal-body select:hover,
+.modal-body input:hover,
+.modal-body textarea:hover,
+.moodle-dialogue-bd select:hover,
+.moodle-dialogue-bd input:hover,
+.moodle-dialogue-bd textarea:hover {
+  border-color: var(--ultra-text-sub) !important;
+}
+
+.modal-body select:focus,
+.modal-body input:focus,
+.modal-body textarea:focus,
+.moodle-dialogue-bd select:focus,
+.moodle-dialogue-bd input:focus,
+.moodle-dialogue-bd textarea:focus {
+  border-color: #143361 !important; /* Efrei Deep Blue border */
+  box-shadow: 0 0 0 3px rgba(20, 51, 97, 0.15) !important; /* Soft premium focus glow */
+}
+
+/* Form section headers (legend/collapsible title) styling */
+.modal-body legend,
+.modal-body .legend,
+.modal-body h3,
+.modal-body h4,
+.moodle-dialogue-bd legend,
+.moodle-dialogue-bd .legend,
+.moodle-dialogue-bd h3,
+.moodle-dialogue-bd h4 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  color: var(--ultra-text-main) !important;
+  border-bottom: none !important;
+  padding: 8px 0 !important;
+  margin-bottom: 12px !important;
+}
+
+/* Style labels inside forms (larger, bold titles) */
+.modal-body label,
+.moodle-dialogue-bd label,
+.modal-body .col-form-label,
+.moodle-dialogue-bd .col-form-label,
+.modal-body .form-control-label,
+.moodle-dialogue-bd .form-control-label {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important; /* Semi-bold look */
+  font-size: 15px !important; /* Increased size to look like clear field titles */
+  color: var(--ultra-text-main) !important;
+  display: inline-block !important;
+  margin-bottom: 4px !important;
+}
+
+/* Style help icons inside modal forms to hide native images and show styled "?" text */
+.modal-body .helpicon,
+.moodle-dialogue-bd .helpicon,
+.modal-body a[data-trigger="focus"]:has(.fa-question-circle),
+.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  background-color: rgba(20, 51, 97, 0.08) !important;
+  border: 1px solid rgba(20, 51, 97, 0.15) !important;
+  color: #143361 !important;
+  border-radius: 50% !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+  margin-left: 6px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  vertical-align: middle !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Hide native child elements (images or fontawesome icons) inside custom question button */
+.modal-body .helpicon *,
+.moodle-dialogue-bd .helpicon *,
+.modal-body a[data-trigger="focus"]:has(.fa-question-circle) *,
+.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) * {
+  display: none !important;
+}
+
+/* Insert clean CSS question mark text */
+.modal-body .helpicon::before,
+.moodle-dialogue-bd .helpicon::before,
+.modal-body a[data-trigger="focus"]:has(.fa-question-circle)::before,
+.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle)::before {
+  content: "?" !important;
+  display: inline-flex !important;
+}
+
+.modal-body .helpicon:hover,
+.moodle-dialogue-bd .helpicon:hover,
+.modal-body a[data-trigger="focus"]:has(.fa-question-circle):hover,
+.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle):hover {
+  background-color: #143361 !important;
+  color: #ffffff !important;
+  border-color: #143361 !important;
+}
+
+/* Dark mode overrides for form inputs */
+:root.ultramoodle-dark .modal-body select,
+:root.ultramoodle-dark .modal-body input[type="text"],
+:root.ultramoodle-dark .modal-body input[type="password"],
+:root.ultramoodle-dark .modal-body input[type="email"],
+:root.ultramoodle-dark .modal-body input[type="number"],
+:root.ultramoodle-dark .modal-body textarea,
+:root.ultramoodle-dark .moodle-dialogue-bd select,
+:root.ultramoodle-dark .moodle-dialogue-bd input[type="text"],
+:root.ultramoodle-dark .moodle-dialogue-bd input[type="password"],
+:root.ultramoodle-dark .moodle-dialogue-bd input[type="email"],
+:root.ultramoodle-dark .moodle-dialogue-bd input[type="number"],
+:root.ultramoodle-dark .moodle-dialogue-bd textarea {
+  background-color: var(--ultra-surface-hover) !important;
+  border-color: var(--ultra-border) !important;
+}
+
+:root.ultramoodle-dark .modal-body .helpicon,
+:root.ultramoodle-dark .moodle-dialogue-bd .helpicon,
+:root.ultramoodle-dark .modal-body a[data-trigger="focus"],
+:root.ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"] {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+:root.ultramoodle-dark .modal-body .helpicon:hover,
+:root.ultramoodle-dark .moodle-dialogue-bd .helpicon:hover,
+:root.ultramoodle-dark .modal-body a[data-trigger="focus"]:hover,
+:root.ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"]:hover {
+  background-color: #ffffff !important;
+  color: #143361 !important;
+  border-color: #ffffff !important;
+}
+
+/* --- Custom Premium File Resource Icons --- */
+img[src*="/f/pdf"] {
+  content: var(--ultra-pdf-icon) !important;
+}
+
+img[src*="/f/document"],
+img[src*="/f/docx"],
+img[src*="/f/doc"] {
+  content: var(--ultra-word-icon) !important;
+}
+
+img[src*="/f/presentation"],
+img[src*="/f/pptx"],
+img[src*="/f/ppt"] {
+  content: var(--ultra-powerpoint-icon) !important;
+}
+
+img[src*="/f/spreadsheet"],
+img[src*="/f/xlsx"],
+img[src*="/f/xls"] {
+  content: var(--ultra-excel-icon) !important;
+}
+
+/* Ensure these icons render cleanly with original aspect ratios and fit nicely */
+img[src*="/f/pdf"],
+img[src*="/f/document"],
+img[src*="/f/docx"],
+img[src*="/f/doc"],
+img[src*="/f/presentation"],
+img[src*="/f/pptx"],
+img[src*="/f/ppt"],
+img[src*="/f/spreadsheet"],
+img[src*="/f/xlsx"],
+img[src*="/f/xls"],
+.ultramoodle-custom-icon {
+  object-fit: contain !important;
+  filter: none !important; /* Reset Moodle native image filters (e.g. invert) */
+}
+
+/* Premium background/border styling for custom icon containers on course pages */
+body#page-course-view #region-main .activityiconcontainer.resource.ultramoodle-custom-icon-container,
+body#page-course-view #region-main .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
+body #page-content .activityiconcontainer.resource.ultramoodle-custom-icon-container,
+body #page-content .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
+body .activityiconcontainer.resource.ultramoodle-custom-icon-container,
+body .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
+.activityiconcontainer.resource.ultramoodle-custom-icon-container,
+.activityiconcontainer.quiz.ultramoodle-custom-icon-container,
+.activityiconcontainer.ultramoodle-custom-icon-container,
+.activityiconcontainer:has(.ultramoodle-custom-icon) {
+  background: #143361 !important;
+  background-image: none !important; /* Wipe out any native background gradients */
+  border: 1px solid #143361 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+  padding: 0 !important;
+}
+
+/* Force premium custom icons to have a consistent uniform size, overriding any native sizing constraints */
+body#page-course-view #region-main .activityiconcontainer .ultramoodle-custom-icon,
+body #page-content .activityiconcontainer .ultramoodle-custom-icon,
+body .activityiconcontainer .ultramoodle-custom-icon,
+.activityiconcontainer.ultramoodle-custom-icon-container .ultramoodle-custom-icon,
+.activityiconcontainer:has(.ultramoodle-custom-icon) .ultramoodle-custom-icon {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  object-fit: contain !important;
+  filter: none !important; /* Reset Moodle native image filters (e.g. invert) */
+}
+
+/* Specific compensation for the QCM/Quiz icon due to large built-in white/transparent padding inside qcmIcone.png */
+body#page-course-view #region-main .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
+body #page-content .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
+body .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
+.activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  transform: scale(1.2) !important; /* Scales up the graphic contents to match other document icons */
 }

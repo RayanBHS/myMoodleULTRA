@@ -156,3 +156,77 @@
   background-color: rgba(248, 113, 113, 0.15);
   color: #f87171;
 }
+
+/* Style the load more events button container in the timeline block to reduce massive margins */
+.block_timeline [data-region="more-events-button-container"],
+[data-region="timeline"] [data-region="more-events-button-container"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+/* Style the load more events button in the timeline block */
+.block_timeline [data-action="more-events"],
+[data-region="timeline"] [data-action="more-events"],
+.block_timeline button[data-action="more-events"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  border-radius: 50% !important;
+  background-color: var(--ultra-surface) !important;
+  border: 2px solid var(--ultra-text-main) !important;
+  color: transparent !important; /* Hide original text */
+  box-shadow: var(--ultra-card-shadow) !important;
+  margin: 12px auto !important; /* Compact margins */
+  cursor: pointer !important;
+  position: relative !important;
+  padding: 0 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  outline: none !important;
+  overflow: hidden !important;
+}
+
+.block_timeline [data-action="more-events"]::after,
+[data-region="timeline"] [data-action="more-events"]::after {
+  content: "+" !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 32px !important; /* Larger plus sign */
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  color: var(--ultra-text-main) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding-bottom: 4px !important; /* Visual alignment nudge */
+  box-sizing: border-box !important;
+}
+
+.block_timeline [data-action="more-events"]:hover,
+[data-region="timeline"] [data-action="more-events"]:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  transform: scale(1.08) !important;
+  box-shadow: var(--ultra-card-shadow-hover) !important;
+}
+
+.block_timeline [data-action="more-events"]:active,
+[data-region="timeline"] [data-action="more-events"]:active {
+  transform: scale(0.95) !important;
+}
+
+/* Hide Moodle's native loading/spinner overlays or text inside this button if any */
+.block_timeline [data-action="more-events"] .loading-icon,
+.block_timeline [data-action="more-events"] .spinner {
+  display: none !important;
+}

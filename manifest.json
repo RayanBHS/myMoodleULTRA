@@ -24,7 +24,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "img/logoMyMoodleUltra.png"
+        "img/*"
       ],
       "matches": [
         "*://moodle.myefrei.fr/*"
