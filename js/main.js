@@ -57,6 +57,8 @@ const init = () => {
     if (window.customizeResourceIcons) {
       window.customizeResourceIcons();
     }
+  } else if (window.isCalendarPage && window.isCalendarPage()) {
+    window.initMoodleCalendar();
   }
 };
 
@@ -92,7 +94,7 @@ const observer = new MutationObserver((mutations) => {
 
     // Ignore mutations caused by our own components or class changes (e.g. search updates, hiding/showing cards)
     const isOwnMutation = mutations.every(m => {
-      if (m.target.closest && m.target.closest('#ultramoodle-hero-wrapper, #ultramoodle-courses-header, #ultramoodle-course-page-header')) {
+      if (m.target.closest && m.target.closest('#ultramoodle-hero-wrapper, #ultramoodle-courses-header, #ultramoodle-course-page-header, #mye-calendars-container')) {
         return true;
       }
       if (m.type === 'attributes' && m.attributeName === 'class') {
@@ -123,6 +125,10 @@ const observer = new MutationObserver((mutations) => {
       window.customizeCoursePageHeader();
       if (window.customizeResourceIcons) {
         window.customizeResourceIcons();
+      }
+    } else if (window.isCalendarPage && window.isCalendarPage()) {
+      if (!document.getElementById('mye-calendars-container')) {
+        window.initMoodleCalendar();
       }
     }
     cleanNavbarLinks();

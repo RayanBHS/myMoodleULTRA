@@ -41,6 +41,7 @@
         "js/navbar.js",
         "js/hero.js",
         "js/courses.js",
+        "js/calendar.js",
         "js/timeline.js",
         "js/main.js"
       ],
@@ -50,6 +51,7 @@
         "css/navbar.css",
         "css/hero.css",
         "css/courses.css",
+        "css/calendar.css",
         "css/timeline.css"
       ],
       "run_at": "document_start"
