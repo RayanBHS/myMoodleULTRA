@@ -1579,6 +1579,12 @@
     if (window._ultramoodleInitializingCalendar || document.getElementById('mye-calendars-container')) {
       return;
     }
+
+    const mainArea = document.querySelector('#region-main') || document.querySelector('.main-inner');
+    if (!mainArea) {
+      return;
+    }
+
     window._ultramoodleInitializingCalendar = true;
 
     console.log('[myMoodle ULTRA] Initializing Apple-Style Moodle Calendar...');
