@@ -22,10 +22,11 @@
       'quiz': true,
       'personnel': true,
       'site': true,
+      'deadline': true,
       'evenement': true
     },
-    targetOpenEventTime: null,
-    targetOpenEventTitle: null
+    targetOpenEventId: null,
+    currentRequestId: 0
   };
 
   const defaultSettings = {
@@ -35,6 +36,7 @@
       'quiz': '#af52de',
       'personnel': '#34c759',
       'site': '#ff3b30',
+      'deadline': '#ff2d55',
       'evenement': '#8e8e93'
     },
     displayStart: 8.0,
@@ -166,14 +168,38 @@
     const futureEnd = new Date(now);
     futureEnd.setDate(futureEnd.getDate() + 90);
 
-    fetchMoodleCalendarEvents(now, futureEnd)
-      .then(events => {
-        let futureEvents = events.map(mapMoodleEvent).filter(ev => ev.start !== null);
+    Promise.all([
+      fetchMoodleCalendarEvents(now, futureEnd),
+      fetchMoodleActionEvents(now, futureEnd)
+    ])
+      .then(([calEvents, actionEvents]) => {
+        console.log('[myMoodle ULTRA] fetchFutureEvents raw calEvents:', calEvents.length, 'actionEvents:', actionEvents.length);
+        const mappedCal = calEvents.map(mapMoodleEvent).filter(ev => ev.start !== null);
+        const mappedAction = actionEvents.map(mapMoodleEvent).filter(ev => ev.start !== null && ev.start >= now && ev.start <= futureEnd);
+        console.log('[myMoodle ULTRA] fetchFutureEvents mapped calEvents:', mappedCal.length, 'actionEvents:', mappedAction.length);
+        
+        // Merge & deduplicate by raw event ID
+        const merged = [...mappedAction, ...mappedCal];
+        const seenIds = new Set();
+        const deduped = [];
+        
+        merged.forEach(ev => {
+          if (ev.start === null) return;
+          const id = ev.raw && ev.raw.id;
+          if (id) {
+            if (seenIds.has(id)) return;
+            seenIds.add(id);
+          }
+          deduped.push(ev);
+        });
+
+        let futureEvents = deduped;
         futureEvents.sort((a, b) => a.start - b.start);
 
         let nextCours = null;
         let nextDevoir = null;
         let nextQuiz = null;
+        let nextDeadline = null;
         let nextAutre = null;
         const nowTime = now.getTime();
 
@@ -184,9 +210,10 @@
           if (!nextCours && typeKey === 'cours') nextCours = ev;
           if (!nextDevoir && typeKey === 'devoir') nextDevoir = ev;
           if (!nextQuiz && typeKey === 'quiz') nextQuiz = ev;
+          if (!nextDeadline && typeKey === 'deadline') nextDeadline = ev;
           if (!nextAutre && (typeKey === 'evenement' || typeKey === 'site' || typeKey === 'personnel')) nextAutre = ev;
 
-          if (nextCours && nextDevoir && nextQuiz && nextAutre) break;
+          if (nextCours && nextDevoir && nextQuiz && nextDeadline && nextAutre) break;
         }
 
         const msInHour = 1000 * 60 * 60;
@@ -220,8 +247,7 @@
                 updatePeriodLabel();
                 loadPlanningForPeriod(state.currentDate);
                 
-                state.targetOpenEventTime = dateStr.getTime();
-                state.targetOpenEventTitle = targetEv.title;
+                state.targetOpenEventId = targetEv.raw && targetEv.raw.id;
               };
             }
             const diffHours = Math.ceil(diffMs / msInHour);
@@ -237,6 +263,7 @@
         setLabel('mye-cd-cours', nextCours);
         setLabel('mye-cd-devoir', nextDevoir);
         setLabel('mye-cd-quiz', nextQuiz);
+        setLabel('mye-cd-deadline', nextDeadline);
         setLabel('mye-cd-evenement', nextAutre);
       })
       .catch(err => {
@@ -292,13 +319,19 @@
 
   // --- Moodle AJAX Core calendar events fetcher ---
   function fetchMoodleCalendarEvents(startTime, endTime) {
-    const sesskey = window.isCoursePage ? null : getMoodleSesskey(); // Try fetching sesskey from DOM
-    if (!sesskey) return Promise.resolve([]);
+    console.log('[myMoodle ULTRA] fetchMoodleCalendarEvents called for range:', startTime, endTime);
+    const getSesskeyFunc = window.getMoodleSesskey || (typeof getMoodleSesskey !== 'undefined' ? getMoodleSesskey : null);
+    const sesskey = (window.isCoursePage && typeof window.isCoursePage === 'function' && window.isCoursePage()) ? null : (getSesskeyFunc ? getSesskeyFunc() : null);
+    if (!sesskey) {
+      console.log('[myMoodle ULTRA] fetchMoodleCalendarEvents: sesskey is null!');
+      return Promise.resolve([]);
+    }
 
     // Call fetchMoodleCourses from courses.js (or fallback if empty)
-    const coursesPromise = window.fetchMoodleCourses ? window.fetchMoodleCourses() : Promise.resolve(null);
+    const coursesPromise = window.fetchMoodleCourses ? window.fetchMoodleCourses() : (typeof fetchMoodleCourses !== 'undefined' ? fetchMoodleCourses() : Promise.resolve(null));
 
     return coursesPromise.then(courses => {
+      console.log('[myMoodle ULTRA] fetchMoodleCalendarEvents: coursesPromise resolved.');
       const courseIds = courses ? Object.keys(courses).map(Number) : [];
 
       const body = [
@@ -320,7 +353,7 @@
         }
       ];
 
-      return fetch(`/lib/ajax/service.php?sesskey=${sesskey}`, {
+      return fetch(`/lib/ajax/service.php?sesskey=${sesskey}&info=core_calendar_get_calendar_events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -339,19 +372,75 @@
     });
   }
 
+  // --- Moodle AJAX Action events fetcher (deadlines) ---
+  function fetchMoodleActionEvents(startTime, endTime, afterEventId = 0, pageCount = 0) {
+    console.log('[myMoodle ULTRA] fetchMoodleActionEvents called for range:', startTime, endTime, 'afterEventId:', afterEventId, 'pageCount:', pageCount);
+    const getSesskeyFunc = window.getMoodleSesskey || (typeof getMoodleSesskey !== 'undefined' ? getMoodleSesskey : null);
+    const sesskey = (window.isCoursePage && typeof window.isCoursePage === 'function' && window.isCoursePage()) ? null : (getSesskeyFunc ? getSesskeyFunc() : null);
+    if (!sesskey) {
+      console.log('[myMoodle ULTRA] fetchMoodleActionEvents: sesskey is null!');
+      return Promise.resolve([]);
+    }
+
+    const body = [
+      {
+        index: 0,
+        methodname: 'core_calendar_get_action_events_by_timesort',
+        args: {
+          timesortfrom: Math.floor(startTime.getTime() / 1000),
+          timesortto: endTime ? Math.floor(endTime.getTime() / 1000) : Math.floor(startTime.getTime() / 1000) + (180 * 24 * 60 * 60), // Viewed period range or 6 months fallback
+          limitnum: 50,
+          aftereventid: afterEventId
+        }
+      }
+    ];
+
+    return fetch(`/lib/ajax/service.php?sesskey=${sesskey}&info=core_calendar_get_action_events_by_timesort`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('[myMoodle ULTRA] fetchMoodleActionEvents: API response received for pageCount:', pageCount);
+      if (data && data[0] && data[0].error === false && data[0].data && data[0].data.events) {
+        const events = data[0].data.events;
+        console.log('[myMoodle ULTRA] fetchMoodleActionEvents: Retrieved events count:', events.length);
+        if (events.length === 50 && pageCount < 5) {
+          const lastEventId = events[events.length - 1].id;
+          console.log('[myMoodle ULTRA] fetchMoodleActionEvents: Paginating. Next event id:', lastEventId);
+          return fetchMoodleActionEvents(startTime, endTime, lastEventId, pageCount + 1).then(nextEvents => {
+            return events.concat(nextEvents);
+          });
+        }
+        return events;
+      }
+      console.log('[myMoodle ULTRA] fetchMoodleActionEvents: No events found or error in data:', data);
+      return [];
+    })
+    .catch(err => {
+      console.error('[myMoodle ULTRA] fetchMoodleActionEvents failed:', err);
+      return [];
+    });
+  }
+
   // Map Moodle event to local structures
   function mapMoodleEvent(raw) {
     const title = raw.name || 'Événement';
-    const start = raw.timestart ? new Date(raw.timestart * 1000) : null;
-    const end = (raw.timestart && raw.timeduration)
-      ? new Date((raw.timestart + raw.timeduration) * 1000)
-      : (raw.timestart ? new Date((raw.timestart + 3600) * 1000) : null); // Default duration 1 hour
+    // Shift Moodle events by -1 hour to fix timezone offset discrepancy
+    const timeShift = -3600; // -1 hour in seconds
+    const eventTime = raw.timesort || raw.timestart;
+    const start = eventTime ? new Date((eventTime + timeShift) * 1000) : null;
+    const end = (eventTime && raw.timeduration)
+      ? new Date((eventTime + raw.timeduration + timeShift) * 1000)
+      : (eventTime ? new Date((eventTime + 3600 + timeShift) * 1000) : null); // Default duration 1 hour
       
     let type = 'Cours';
-    if (raw.eventtype === 'site') type = 'Site';
-    else if (raw.eventtype === 'user') type = 'Personnel';
-    else if (raw.modulename === 'assign') type = 'Devoir';
+    if (raw.modulename === 'assign') type = 'Devoir';
     else if (raw.modulename === 'quiz') type = 'Quiz';
+    else if (raw.isactionevent) type = 'Deadline';
+    else if (raw.eventtype === 'site') type = 'Site';
+    else if (raw.eventtype === 'user') type = 'Personnel';
     else if (raw.modulename) type = raw.modulename.charAt(0).toUpperCase() + raw.modulename.slice(1);
 
     const courseName = (raw.course && raw.course.fullname) ? raw.course.fullname : '';
@@ -360,7 +449,7 @@
       displayTitle = `${courseName} - ${title}`;
     }
 
-    const link = raw.url || '';
+    const link = raw.url || (raw.action && raw.action.url) || '';
     const description = raw.description || '';
 
     // Extract location or room if possible from description
@@ -389,6 +478,9 @@
 
   // Fetch events for period and trigger render
   function loadPlanningForPeriod(date) {
+    state.currentRequestId = (state.currentRequestId || 0) + 1;
+    const requestId = state.currentRequestId;
+
     const { start, end } = getPeriodRange(date, state.currentView);
     let fetchStart = start;
     let fetchEnd = end;
@@ -408,20 +500,47 @@
 
     showSpinner();
 
-    fetchMoodleCalendarEvents(fetchStart, fetchEnd)
-      .then(events => {
+    console.log('[myMoodle ULTRA] loadPlanningForPeriod: Starting Promise.all...');
+    Promise.all([
+      fetchMoodleCalendarEvents(fetchStart, fetchEnd),
+      fetchMoodleActionEvents(fetchStart, fetchEnd)
+    ])
+      .then(([calEvents, actionEvents]) => {
+        if (requestId !== state.currentRequestId) {
+          console.log('[myMoodle ULTRA] Ignoring stale loadPlanningForPeriod response.');
+          return;
+        }
         state.loading = false;
-        state.events = events.map(mapMoodleEvent).filter(ev => ev.start !== null);
+        console.log('[myMoodle ULTRA] loadPlanningForPeriod: Promise.all resolved! raw calEvents:', calEvents.length, 'actionEvents:', actionEvents.length);
+
+        const mappedCal = calEvents.map(mapMoodleEvent).filter(ev => ev.start !== null);
+        const mappedAction = actionEvents.map(mapMoodleEvent).filter(ev => ev.start !== null);
+        console.log('[myMoodle ULTRA] loadPlanningForPeriod mapped calEvents:', mappedCal.length, 'actionEvents:', mappedAction.length);
+        
+        // Merge & deduplicate by raw event ID
+        const merged = [...mappedAction, ...mappedCal];
+        const seenIds = new Set();
+        const deduped = [];
+        
+        merged.forEach(ev => {
+          if (ev.start === null) return;
+          const id = ev.raw && ev.raw.id;
+          if (id) {
+            if (seenIds.has(id)) return;
+            seenIds.add(id);
+          }
+          deduped.push(ev);
+        });
+
+        state.events = deduped;
         state.events.sort((a, b) => a.start - b.start);
         renderPlanning();
 
         // Check if there is an event to auto-open
-        if (state.targetOpenEventTime) {
-          const targetTime = state.targetOpenEventTime;
-          const targetTitle = state.targetOpenEventTitle;
-          state.targetOpenEventTime = null;
-          state.targetOpenEventTitle = null;
-          const index = state.events.findIndex(e => e.start.getTime() === targetTime && e.title === targetTitle);
+        if (state.targetOpenEventId) {
+          const targetId = state.targetOpenEventId;
+          state.targetOpenEventId = null;
+          const index = state.events.findIndex(e => e.raw && e.raw.id === targetId);
           if (index !== -1) {
             setTimeout(() => openEventModal(index), 100);
           }
@@ -433,15 +552,124 @@
       });
   }
 
+  function openSettingsModal() {
+    const colorsContainer = document.getElementById('mye-settings-colors');
+    let colorsHTML = '';
+    
+    Object.entries(userSettings.colors).forEach(([type, colorData]) => {
+      let simpleHex = typeof colorData === 'string' ? colorData : (colorData.simple || '#8e8e93');
+      userSettings.colors[type] = simpleHex;
+
+      let r = 142, g = 142, b = 147;
+      if (simpleHex.length === 7) {
+        r = parseInt(simpleHex.slice(1,3), 16);
+        g = parseInt(simpleHex.slice(3,5), 16);
+        b = parseInt(simpleHex.slice(5,7), 16);
+      }
+      const lightBg = `rgba(${r}, ${g}, ${b}, 0.15)`;
+      const iconBorder = simpleHex;
+      const iconBg = lightBg;
+      
+      let typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+      if (type === 'cours') typeLabel = 'Cours';
+      else if (type === 'devoir') typeLabel = 'Devoirs';
+      else if (type === 'quiz') typeLabel = 'Quiz';
+      else if (type === 'personnel') typeLabel = 'Personnel';
+      else if (type === 'deadline') typeLabel = 'Deadlines';
+      else if (type === 'site') typeLabel = 'Site';
+      else if (type === 'evenement') typeLabel = 'Autres';
+
+      colorsHTML += `
+        <div class="mye-color-card" data-type="${type}" style="position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 12px; background: var(--ultra-surface); border: 1px solid var(--ultra-border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: background 0.2s;">
+          <input type="color" class="mye-color-input" data-type="${type}" value="${simpleHex}" style="position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); opacity: 0; cursor: pointer; z-index: 1; border: none; padding: 0; margin: 0;">
+          <div class="mye-color-card-header" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; pointer-events: none;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="mye-color-card-icon" style="width: 20px; height: 20px; border-radius: 6px; border: 2px solid ${iconBorder}; background-color: ${iconBg};"></div>
+              <span class="mye-color-card-title" style="font-size: 14px; font-weight: 600; color: var(--ultra-text-main);">${typeLabel}</span>
+            </div>
+            <div class="mye-color-card-actions" style="display: flex; align-items: center; gap: 8px; pointer-events: none;">
+              <input type="text" class="mye-color-hex" value="${simpleHex.toUpperCase()}" style="pointer-events: auto; width: 65px; font-size: 13px; font-family: monospace; border: 1px solid var(--ultra-border); border-radius: 6px; padding: 4px; color: var(--ultra-text-main); text-align: center; background: var(--ultra-surface-hover);">
+              <div class="mye-color-preview-box" style="width: 24px; height: 24px; border-radius: 4px; background: ${simpleHex}; border: 1px solid rgba(0,0,0,0.1);"></div>
+              <button class="mye-reset-btn" data-type="${type}" title="Réinitialiser" style="pointer-events: auto; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--ultra-text-sub); padding: 0 4px;">↺</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    colorsContainer.innerHTML = colorsHTML;
+    
+    // Add hover effects dynamically
+    document.querySelectorAll('.mye-color-card').forEach(card => {
+      card.addEventListener('mouseenter', () => card.style.background = 'var(--ultra-surface-hover)');
+      card.addEventListener('mouseleave', () => card.style.background = 'var(--ultra-surface)');
+    });
+
+    function updateColorFromHex(card, type, hex) {
+      if (/^#[0-9A-F]{6}$/i.test(hex)) {
+        userSettings.colors[type] = hex;
+        
+        card.querySelector('.mye-color-input').value = hex;
+        card.querySelector('.mye-color-hex').value = hex.toUpperCase();
+        card.querySelector('.mye-color-preview-box').style.backgroundColor = hex;
+        
+        let r = parseInt(hex.slice(1,3), 16);
+        let g = parseInt(hex.slice(3,5), 16);
+        let b = parseInt(hex.slice(5,7), 16);
+        card.querySelector('.mye-color-card-icon').style.borderColor = hex;
+        card.querySelector('.mye-color-card-icon').style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.15)`;
+      }
+    }
+
+    // Update from native color picker
+    document.querySelectorAll('.mye-color-input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const hex = e.target.value.toUpperCase();
+        const type = e.target.getAttribute('data-type');
+        const card = e.target.closest('.mye-color-card');
+        updateColorFromHex(card, type, hex);
+      });
+    });
+
+    // Update from text input
+    document.querySelectorAll('.mye-color-hex').forEach(input => {
+      input.addEventListener('change', (e) => {
+        let hex = e.target.value.trim();
+        if (!hex.startsWith('#')) hex = '#' + hex;
+        if (/^#[0-9A-Fa-f]{3}$/.test(hex)) {
+          hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+        }
+        const card = e.target.closest('.mye-color-card');
+        const type = card.getAttribute('data-type');
+        updateColorFromHex(card, type, hex);
+      });
+    });
+    
+    // Reset individual color
+    document.querySelectorAll('.mye-reset-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const type = btn.getAttribute('data-type');
+        const defaultHex = defaultSettings.colors[type];
+        const card = btn.closest('.mye-color-card');
+        updateColorFromHex(card, type, defaultHex);
+      });
+    });
+    
+    const startInput = document.getElementById('mye-setting-start');
+    const endInput = document.getElementById('mye-setting-end');
+    startInput.value = userSettings.displayStart;
+    endInput.value = userSettings.displayEnd;
+    startInput.dispatchEvent(new Event('input'));
+    endInput.dispatchEvent(new Event('input'));
+    
+    document.getElementById('mye-settings-modal').style.display = 'flex';
+  }
+
   // --- DOM Structure Builders ---
   function buildPageStructure() {
     const mainArea = document.querySelector('#region-main') || document.querySelector('.main-inner');
     if (!mainArea) return;
 
     if (document.getElementById('mye-calendars-container')) return;
-
-    // Clear Moodle's native content in calendar area
-    mainArea.innerHTML = '';
 
     const container = document.createElement('div');
     container.id = 'mye-calendars-container';
@@ -453,7 +681,7 @@
             <!-- Workload Gauge -->
             <div class="mye-planning-stats">
               <div class="mye-planning-gauge-wrapper">
-                <svg width="180" height="180" viewBox="0 0 180 180" class="mye-planning-gauge">
+                <svg width="100%" height="100%" viewBox="0 0 180 180" class="mye-planning-gauge">
                   <circle cx="90" cy="90" r="80" class="mye-planning-gauge-bg"></circle>
                   <circle cx="90" cy="90" r="80" class="mye-planning-gauge-fill" id="mye-planning-arc"></circle>
                 </svg>
@@ -466,53 +694,26 @@
               <!-- Countdown List -->
               <div class="mye-countdown-list">
                 <div class="mye-countdown-item" id="mye-cd-cours-container">
-                  <span class="mye-cd-label">Prochain Cours</span>
+                  <span class="mye-cd-label">Cours</span>
                   <span class="mye-cd-value" id="mye-cd-cours">...</span>
                 </div>
                 <div class="mye-countdown-item" id="mye-cd-devoir-container">
-                  <span class="mye-cd-label">Prochain Devoir</span>
+                  <span class="mye-cd-label">Devoir</span>
                   <span class="mye-cd-value" id="mye-cd-devoir">...</span>
                 </div>
                 <div class="mye-countdown-item" id="mye-cd-quiz-container">
-                  <span class="mye-cd-label">Prochain Quiz</span>
+                  <span class="mye-cd-label">Quiz</span>
                   <span class="mye-cd-value" id="mye-cd-quiz">...</span>
+                </div>
+                <div class="mye-countdown-item" id="mye-cd-deadline-container">
+                  <span class="mye-cd-label">Deadline</span>
+                  <span class="mye-cd-value" id="mye-cd-deadline">...</span>
                 </div>
                 <div class="mye-countdown-item" id="mye-cd-evenement-container">
                   <span class="mye-cd-label">Autre Événement</span>
                   <span class="mye-cd-value" id="mye-cd-evenement">...</span>
                 </div>
               </div>
-            </div>
-
-            <hr style="border:none; border-top:1px solid var(--ultra-border); margin:16px 0;">
-
-            <!-- Filtres -->
-            <div class="mac-cal-sidebar-title">Filtres</div>
-            <div class="mac-cal-filter-list" style="display:flex; flex-direction:column; gap:8px;">
-              <label class="mac-cal-filter-item type-cours" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="cours" checked style="margin-right:8px;">
-                Cours
-              </label>
-              <label class="mac-cal-filter-item type-devoir" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="devoir" checked style="margin-right:8px;">
-                Devoirs
-              </label>
-              <label class="mac-cal-filter-item type-quiz" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="quiz" checked style="margin-right:8px;">
-                Quiz
-              </label>
-              <label class="mac-cal-filter-item type-personnel" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="personnel" checked style="margin-right:8px;">
-                Personnel
-              </label>
-              <label class="mac-cal-filter-item type-site" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="site" checked style="margin-right:8px;">
-                Site
-              </label>
-              <label class="mac-cal-filter-item type-evenement" style="display:flex; align-items:center; font-size:12.5px; font-weight:600; cursor:pointer;">
-                <input type="checkbox" class="mye-filter-cb" data-filter="evenement" checked style="margin-right:8px;">
-                Autres
-              </label>
             </div>
 
             <hr style="border:none; border-top:1px solid var(--ultra-border); margin:16px 0;">
@@ -586,8 +787,8 @@
             <div class="mye-dual-slider-container">
               <div class="mye-dual-slider-track"></div>
               <div id="mye-dual-slider-range" class="mye-dual-slider-range"></div>
-              <input type="range" id="mye-setting-start" class="mye-dual-slider-input" min="0" max="23" step="1" value="${userSettings.displayStart}" style="z-index: 4;">
-              <input type="range" id="mye-setting-end" class="mye-dual-slider-input" min="1" max="24" step="1" value="${userSettings.displayEnd}" style="z-index: 5;">
+              <input type="range" id="mye-setting-start" class="mye-dual-slider-input" min="0" max="23" step="1" value="\${userSettings.displayStart}" style="z-index: 4;">
+              <input type="range" id="mye-setting-end" class="mye-dual-slider-input" min="1" max="24" step="1" value="\${userSettings.displayEnd}" style="z-index: 5;">
             </div>
           </div>
           <div class="mye-modal-footer">
@@ -613,16 +814,9 @@
       </div>
     `;
 
-    mainArea.appendChild(container);
+    document.body.appendChild(container);
 
-    // Filter toggles event binding
-    document.querySelectorAll('.mye-filter-cb').forEach(cb => {
-      cb.addEventListener('change', (e) => {
-        const filterType = e.target.getAttribute('data-filter');
-        state.activeFilters[filterType] = e.target.checked;
-        renderPlanning();
-      });
-    });
+
 
     // View toggles events
     document.querySelectorAll('.mac-cal-view-toggles .mac-cal-toggle-btn').forEach(btn => {
@@ -869,6 +1063,7 @@
   function getEventFilterKey(type) {
     if (!type) return 'evenement';
     const t = type.toLowerCase();
+    if (t.includes('deadline') || t.includes('échéance')) return 'deadline';
     if (t.includes('cours') || t.includes('class')) return 'cours';
     if (t.includes('devoir') || t.includes('assign')) return 'devoir';
     if (t.includes('quiz') || t.includes('qcm')) return 'quiz';
@@ -1008,6 +1203,12 @@
     const panel = document.getElementById('mye-planning-right');
     if (!panel) return;
 
+    let previousScrollTop = null;
+    const oldScrollArea = panel.querySelector('.mac-cal-scroll-area');
+    if (oldScrollArea) {
+      previousScrollTop = oldScrollArea.scrollTop;
+    }
+
     const filtered = getFilteredEvents();
 
     const daysMap = {
@@ -1029,8 +1230,8 @@
       daysMap[d.getDay()].date = d;
     }
 
-    const minHour = Math.floor(userSettings.displayStart);
-    const maxHour = Math.ceil(userSettings.displayEnd) - 1;
+    const minHour = 0;
+    const maxHour = 23;
 
     let daysOrder = [1, 2, 3, 4, 5, 6, 0];
     if (state.currentView === 'day') {
@@ -1038,6 +1239,7 @@
       daysOrder = [todayNum];
       daysMap[todayNum].date = new Date(state.currentDate);
     }
+
 
     filtered.forEach(ev => {
       const dayNum = ev.start.getDay();
@@ -1078,8 +1280,9 @@
       containerHeight = 500;
     }
 
-    const duration = (maxHour - minHour) + 1;
-    const PIXELS_PER_HOUR = Math.max(50, (containerHeight - 50) / duration);
+    const visibleDuration = Math.max(4, (userSettings.displayEnd - userSettings.displayStart) + 0.5);
+    const PIXELS_PER_HOUR = Math.max(50, (containerHeight - 50) / visibleDuration);
+    const duration = 24;
     const totalGridHeight = duration * PIXELS_PER_HOUR;
 
     let timeColHTML = `<div class="mac-cal-time-col">`;
@@ -1152,12 +1355,27 @@
     
     const scrollArea = panel.querySelector('.mac-cal-scroll-area');
     if (scrollArea) {
-      const now = new Date();
-      const h = now.getHours();
-      // Scroll to current hour if within amplitude range, otherwise scroll to displayStart
-      const scrollHour = (h >= minHour && h <= maxHour) ? h - 1 : userSettings.displayStart;
-      const targetScroll = (scrollHour - minHour) * PIXELS_PER_HOUR;
-      scrollArea.scrollTop = targetScroll;
+      if (previousScrollTop !== null) {
+        scrollArea.scrollTop = previousScrollTop;
+      } else if (state.targetOpenEventId) {
+        // Scroll to the target event's hour (centered: targetHour - 2)
+        const targetEv = state.events.find(e => e.raw && e.raw.id === state.targetOpenEventId);
+        if (targetEv && targetEv.start) {
+          const targetHour = targetEv.start.getHours() + (targetEv.start.getMinutes() / 60);
+          const scrollHour = Math.max(0, targetHour - 2);
+          const targetScroll = scrollHour * PIXELS_PER_HOUR;
+          scrollArea.scrollTop = targetScroll;
+        } else {
+          const scrollHour = userSettings.displayStart - 0.25;
+          const targetScroll = Math.max(0, scrollHour * PIXELS_PER_HOUR);
+          scrollArea.scrollTop = targetScroll;
+        }
+      } else {
+        // Always scroll to displayStart minus 15 minutes to center the user's preferred amplitude
+        const scrollHour = userSettings.displayStart - 0.25;
+        const targetScroll = Math.max(0, scrollHour * PIXELS_PER_HOUR);
+        scrollArea.scrollTop = targetScroll;
+      }
     }
   }
 
@@ -1358,12 +1576,19 @@
 
   // --- Initialize and Run ---
   function initMoodleCalendar() {
+    if (window._ultramoodleInitializingCalendar || document.getElementById('mye-calendars-container')) {
+      return;
+    }
+    window._ultramoodleInitializingCalendar = true;
+
     console.log('[myMoodle ULTRA] Initializing Apple-Style Moodle Calendar...');
+    
     loadSettings(() => {
       buildPageStructure();
       applyColors();
       loadPlanningForPeriod(state.currentDate);
       fetchFutureEvents();
+      window._ultramoodleInitializingCalendar = false;
     });
   }
 

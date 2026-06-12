@@ -39,7 +39,7 @@ const injectCustomProfilePill = () => {
 
   // Hide native toggle
   const toggle = nativeUserMenu.querySelector('.dropdown-toggle') || nativeUserMenu.querySelector('a');
-  if (toggle) {
+  if (toggle && toggle.style.display !== 'none') {
     toggle.style.setProperty('display', 'none', 'important');
   }
   
@@ -52,8 +52,10 @@ const cleanNavbarLinks = () => {
     const text = link.textContent.trim().toLowerCase();
     if (text === 'accueil' || text === 'myefrei' || text === 'home') {
       const parent = link.closest('.nav-item');
-      if (parent) parent.style.setProperty('display', 'none', 'important');
-      else link.style.setProperty('display', 'none', 'important');
+      const target = parent || link;
+      if (target.style.display !== 'none') {
+        target.style.setProperty('display', 'none', 'important');
+      }
     }
   });
 };

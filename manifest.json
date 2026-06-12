@@ -37,12 +37,16 @@
         "*://moodle.myefrei.fr/*"
       ],
       "js": [
+        "js/vendor/jszip.min.js",
+        "js/vendor/docx-preview.js",
+        "js/vendor/pptx-canvas-renderer.umd.js",
         "js/theme.js",
         "js/navbar.js",
         "js/hero.js",
         "js/courses.js",
         "js/calendar.js",
         "js/timeline.js",
+        "js/viewer.js",
         "js/main.js"
       ],
       "css": [
@@ -52,7 +56,8 @@
         "css/hero.css",
         "css/courses.css",
         "css/calendar.css",
-        "css/timeline.css"
+        "css/timeline.css",
+        "css/viewer.css"
       ],
       "run_at": "document_start"
     }

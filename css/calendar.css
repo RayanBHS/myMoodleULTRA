@@ -4,34 +4,55 @@
 
 #mye-calendars-container {
   display: flex !important;
-  height: calc(100vh - 130px) !important;
-  min-height: 550px !important;
-  background-color: var(--ultra-surface) !important;
-  border: 1px solid var(--ultra-border) !important;
-  border-radius: 24px !important;
-  box-shadow: var(--ultra-card-shadow) !important;
+  position: fixed !important;
+  top: 64px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 64px) !important;
+  z-index: 1020 !important;
+  background-color: var(--ultra-bg) !important; /* #F0F0F0 in light mode, dark navy in dark mode */
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 16px !important; /* padding around content to show background */
+  gap: 16px !important; /* space between sidebar and main grid */
   overflow: hidden !important;
   font-family: var(--ultra-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
   color: var(--ultra-text-main) !important;
   box-sizing: border-box !important;
-  margin: 12px 0 24px 0 !important;
-  position: relative !important;
 }
 
-/* ── Hide native Moodle calendar sections completely ── */
+/* ── Hide native Moodle calendar sections and page wrappers completely ── */
 .path-calendar-view #maincontent,
 .path-calendar-view .calendarwrapper,
 .path-calendar-view .view-calendar-button,
-.path-calendar-view [data-region="calendar-upcoming"] {
+.path-calendar-view [data-region="calendar-upcoming"],
+.path-calendar-view #page-header,
+.path-calendar-view footer,
+.path-calendar-view #page-footer,
+.path-calendar-view .block-region,
+.path-calendar-view #block-region-side-pre,
+.path-calendar-view #block-region-side-post,
+.path-calendar-view .drawer,
+.path-calendar-view #nav-drawer {
   display: none !important;
+}
+
+body.path-calendar-view {
+  overflow: hidden !important;
 }
 
 /* ── SIDEBAR GAUCHE ── */
 .mac-cal-sidebar {
   width: 260px !important;
   min-width: 260px !important;
-  background-color: var(--ultra-surface-hover) !important;
-  border-right: 1px solid var(--ultra-border) !important;
+  background-color: var(--ultra-surface) !important; /* White card */
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03) !important;
   display: flex !important;
   flex-direction: column !important;
   padding: 20px 0 !important;
@@ -153,7 +174,11 @@
   display: flex !important;
   flex-direction: column !important;
   min-width: 0 !important;
-  background-color: var(--ultra-surface) !important;
+  background-color: var(--ultra-surface) !important; /* White card */
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03) !important;
+  overflow: hidden !important;
 }
 
 .mac-cal-toolbar {
@@ -1107,3 +1132,50 @@
   background: var(--ultra-surface) !important;
   border-color: var(--ultra-border) !important;
 }
+
+/* ── DROPDOWN FILTRE SELECTEUR ── */
+.mye-filter-dropdown-menu {
+  display: none;
+  flex-direction: column;
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+  z-index: 1000 !important;
+  min-width: 170px !important;
+  gap: 6px !important;
+}
+
+.ultramoodle-dark .mye-filter-dropdown-menu {
+  background-color: var(--ultra-surface) !important;
+  border-color: var(--ultra-border) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+}
+
+.mye-filter-dropdown-menu .mac-cal-filter-item {
+  display: flex !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 6px 8px !important;
+  border-radius: 8px !important;
+  transition: background-color 0.15s ease !important;
+  user-select: none !important;
+}
+
+.mye-filter-dropdown-menu .mac-cal-filter-item:hover {
+  background-color: var(--ultra-surface-hover) !important;
+}
+
+.mye-filter-dropdown-menu input[type="checkbox"] {
+  margin-right: 10px !important;
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 4px !important;
+  border: 1px solid var(--ultra-border) !important;
+  accent-color: var(--ultra-accent) !important;
+  cursor: pointer !important;
+}
+

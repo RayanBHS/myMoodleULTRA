@@ -226,6 +226,15 @@ let _moodleCourseFetchPromise = null;
 
 const getMoodleSesskey = () => {
   if (window.M?.cfg?.sesskey) return window.M.cfg.sesskey;
+  
+  // Try extracting from script tags text content (critical when main DOM is cleared)
+  const scripts = document.getElementsByTagName('script');
+  for (let i = 0; i < scripts.length; i++) {
+    const content = scripts[i].textContent || '';
+    const m = content.match(/"sesskey"\s*:\s*"([^"]+)"/);
+    if (m) return m[1];
+  }
+  
   const link = document.querySelector('a[href*="sesskey="]');
   if (link) { const m = link.href.match(/sesskey=([^&]+)/); if (m) return m[1]; }
   const form = document.querySelector('input[name="sesskey"]');
@@ -2026,26 +2035,61 @@ const customizeResourceIcons = () => {
     const linkEl = activityItem.querySelector('a.aalink, a');
     if (!linkEl) return;
 
-    const detailsEl = activityItem.querySelector('.resourcelinkdetails, .activityinstancename, .sr-only, .accesshide');
-    const textContent = (activityItem.textContent || '').toLowerCase();
+    const img = container.querySelector('img.activityicon, img');
+    const originalSrc = (img ? img.getAttribute('src') || img.src || '' : '').toLowerCase();
+    const imgAlt = (img ? img.getAttribute('alt') || '' : '').toLowerCase();
+
+    const detailsEl = activityItem.querySelector('.resourcelinkdetails');
     const detailsText = (detailsEl ? detailsEl.textContent || '' : '').toLowerCase();
     const linkText = (linkEl ? linkEl.textContent || '' : '').toLowerCase();
     const href = (linkEl ? linkEl.href || '' : '').toLowerCase();
 
-    let isPdf = isResource && (detailsText.includes('pdf') || linkText.includes('.pdf') || href.includes('.pdf') || textContent.includes('document pdf') || textContent.includes('pdf document') || textContent.includes('pdf'));
-    let isWord = isResource && (detailsText.includes('word') || detailsText.includes('docx') || detailsText.includes('doc ') || detailsText.includes('document microsoft word') ||
-                 linkText.includes('.docx') || linkText.includes('.doc') || 
-                 href.includes('.docx') || href.includes('.doc') || 
-                 textContent.includes('word') || textContent.includes('docx') || textContent.includes('doc '));
-    let isExcel = isResource && (detailsText.includes('excel') || detailsText.includes('xlsx') || detailsText.includes('xls ') || detailsText.includes('feuille de calcul') || detailsText.includes('spreadsheet') ||
-                  linkText.includes('.xlsx') || linkText.includes('.xls') || linkText.includes('.csv') ||
-                  href.includes('.xlsx') || href.includes('.xls') || href.includes('.csv') ||
-                  textContent.includes('excel') || textContent.includes('xlsx') || textContent.includes('feuille de calcul') || textContent.includes('xls '));
-    let isPowerPoint = isResource && (detailsText.includes('powerpoint') || detailsText.includes('pptx') || detailsText.includes('ppt ') || detailsText.includes('présentation') || detailsText.includes('presentation') ||
-                       linkText.includes('.pptx') || linkText.includes('.ppt') ||
-                       href.includes('.pptx') || href.includes('.ppt') ||
-                       textContent.includes('powerpoint') || textContent.includes('pptx') || textContent.includes('présentation') || textContent.includes('ppt '));
+    let isPdf = false;
+    let isWord = false;
+    let isExcel = false;
+    let isPowerPoint = false;
     let isQcm = isQuiz;
+
+    // 1. Detect by native icon image source
+    if (originalSrc.includes('pdf')) {
+      isPdf = true;
+    } else if (originalSrc.includes('document') || originalSrc.includes('word') || originalSrc.includes('docx')) {
+      isWord = true;
+    } else if (originalSrc.includes('presentation') || originalSrc.includes('powerpoint') || originalSrc.includes('pptx') || originalSrc.includes('ppt')) {
+      isPowerPoint = true;
+    } else if (originalSrc.includes('spreadsheet') || originalSrc.includes('excel') || originalSrc.includes('xlsx')) {
+      isExcel = true;
+    }
+    // 2. Fallback to image alt text
+    else if (imgAlt.includes('pdf')) {
+      isPdf = true;
+    } else if (imgAlt.includes('word') || imgAlt.includes('document') || imgAlt.includes('docx')) {
+      isWord = true;
+    } else if (imgAlt.includes('powerpoint') || imgAlt.includes('présentation') || imgAlt.includes('pptx')) {
+      isPowerPoint = true;
+    } else if (imgAlt.includes('excel') || imgAlt.includes('calcul') || imgAlt.includes('xlsx')) {
+      isExcel = true;
+    }
+    // 3. Fallback to file extension in link URL (href)
+    else if (href.includes('.pdf')) {
+      isPdf = true;
+    } else if (href.includes('.docx') || href.includes('.doc')) {
+      isWord = true;
+    } else if (href.includes('.pptx') || href.includes('.ppt')) {
+      isPowerPoint = true;
+    } else if (href.includes('.xlsx') || href.includes('.xls') || href.includes('.csv')) {
+      isExcel = true;
+    }
+    // 4. Fallback to details metadata text
+    else if (detailsText.includes('pdf')) {
+      isPdf = true;
+    } else if (detailsText.includes('word') || detailsText.includes('docx') || detailsText.includes('doc')) {
+      isWord = true;
+    } else if (detailsText.includes('powerpoint') || detailsText.includes('pptx') || detailsText.includes('ppt')) {
+      isPowerPoint = true;
+    } else if (detailsText.includes('excel') || detailsText.includes('xlsx') || detailsText.includes('xls') || detailsText.includes('calcul')) {
+      isExcel = true;
+    }
 
     let iconUrl = null;
     let typeName = '';
@@ -2076,6 +2120,52 @@ const customizeResourceIcons = () => {
         container.classList.add('ultramoodle-custom-icon-container', `ultramoodle-icon-${typeName}`);
       }
     }
+
+    if (isWord || isPowerPoint) {
+      if (!activityItem.querySelector('.ultramoodle-btn-preview')) {
+        const previewBtn = document.createElement('button');
+        previewBtn.className = 'ultramoodle-btn-preview';
+        previewBtn.type = 'button';
+        previewBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Visualiser
+        `;
+        
+        const stopEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
+        stopEvents.forEach(evt => {
+          previewBtn.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (evt === 'click') {
+              const fileUrl = linkEl.href;
+              
+              let fileName = linkEl.textContent.trim();
+              const instanceNameEl = linkEl.querySelector('.instancename');
+              if (instanceNameEl) {
+                const clone = instanceNameEl.cloneNode(true);
+                clone.querySelectorAll('.accesshide, .sr-only, .accesshide-text').forEach(el => el.remove());
+                fileName = clone.textContent.trim();
+              }
+              fileName = fileName.replace(/\s*(?:Fichier|Présentation|Document|Word|PowerPoint|PDF|Excel)\s*$/gi, '').trim();
+              
+              const fileType = isWord ? 'word' : 'powerpoint';
+              
+              if (window.openDocumentViewer) {
+                window.openDocumentViewer(fileUrl, fileName, fileType);
+              } else {
+                console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
+              }
+            }
+          });
+        });
+        
+        linkEl.after(previewBtn);
+      }
+    }
   });
 };
 
@@ -2083,6 +2173,8 @@ window.isCoursePage = isCoursePage;
 window.customizeCoursePageHeader = customizeCoursePageHeader;
 window.customizeStarredCourses = customizeStarredCourses;
 window.customizeResourceIcons = customizeResourceIcons;
+window.fetchMoodleCourses = fetchMoodleCourses;
+window.getMoodleSesskey = getMoodleSesskey;
 
 document.addEventListener('click', (e) => {
   const dropdown = document.getElementById('ultramoodle-recent-menu');
