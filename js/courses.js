@@ -2133,7 +2133,34 @@ const customizeResourceIcons = () => {
           </svg>
           Visualiser
         `;
+
+        const textBtn = document.createElement('button');
+        textBtn.className = 'ultramoodle-btn-preview';
+        textBtn.type = 'button';
+        textBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Mode Texte
+        `;
+
+        const fileUrl = linkEl.href;
         
+        let fileName = linkEl.textContent.trim();
+        const instanceNameEl = linkEl.querySelector('.instancename');
+        if (instanceNameEl) {
+          const clone = instanceNameEl.cloneNode(true);
+          clone.querySelectorAll('.accesshide, .sr-only, .accesshide-text').forEach(el => el.remove());
+          fileName = clone.textContent.trim();
+        }
+        fileName = fileName.replace(/\s*(?:Fichier|Présentation|Document|Word|PowerPoint|PDF|Excel)\s*$/gi, '').trim();
+        
+        const fileType = isWord ? 'word' : 'powerpoint';
+
         const stopEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
         stopEvents.forEach(evt => {
           previewBtn.addEventListener(evt, (e) => {
@@ -2141,39 +2168,47 @@ const customizeResourceIcons = () => {
             e.stopPropagation();
             
             if (evt === 'click') {
-              const fileUrl = linkEl.href;
-              
-              let fileName = linkEl.textContent.trim();
-              const instanceNameEl = linkEl.querySelector('.instancename');
-              if (instanceNameEl) {
-                const clone = instanceNameEl.cloneNode(true);
-                clone.querySelectorAll('.accesshide, .sr-only, .accesshide-text').forEach(el => el.remove());
-                fileName = clone.textContent.trim();
-              }
-              fileName = fileName.replace(/\s*(?:Fichier|Présentation|Document|Word|PowerPoint|PDF|Excel)\s*$/gi, '').trim();
-              
-              const fileType = isWord ? 'word' : 'powerpoint';
-              
               if (window.openDocumentViewer) {
-                window.openDocumentViewer(fileUrl, fileName, fileType);
+                window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
               } else {
                 console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
               }
             }
           });
+
+          if (textBtn) {
+            textBtn.addEventListener(evt, (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              
+              if (evt === 'click') {
+                if (window.openDocumentViewer) {
+                  window.openDocumentViewer(fileUrl, fileName, fileType, 'text');
+                } else {
+                  console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
+                }
+              }
+            });
+          }
         });
         
-        // Disable parent link hover effect when hovering the preview button
-        previewBtn.addEventListener('mouseenter', () => {
-          linkEl.style.setProperty('pointer-events', 'none', 'important');
-          linkEl.style.setProperty('text-decoration', 'none', 'important');
-        });
-        previewBtn.addEventListener('mouseleave', () => {
-          linkEl.style.removeProperty('pointer-events');
-          linkEl.style.removeProperty('text-decoration');
+        // Disable parent link hover effect when hovering either preview button
+        [previewBtn, textBtn].forEach(btn => {
+          if (!btn) return;
+          btn.addEventListener('mouseenter', () => {
+            linkEl.style.setProperty('pointer-events', 'none', 'important');
+            linkEl.style.setProperty('text-decoration', 'none', 'important');
+          });
+          btn.addEventListener('mouseleave', () => {
+            linkEl.style.removeProperty('pointer-events');
+            linkEl.style.removeProperty('text-decoration');
+          });
         });
         
         linkEl.after(previewBtn);
+        if (textBtn) {
+          previewBtn.after(textBtn);
+        }
       }
     }
   });

@@ -3,15 +3,17 @@
 (function () {
   'use strict';
 
-  // State variable to track active PPTX rendering instance
+  // State variables for PPTX/DOCX viewer modal
   let activePptxRenderer = null;
-  let currentSlideIndex = 0;
-  let totalSlides = 0;
-  let zoomScale = 1.0;
   let isFullscreen = false;
+  let activeDocumentBuffer = null;
+  let textModeParsed = false;
+  let documentFileUrl = null;
+  let documentFileName = null;
+  let documentFileType = null;
 
   /**
-   * Helper to clean memory and close viewer
+   * Clean memory and close viewer modal
    */
   function closeDocumentViewer() {
     const backdrop = document.getElementById('ultramoodle-doc-viewer');
@@ -35,6 +37,13 @@
       activePptxRenderer = null;
     }
 
+    // Reset state
+    activeDocumentBuffer = null;
+    textModeParsed = false;
+    documentFileUrl = null;
+    documentFileName = null;
+    documentFileType = null;
+
     // Remove event listeners
     document.removeEventListener('keydown', handleGlobalKeydown);
 
@@ -45,7 +54,7 @@
   }
 
   /**
-   * Global keydown navigation listener for PPTX
+   * Global keydown navigation listener for the modal
    */
   function handleGlobalKeydown(e) {
     const backdrop = document.getElementById('ultramoodle-doc-viewer');
@@ -57,114 +66,25 @@
       return;
     }
 
-    // PPTX Controls
-    if (activePptxRenderer) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
-        navigateSlide(1);
-        e.preventDefault();
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
-        navigateSlide(-1);
-        e.preventDefault();
-      } else if (e.key === 'Home') {
-        goToSlide(0);
-        e.preventDefault();
-      } else if (e.key === 'End') {
-        goToSlide(totalSlides - 1);
-        e.preventDefault();
-      } else if (e.key === '+' || e.key === '=') {
-        adjustZoom(0.1);
-        e.preventDefault();
-      } else if (e.key === '-') {
-        adjustZoom(-0.1);
-        e.preventDefault();
-      } else if (e.key === '0') {
-        resetZoom();
-        e.preventDefault();
-      } else if (e.key === 'f' || e.key === 'F') {
-        toggleFullscreen();
-        e.preventDefault();
-      }
+    // T key to switch from Text Mode modal to Office Online (new tab)
+    if (activeDocumentBuffer && (e.key === 't' || e.key === 'T')) {
+      const fileUrl = documentFileUrl;
+      const fileName = documentFileName;
+      const fileType = documentFileType;
+      closeDocumentViewer();
+      window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
+      e.preventDefault();
+    }
+
+    // F key to toggle fullscreen
+    if (e.key === 'f' || e.key === 'F') {
+      toggleFullscreen();
+      e.preventDefault();
     }
   }
 
   /**
-   * Navigate PPTX slides relative
-   */
-  function navigateSlide(direction) {
-    const nextIndex = currentSlideIndex + direction;
-    if (nextIndex >= 0 && nextIndex < totalSlides) {
-      goToSlide(nextIndex);
-    }
-  }
-
-  /**
-   * Go to specific PPTX slide index
-   */
-  async function goToSlide(index) {
-    if (!activePptxRenderer) return;
-    
-    currentSlideIndex = index;
-    
-    // Update main slide canvas
-    const mainCanvas = document.getElementById('ultramoodle-viewer-pptx-canvas');
-    if (mainCanvas) {
-      // Show mini slide loader inside the container if needed
-      try {
-        await activePptxRenderer.renderSlide(currentSlideIndex, mainCanvas, 1280);
-      } catch (err) {
-        console.error('[myMoodle ULTRA] Error rendering slide:', currentSlideIndex, err);
-      }
-    }
-
-    // Update active thumb classes
-    const thumbs = document.querySelectorAll('.ultramoodle-viewer-thumb-wrapper');
-    thumbs.forEach((thumb, idx) => {
-      if (idx === index) {
-        thumb.classList.add('active');
-        // Scroll active thumb into view inside sidebar
-        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        thumb.classList.remove('active');
-      }
-    });
-
-    // Update bottom page counter
-    const pageIndicator = document.getElementById('ultramoodle-viewer-page-indicator');
-    if (pageIndicator) {
-      pageIndicator.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
-    }
-
-    // Update buttons disabled status
-    const prevBtn = document.getElementById('ultramoodle-viewer-btn-prev');
-    const nextBtn = document.getElementById('ultramoodle-viewer-btn-next');
-    if (prevBtn) prevBtn.disabled = (currentSlideIndex === 0);
-    if (nextBtn) nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
-  }
-
-  /**
-   * Adjust zoom scale of PPTX view
-   */
-  function adjustZoom(amount) {
-    zoomScale = Math.max(0.5, Math.min(2.5, zoomScale + amount));
-    applyZoom();
-  }
-
-  function resetZoom() {
-    zoomScale = 1.0;
-    applyZoom();
-  }
-
-  function applyZoom() {
-    const canvas = document.getElementById('ultramoodle-viewer-pptx-canvas');
-    if (canvas) {
-      canvas.style.transform = `scale(${zoomScale})`;
-      canvas.style.transformOrigin = 'center center';
-      canvas.style.transition = 'transform 0.15s ease-out';
-    }
-  }
-
-  /**
-   * Toggle fullscreen mode
+   * Toggle fullscreen mode for the modal
    */
   function toggleFullscreen() {
     const backdrop = document.getElementById('ultramoodle-doc-viewer');
@@ -194,14 +114,14 @@
     
     if (document.fullscreenElement) {
       btn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"></path>
         </svg>
       `;
       btn.title = "Quitter le plein écran (F)";
     } else {
       btn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"></path>
         </svg>
       `;
@@ -209,26 +129,394 @@
     }
   }
 
-  // Handle browser's native fullscreen changes (e.g. if user presses ESC)
+  // Handle browser's native fullscreen changes
   document.addEventListener('fullscreenchange', () => {
     updateFullscreenButtonIcon();
   });
 
   /**
-   * Core function to open document in overlay
+   * Launch Office Online viewer in a new tab with background upload
    */
-  window.openDocumentViewer = function (fileUrl, fileName, fileType) {
-    console.log('[myMoodle ULTRA] openDocumentViewer:', fileUrl, fileName, fileType);
+  function launchOfficeOnlineNewTab(fileUrl, fileName, fileType) {
+    const isPptx = fileType === 'powerpoint';
+    const mimeType = isPptx 
+      ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    const uploadFileName = isPptx ? 'presentation.pptx' : 'document.docx';
+    const officeServiceLabel = isPptx ? 'PowerPoint Online' : 'Word Online';
+    const docLabel = isPptx ? 'le diaporama' : 'le document';
+
+    const newTab = window.open('', '_blank');
+    if (newTab) {
+      newTab.document.open();
+      newTab.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Chargement myMoodle ULTRA...</title>
+          <style>
+            body {
+              background-color: #0a0d14;
+              color: #ffffff;
+              font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .spinner {
+              width: 50px;
+              height: 50px;
+              border: 4px solid rgba(255, 138, 0, 0.08);
+              border-left-color: #ff8a00;
+              border-radius: 50%;
+              animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+              margin-bottom: 24px;
+              box-shadow: 0 4px 10px rgba(255, 138, 0, 0.15);
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            .status-text {
+              font-size: 16px;
+              font-weight: 500;
+              letter-spacing: 0.25px;
+              margin-bottom: 4px;
+            }
+            .sub-text {
+              font-size: 12px;
+              color: #8b95a5;
+            }
+            .btn {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              padding: 10px 22px;
+              border-radius: 10px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              background: rgba(255, 255, 255, 0.06);
+              color: #ffffff;
+              font-size: 13px;
+              font-weight: 600;
+              text-decoration: none;
+              cursor: pointer;
+              margin-top: 20px;
+              transition: all 0.2s ease;
+              font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            }
+            .btn:hover {
+              background: rgba(255, 138, 0, 0.15);
+              border-color: rgba(255, 138, 0, 0.4);
+              color: #ff8a00;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="spinner" id="spinner"></div>
+          <div class="status-text" id="status">Téléchargement du document depuis Moodle...</div>
+          <div class="sub-text">myMoodle ULTRA Reader</div>
+        </body>
+        </html>
+      `);
+      newTab.document.close();
+    }
+
+    // Start background file fetch
+    fetch(fileUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Erreur réseau : ${response.status}`);
+        }
+        return response.arrayBuffer();
+      })
+      .then(async (arrayBuffer) => {
+        if (newTab) {
+          const statusEl = newTab.document.getElementById('status');
+          if (statusEl) statusEl.textContent = "Téléversement sécurisé (tmpfiles)...";
+        }
+
+        const blob = new Blob([arrayBuffer], { type: mimeType });
+        const formData = new FormData();
+        formData.append('file', blob, uploadFileName);
+
+        const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur réseau : ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.status === 'success' && data.data && data.data.url) {
+          const uploadUrl = data.data.url;
+          const directUrl = uploadUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+          const officeUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(directUrl)}`;
+          
+          if (newTab) {
+            newTab.location.href = officeUrl;
+          }
+        } else {
+          throw new Error(data.message || "Réponse invalide du serveur");
+        }
+      })
+      .catch(err => {
+        console.error('[myMoodle ULTRA] Error uploading document to tmpfiles.org:', err);
+        if (newTab) {
+          const body = newTab.document.body;
+          body.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 20px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div class="status-text" style="color:#ef4444; font-weight:600; font-size:18px;">Échec du visualiseur Office</div>
+            <p style="font-size:13px; color:#8b95a5; margin: 8px 0 0 0; max-width: 380px; text-align: center; line-height: 1.5;">Le service n'a pas pu héberger temporairement ${docLabel}. Veuillez réessayer ou télécharger le fichier directement.</p>
+            <a href="${fileUrl}" class="btn" download="${fileName}">Télécharger le document</a>
+          `;
+        }
+      });
+  }
+
+  /**
+   * Start extracting and rendering slide text locally in the modal
+   */
+  async function startTextModeView() {
+    const loader = document.getElementById('ultramoodle-viewer-loader');
+    const textContainer = document.getElementById('ultramoodle-viewer-pptx-textmode-container');
+    const controls = document.getElementById('ultramoodle-viewer-pptx-controls');
+
+    // Display text container
+    if (textContainer) textContainer.style.display = 'block';
+
+    try {
+      if (typeof PptxCanvasRenderer === 'undefined') {
+        throw new Error("Bibliothèque PptxCanvasRenderer non trouvée.");
+      }
+
+      if (!activePptxRenderer) {
+        const renderer = new PptxCanvasRenderer.PptxRenderer();
+        activePptxRenderer = renderer;
+        await renderer.load(activeDocumentBuffer);
+      }
+
+      const allSlides = await activePptxRenderer.extractAll();
+      
+      let html = '';
+      allSlides.forEach((slideData, idx) => {
+        html += `
+          <div class="ultramoodle-viewer-textmode-slide" id="slide-${idx}">
+            <div class="ultramoodle-viewer-textmode-slide-header">Diapositive ${idx + 1}</div>
+            ${formatSlideTextHtml(slideData)}
+          </div>
+        `;
+      });
+
+      textContainer.innerHTML = html;
+      textModeParsed = true;
+
+      if (loader) loader.style.display = 'none';
+      if (controls) controls.classList.add('visible');
+    } catch (err) {
+      console.error('[myMoodle ULTRA] Error extracting presentation text:', err);
+      textContainer.innerHTML = `
+        <div style="padding: 40px; text-align: center; color: var(--ultra-text-sub); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div style="font-size:15px; font-weight:600; color:#ef4444;">Échec de l'extraction</div>
+          <p style="font-size:12px; margin-top:8px;">Nous n'avons pas pu extraire le texte de cette présentation.</p>
+        </div>
+      `;
+      if (loader) loader.style.display = 'none';
+      if (controls) controls.classList.add('visible');
+    }
+  }
+
+  /**
+   * Format slide contents as semantic styled HTML
+   */
+  function formatSlideTextHtml(slideData) {
+    let html = '';
     
-    // Close existing if any
+    // Slide title
+    if (slideData.title) {
+      html += `<h2 class="ultramoodle-viewer-textmode-title">${escapeHtml(slideData.title)}</h2>`;
+    }
+    
+    // Slide subtitle
+    if (slideData.subtitle) {
+      html += `<h3 class="ultramoodle-viewer-textmode-subtitle">${escapeHtml(slideData.subtitle)}</h3>`;
+    }
+    
+    // Slide text shapes
+    const mainShapes = slideData.textShapes.filter(s => s.type !== 'title' && s.type !== 'subtitle');
+    
+    if (mainShapes.length > 0) {
+      mainShapes.forEach(shape => {
+        html += `<div class="ultramoodle-viewer-textmode-shape">`;
+        shape.paragraphs.forEach(p => {
+          const style = [];
+          if (p.align === 'ctr') style.push('text-align: center');
+          else if (p.align === 'r') style.push('text-align: right');
+          else if (p.align === 'just') style.push('text-align: justify');
+          
+          let indent = (p.level || 0) * 20;
+          if (indent > 0) style.push(`margin-left: ${indent}px`);
+          
+          const styleAttr = style.length ? ` style="${style.join('; ')}"` : '';
+          
+          html += `<p${styleAttr}>`;
+          if (p.bullet && p.bullet !== '{auto}') {
+            html += `<span class="ultramoodle-viewer-textmode-bullet">${escapeHtml(p.bullet)} </span>`;
+          }
+          
+          p.runs.forEach(run => {
+            let text = escapeHtml(run.text);
+            if (run.bold) text = `<strong>${text}</strong>`;
+            if (run.italic) text = `<em>${text}</em>`;
+            if (run.underline) text = `<u>${text}</u>`;
+            if (run.color && run.color !== '#000000' && run.color !== '#000' && run.color !== '#ffffff' && run.color !== '#fff') {
+              text = `<span style="color: ${run.color}">${text}</span>`;
+            }
+            html += text;
+          });
+          html += `</p>`;
+        });
+        html += `</div>`;
+      });
+    }
+    
+    // Slide tables
+    if (slideData.tables && slideData.tables.length > 0) {
+      slideData.tables.forEach(table => {
+        html += `<div class="ultramoodle-viewer-textmode-table-wrapper">`;
+        html += `<table class="ultramoodle-viewer-textmode-table">`;
+        table.rows.forEach(row => {
+          html += `<tr>`;
+          row.forEach(cell => {
+            const tdAttr = [];
+            if (cell.rowSpan > 1) tdAttr.push(`rowspan="${cell.rowSpan}"`);
+            if (cell.colSpan > 1) tdAttr.push(`colspan="${cell.colSpan}"`);
+            const tdAttrStr = tdAttr.length ? ' ' + tdAttr.join(' ') : '';
+            
+            html += `<td${tdAttrStr}>`;
+            if (cell.paragraphs && cell.paragraphs.length > 0) {
+              cell.paragraphs.forEach(p => {
+                html += `<p>`;
+                p.runs.forEach(run => {
+                  let text = escapeHtml(run.text);
+                  if (run.bold) text = `<strong>${text}</strong>`;
+                  if (run.italic) text = `<em>${text}</em>`;
+                  if (run.underline) text = `<u>${text}</u>`;
+                  html += text;
+                });
+                html += `</p>`;
+              });
+            } else {
+              html += escapeHtml(cell.text).replace(/\n/g, '<br>');
+            }
+            html += `</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</table>`;
+        html += `</div>`;
+      });
+    }
+    
+    // Speaker notes
+    if (slideData.notes && slideData.notes.trim()) {
+      html += `
+        <div class="ultramoodle-viewer-textmode-notes">
+          <div class="ultramoodle-viewer-textmode-notes-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Notes de présentation
+          </div>
+          <div class="ultramoodle-viewer-textmode-notes-content">
+            ${escapeHtml(slideData.notes).replace(/\n/g, '<br>')}
+          </div>
+        </div>
+      `;
+    }
+
+    if (!html) {
+      html = `
+        <div style="padding: 16px 0; text-align: center; color: var(--ultra-text-sub); font-size: 13px;">
+          Diapositive sans texte.
+        </div>
+      `;
+    }
+    
+    return html;
+  }
+  
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  /**
+   * Word (DOCX) Renderer using docx-preview
+   */
+  async function renderWord(arrayBuffer) {
+    const container = document.getElementById('ultramoodle-viewer-container-docx');
+    const loader = document.getElementById('ultramoodle-viewer-loader');
+    const controls = document.getElementById('ultramoodle-viewer-pptx-controls');
+
+    if (!container) return;
+
+    try {
+      container.innerHTML = '';
+      if (typeof docx === 'undefined') {
+        throw new Error("Bibliothèque docx-preview non trouvée.");
+      }
+      await docx.renderAsync(arrayBuffer, container);
+      if (loader) loader.style.display = 'none';
+      if (controls) controls.classList.add('visible');
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * Main global entry point to open overlay document viewer or launch a new tab
+   */
+  window.openDocumentViewer = function (fileUrl, fileName, fileType, initialMode = 'office') {
+    console.log('[myMoodle ULTRA] openDocumentViewer:', fileUrl, fileName, fileType, initialMode);
+    
+    // If the user wants visuel (Office Online), open in a new tab and exit
+    if (initialMode === 'office') {
+      launchOfficeOnlineNewTab(fileUrl, fileName, fileType);
+      return;
+    }
+
+    // Otherwise (Word or PPTX Text Mode), open in overlay modal
     closeDocumentViewer();
 
-    // Create container
+    // Cache local arguments
+    documentFileUrl = fileUrl;
+    documentFileName = fileName;
+    documentFileType = fileType;
+
+    // Create modal backdrop
     const backdrop = document.createElement('div');
     backdrop.id = 'ultramoodle-doc-viewer';
     backdrop.className = 'ultramoodle-viewer-backdrop';
 
-    // Build base HTML structure
     const isPptx = fileType === 'powerpoint';
     const iconSrc = isPptx ? chrome.runtime.getURL('img/powerpointIcone.png') : chrome.runtime.getURL('img/wordIcone.png');
 
@@ -256,93 +544,53 @@
           <div class="ultramoodle-viewer-loader-sub" id="ultramoodle-viewer-loader-sub">myMoodle ULTRA Reader</div>
         </div>
 
-        <!-- Left sidebar for slides thumbs (PPTX only, hidden initially) -->
-        ${isPptx ? `
-        <div class="ultramoodle-viewer-sidebar" id="ultramoodle-viewer-sidebar" style="display: none;">
-          <div class="ultramoodle-viewer-sidebar-title">Diapositives</div>
-          <div id="ultramoodle-viewer-thumbs-list" style="display: flex; flex-direction: column; gap: 14px;"></div>
-        </div>
-        ` : ''}
-
         <!-- Document rendering target -->
         <div class="ultramoodle-viewer-content" id="ultramoodle-viewer-content">
           ${isPptx ? `
-            <div class="ultramoodle-viewer-container-pptx" id="ultramoodle-viewer-container-pptx">
-              <canvas class="ultramoodle-viewer-pptx-canvas" id="ultramoodle-viewer-pptx-canvas"></canvas>
-            </div>
-            
-            <!-- Floating control toolbar -->
-            <div class="ultramoodle-viewer-pptx-controls" id="ultramoodle-viewer-pptx-controls">
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-prev" title="Diapositive précédente (← / PageUp)" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-              </button>
-              
-              <span class="ultramoodle-viewer-page-indicator" id="ultramoodle-viewer-page-indicator">0 / 0</span>
-              
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-next" title="Diapositive suivante (→ / Espace / PageDown)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-              
-              <div class="ultramoodle-viewer-divider"></div>
-              
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-zoomout" title="Zoom arrière (-)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  <line x1="8" y1="11" x2="14" y2="11"></line>
-                </svg>
-              </button>
-              
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-zoomin" title="Zoom avant (+)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  <line x1="11" y1="8" x2="11" y2="14"></line>
-                  <line x1="8" y1="11" x2="14" y2="11"></line>
-                </svg>
-              </button>
-              
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-zoomreset" title="Taille réelle (0)">
-                <span style="font-size: 10px; font-weight: 700;">100%</span>
-              </button>
-              
-              <div class="ultramoodle-viewer-divider"></div>
-              
-              <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-fullscreen" title="Plein écran (F)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"></path>
-                </svg>
-              </button>
-            </div>
+            <div class="ultramoodle-viewer-pptx-textmode-container" id="ultramoodle-viewer-pptx-textmode-container" style="display: none;"></div>
           ` : `
             <div class="ultramoodle-viewer-docx-scrollable" id="ultramoodle-viewer-docx-scrollable">
               <div class="ultramoodle-viewer-container-docx" id="ultramoodle-viewer-container-docx"></div>
             </div>
           `}
+          
+          <!-- Floating control toolbar -->
+          <div class="ultramoodle-viewer-pptx-controls" id="ultramoodle-viewer-pptx-controls">
+            <button class="ultramoodle-viewer-control-btn active" id="ultramoodle-viewer-btn-toggle-mode" title="Ouvrir dans Office Online (Office 365)" style="padding: 6px 12px !important; border-radius: 20px !important; display: inline-flex !important; align-items: center; gap: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <span id="ultramoodle-viewer-toggle-btn-text" style="font-size: 12px; font-weight: 600;">Visualiseur Office</span>
+            </button>
+            
+            <div class="ultramoodle-viewer-divider"></div>
+            
+            <button class="ultramoodle-viewer-control-btn" id="ultramoodle-viewer-btn-fullscreen" title="Plein écran (F)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     `;
 
     document.body.appendChild(backdrop);
     
-    // Force browser reflow and show modal
+    // Force browser reflow to display modal transitions
     setTimeout(() => {
       backdrop.classList.add('visible');
     }, 10);
 
-    // Bind basic layout buttons
+    // Bind header control elements
     document.getElementById('ultramoodle-viewer-close-btn').addEventListener('click', closeDocumentViewer);
     document.addEventListener('keydown', handleGlobalKeydown);
 
-    // Click-outside-to-close: clicking the backdrop area (not header, sidebar, or document content) closes the viewer
+    // Click backdrop to close (except when clicking viewer contents)
     backdrop.addEventListener('click', (e) => {
       const target = e.target;
-      
-      // Close if clicking on the backdrop itself, the body, or the content area background
       const isBackdrop = target === backdrop;
       const isBody = target.classList.contains('ultramoodle-viewer-body');
       const isContent = target.classList.contains('ultramoodle-viewer-content');
@@ -353,7 +601,7 @@
       }
     });
 
-    // Start fetch
+    // Start fetching file
     fetch(fileUrl)
       .then(response => {
         if (!response.ok) {
@@ -362,12 +610,30 @@
         return response.arrayBuffer();
       })
       .then(async (arrayBuffer) => {
-        const loaderText = document.getElementById('ultramoodle-viewer-loader-text');
-        if (loaderText) loaderText.textContent = "Rendu du document...";
+        activeDocumentBuffer = arrayBuffer;
+        
+        // Bind toolbar buttons for the modal
+        const toggleBtn = document.getElementById('ultramoodle-viewer-btn-toggle-mode');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+            // Close modal and open in a new tab
+            closeDocumentViewer();
+            window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
+          });
+        }
+        const fsBtn = document.getElementById('ultramoodle-viewer-btn-fullscreen');
+        if (fsBtn) {
+          fsBtn.addEventListener('click', toggleFullscreen);
+        }
 
         if (isPptx) {
-          await renderPowerPoint(arrayBuffer);
+          // Render local Text Mode
+          const loaderText = document.getElementById('ultramoodle-viewer-loader-text');
+          if (loaderText) loaderText.textContent = "Extraction du texte en cours (local)...";
+          await startTextModeView();
         } else {
+          const loaderText = document.getElementById('ultramoodle-viewer-loader-text');
+          if (loaderText) loaderText.textContent = "Rendu du document Word...";
           await renderWord(arrayBuffer);
         }
       })
@@ -377,14 +643,14 @@
         if (loader) {
           loader.innerHTML = `
             <div style="text-align: center; max-width: 400px; padding: 20px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px;">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
-              <div class="ultramoodle-viewer-loader-text" style="color:#ef4444; font-weight:600;">Échec de l'affichage</div>
-              <p style="font-size:12px; color:var(--ultra-text-sub); margin-top:8px;">Nous n'avons pas pu charger le fichier. Il est peut-être corrompu ou nécessite une authentification expirée.</p>
-              <a href="${fileUrl}" class="ultramoodle-viewer-btn ultramoodle-viewer-btn-primary" style="margin-top:16px; width: 100%;" download="${fileName}">
+              <div class="ultramoodle-viewer-loader-text" style="color:#ef4444; font-weight:600;">Échec de la liseuse</div>
+              <p style="font-size:12px; color:var(--ultra-text-sub); margin-top:8px;">Nous n'avons pas pu charger le fichier. Le document nécessite peut-être une authentification active ou est indisponible.</p>
+              <a href="${fileUrl}" class="ultramoodle-viewer-btn ultramoodle-viewer-btn-primary" style="margin-top:16px; width: 100%; padding: 8px 16px;" download="${fileName}">
                 Télécharger le document
               </a>
             </div>
@@ -392,143 +658,5 @@
         }
       });
   };
-
-  /**
-   * Word (DOCX) Renderer using docx-preview
-   */
-  async function renderWord(arrayBuffer) {
-    const container = document.getElementById('ultramoodle-viewer-container-docx');
-    const loader = document.getElementById('ultramoodle-viewer-loader');
-
-    if (!container) return;
-
-    try {
-      // Clear native docx-preview elements just in case
-      container.innerHTML = '';
-      
-      // Global variable "docx" injected via docx-preview.js
-      if (typeof docx === 'undefined') {
-        throw new Error("Bibliothèque docx-preview non trouvée.");
-      }
-
-      await docx.renderAsync(arrayBuffer, container);
-      
-      // Remove loading indicator
-      if (loader) loader.remove();
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  /**
-   * PowerPoint (PPTX) Renderer using pptx-browser (PptxCanvasRenderer)
-   */
-  async function renderPowerPoint(arrayBuffer) {
-    const loader = document.getElementById('ultramoodle-viewer-loader');
-    const loaderText = document.getElementById('ultramoodle-viewer-loader-text');
-    const sidebar = document.getElementById('ultramoodle-viewer-sidebar');
-    const thumbsList = document.getElementById('ultramoodle-viewer-thumbs-list');
-    const pptxContainer = document.getElementById('ultramoodle-viewer-container-pptx');
-    const controls = document.getElementById('ultramoodle-viewer-pptx-controls');
-
-    try {
-      if (typeof PptxCanvasRenderer === 'undefined') {
-        throw new Error("Bibliothèque PptxCanvasRenderer non trouvée.");
-      }
-
-      const renderer = new PptxCanvasRenderer.PptxRenderer();
-      activePptxRenderer = renderer;
-
-      // Load PPTX content (updates progress)
-      await renderer.load(arrayBuffer, (progress, message) => {
-        if (loaderText) {
-          loaderText.textContent = `Chargement des diapos : ${Math.round(progress * 100)}%`;
-        }
-      });
-
-      totalSlides = renderer.slideCount;
-      if (totalSlides === 0) {
-        throw new Error("Ce PowerPoint ne contient aucune diapositive.");
-      }
-
-      // 1. Show layout areas
-      if (sidebar) sidebar.style.display = 'flex';
-      if (pptxContainer) pptxContainer.classList.add('loaded');
-      if (controls) controls.classList.add('visible');
-
-      // 2. Bind floating controls
-      document.getElementById('ultramoodle-viewer-btn-prev').addEventListener('click', () => navigateSlide(-1));
-      document.getElementById('ultramoodle-viewer-btn-next').addEventListener('click', () => navigateSlide(1));
-      document.getElementById('ultramoodle-viewer-btn-zoomin').addEventListener('click', () => adjustZoom(0.15));
-      document.getElementById('ultramoodle-viewer-btn-zoomout').addEventListener('click', () => adjustZoom(-0.15));
-      document.getElementById('ultramoodle-viewer-btn-zoomreset').addEventListener('click', resetZoom);
-      document.getElementById('ultramoodle-viewer-btn-fullscreen').addEventListener('click', toggleFullscreen);
-
-      // 3. Render slide index 0 in main view
-      await goToSlide(0);
-
-      // Remove loading indicator
-      if (loader) loader.remove();
-
-      // 4. Generate sidebar thumbnails progressively to avoid UI freezing
-      generateThumbnails(renderer, thumbsList);
-
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  /**
-   * Helper to progressively generate slide thumbnails in sidebar
-   */
-  async function generateThumbnails(renderer, container) {
-    if (!container || !renderer) return;
-    
-    container.innerHTML = '';
-    
-    // Draw empty shell items first
-    for (let i = 0; i < totalSlides; i++) {
-      const wrapper = document.createElement('div');
-      wrapper.className = `ultramoodle-viewer-thumb-wrapper ${i === 0 ? 'active' : ''}`;
-      wrapper.dataset.index = i;
-      
-      const canvas = document.createElement('canvas');
-      canvas.className = 'ultramoodle-viewer-thumb-canvas';
-      wrapper.appendChild(canvas);
-      
-      const numLabel = document.createElement('div');
-      numLabel.className = 'ultramoodle-viewer-thumb-number';
-      numLabel.textContent = i + 1;
-      wrapper.appendChild(numLabel);
-
-      wrapper.addEventListener('click', () => {
-        goToSlide(i);
-      });
-
-      container.appendChild(wrapper);
-    }
-
-    // Progressively render canvas content for thumbs
-    for (let i = 0; i < totalSlides; i++) {
-      // Stop rendering if user closed the viewer
-      if (activePptxRenderer !== renderer) break;
-      
-      const wrapper = container.children[i];
-      if (wrapper) {
-        const canvas = wrapper.querySelector('canvas');
-        if (canvas) {
-          try {
-            // Render small thumbnail (200px width is perfect for performance)
-            await renderer.renderSlide(i, canvas, 200);
-          } catch (err) {
-            console.error('[myMoodle ULTRA] Error rendering thumb:', i, err);
-          }
-        }
-      }
-      
-      // Let the browser breathe between renders
-      await new Promise(resolve => setTimeout(resolve, 30));
-    }
-  }
 
 })();

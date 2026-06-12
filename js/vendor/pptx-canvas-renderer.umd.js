@@ -352,7 +352,7 @@ var PptxCanvasRenderer = (() => {
     const szPx = sz * 127 * scaledPxPerEmu;
     const weight = bold ? "bold" : "normal";
     const style = italic ? "italic " : "";
-    const fontStr = `${style}${weight} ${szPx}px "${family}", ${generic}`;
+    const fontStr = `${style}${weight} ${szPx}px "${family}", "${rawFamily}", ${generic}`;
     return { fontStr, sz, szPx, bold, italic, family, generic, rawFamily };
   }
   function listRegisteredFonts() {
@@ -3358,8 +3358,17 @@ var PptxCanvasRenderer = (() => {
           svg: "image/svg+xml"
         };
         const mime = mimeMap[ext] || "image/png";
-        const blob = new Blob([data], { type: mime });
-        const url = URL.createObjectURL(blob);
+        
+        // Convert to base64 data URL to avoid CSP blob: blockages on Moodle
+        const raw = data instanceof Uint8Array ? data : new Uint8Array(data);
+        let binary = "";
+        const len = raw.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(raw[i]);
+        }
+        const b64 = btoa(binary);
+        const url = `data:${mime};base64,${b64}`;
+
         const img = await new Promise((resolve, reject) => {
           const image = new Image();
           image.onload = () => resolve(image);
@@ -3572,157 +3581,136 @@ var PptxCanvasRenderer = (() => {
       return fallback;
     }
     const paragraphs = gtn(txBody, "p");
-    const paraLayouts = [];
-    let totalHeight = 0;
-    for (const para of paragraphs) {
-      const pPr = g1(para, "pPr");
-      const algn = attr(pPr, "algn", "l");
-      const lvl = attrInt(pPr, "lvl", 0);
-      const marL = attrInt(pPr, "marL", 0) * scale;
-      const indent = attrInt(pPr, "indent", 0) * scale;
-      const bullet = pPr ? parseBullet(pPr, defRPr, themeColors, themeData) : null;
-      const spcBef = g1(pPr, "spcBef");
-      const spcAft = g1(pPr, "spcAft");
-      const lnSpc = g1(pPr, "lnSpc");
-      const defRPr = g1(pPr, "defRPr");
-      let paraDefSz = defaultFontSz;
-      if (lstDefRPr) {
-        const sz = lstDefRPr.getAttribute("sz");
-        if (sz) paraDefSz = parseInt(sz, 10);
-      }
-      if (defRPr) {
-        const sz = defRPr.getAttribute("sz");
-        if (sz) paraDefSz = parseInt(sz, 10);
-      }
-      let spaceBefore = 0, spaceAfter = 0;
-      if (spcBef) {
-        const sp = g1(spcBef, "spcPct");
-        const spp = g1(spcBef, "spcPts");
-        if (sp) spaceBefore = paraDefSz * 127 * scale * (attrInt(sp, "val", 0) / 1e5);
-        else if (spp) spaceBefore = attrInt(spp, "val", 0) * EMU_PER_PT * scale / 100;
-      }
-      if (spcAft) {
-        const sp = g1(spcAft, "spcPct");
-        const spp = g1(spcAft, "spcPts");
-        if (sp) spaceAfter = paraDefSz * 127 * scale * (attrInt(sp, "val", 0) / 1e5);
-        else if (spp) spaceAfter = attrInt(spp, "val", 0) * EMU_PER_PT * scale / 100;
-      }
-      const runEls = [];
-      for (const child of para.children) {
-        const ln = child.localName;
-        if (ln === "r" || ln === "br" || ln === "fld") runEls.push(child);
-      }
-      if (runEls.length === 0) {
-        const endParaRPr = g1(para, "endParaRPr");
-        const sz = attrInt(endParaRPr || defRPr, "sz", paraDefSz);
-        const szPx = sz * 127 * scale * fontScaleAttr;
-        paraLayouts.push({ lines: [""], algn, marL, spaceBefore, spaceAfter, szPx, lnSpc, runs: [], emptyPara: true, bullet });
-        totalHeight += spaceBefore + szPx * 1.2 + spaceAfter;
-        continue;
-      }
-      let paraLines = [];
-      let currentLine = [];
-      let maxSzPx = 0;
-      for (const runEl of runEls) {
-        if (runEl.localName === "br") {
-          paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, paraDefSz * 127 * scale) });
-          currentLine = [];
-          maxSzPx = 0;
+
+    function generateLayout(currentFontScale) {
+      const paraLayouts = [];
+      let totalHeight = 0;
+      for (const para of paragraphs) {
+        const pPr = g1(para, "pPr");
+        const algn = attr(pPr, "algn", "l");
+        const lvl = attrInt(pPr, "lvl", 0);
+        const defRPr = g1(para, "defRPr") || (pPr ? g1(pPr, "defRPr") : null);
+        const marL = attrInt(pPr, "marL", 0) * scale;
+        const indent = attrInt(pPr, "indent", 0) * scale;
+        const bullet = pPr ? parseBullet(pPr, defRPr, themeColors, themeData) : null;
+        const spcBef = g1(pPr, "spcBef");
+        const spcAft = g1(pPr, "spcAft");
+        const lnSpc = g1(pPr, "lnSpc");
+        let paraDefSz = defaultFontSz;
+        if (lstDefRPr) {
+          const sz = lstDefRPr.getAttribute("sz");
+          if (sz) paraDefSz = parseInt(sz, 10);
+        }
+        if (defRPr) {
+          const sz = defRPr.getAttribute("sz");
+          if (sz) paraDefSz = parseInt(sz, 10);
+        }
+        let spaceBefore = 0, spaceAfter = 0;
+        if (spcBef) {
+          const sp = g1(spcBef, "spcPct");
+          const spp = g1(spcBef, "spcPts");
+          if (sp) spaceBefore = paraDefSz * 127 * scale * currentFontScale * (attrInt(sp, "val", 0) / 1e5);
+          else if (spp) spaceBefore = attrInt(spp, "val", 0) * EMU_PER_PT * scale / 100 * currentFontScale;
+        }
+        if (spcAft) {
+          const sp = g1(spcAft, "spcPct");
+          const spp = g1(spcAft, "spcPts");
+          if (sp) spaceAfter = paraDefSz * 127 * scale * currentFontScale * (attrInt(sp, "val", 0) / 1e5);
+          else if (spp) spaceAfter = attrInt(spp, "val", 0) * EMU_PER_PT * scale / 100 * currentFontScale;
+        }
+        const runEls = [];
+        for (const child of para.children) {
+          const ln = child.localName;
+          if (ln === "r" || ln === "br" || ln === "fld") runEls.push(child);
+        }
+        if (runEls.length === 0) {
+          const endParaRPr = g1(para, "endParaRPr");
+          const sz = attrInt(endParaRPr || defRPr, "sz", paraDefSz);
+          const szPx = sz * 127 * scale * currentFontScale;
+          paraLayouts.push({ lines: [""], algn, marL, spaceBefore, spaceAfter, szPx, lnSpc, runs: [], emptyPara: true, bullet });
+          totalHeight += spaceBefore + szPx * 1.2 + spaceAfter;
           continue;
         }
-        const rPr = g1(runEl, "rPr");
-        const tEl = g1(runEl, "t");
-        let text = tEl ? tEl.textContent : "";
-        const fontInfo = buildFontInherited(rPr, defRPr, scale * fontScaleAttr, themeData, paraDefSz, lstDefRPr);
-        ctx.font = fontInfo.fontStr;
-        const szPx = fontInfo.szPx;
-        if (szPx > maxSzPx) maxSzPx = szPx;
-        const color = getRunColorInherited(rPr, defRPr, themeColors);
-        const underline = resolveRPrAttr(rPr, defRPr, "u", "none") !== "none";
-        const strikethrough = resolveRPrAttr(rPr, defRPr, "strike", "noStrike") !== "noStrike";
-        const baseline = parseInt(resolveRPrAttr(rPr, defRPr, "baseline", "0"), 10);
-        if (doWrap) {
-          const words = text.split(" ");
-          for (let wi = 0; wi < words.length; wi++) {
-            const word = words[wi];
-            const testRun = { text: word, rPr, fontInfo, color, underline, strikethrough, baseline };
-            let lineW = indent + marL;
-            for (const run of currentLine) {
-              ctx.font = run.fontInfo.fontStr;
-              lineW += ctx.measureText(run.text).width;
-            }
-            ctx.font = fontInfo.fontStr;
-            const wordW = ctx.measureText(word).width;
-            const sep = currentLine.length ? ctx.measureText(" ").width : 0;
-            if (lineW + sep + wordW > tw && currentLine.length > 0) {
-              paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, szPx) });
-              currentLine = [{ text: word, rPr, fontInfo, color, underline, strikethrough, baseline }];
-              maxSzPx = szPx;
-            } else {
-              if (currentLine.length > 0) {
-                const spaceRun = { text: " ", rPr, fontInfo, color, underline: false, strikethrough: false, baseline };
-                currentLine.push(spaceRun);
-              }
-              currentLine.push({ text: word, rPr, fontInfo, color, underline, strikethrough, baseline });
-            }
+        let paraLines = [];
+        let currentLine = [];
+        let maxSzPx = 0;
+        for (const runEl of runEls) {
+          if (runEl.localName === "br") {
+            paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, paraDefSz * 127 * scale * currentFontScale) });
+            currentLine = [];
+            maxSzPx = 0;
+            continue;
           }
-        } else {
-          currentLine.push({ text, rPr, fontInfo, color, underline, strikethrough, baseline });
+          const rPr = g1(runEl, "rPr");
+          const tEl = g1(runEl, "t");
+          let text = tEl ? tEl.textContent : "";
+          const fontInfo = buildFontInherited(rPr, defRPr, scale * currentFontScale, themeData, paraDefSz, lstDefRPr);
+          ctx.font = fontInfo.fontStr;
+          const szPx = fontInfo.szPx;
           if (szPx > maxSzPx) maxSzPx = szPx;
+          const color = getRunColorInherited(rPr, defRPr, themeColors);
+          const underline = resolveRPrAttr(rPr, defRPr, "u", "none") !== "none";
+          const strikethrough = resolveRPrAttr(rPr, defRPr, "strike", "noStrike") !== "noStrike";
+          const baseline = parseInt(resolveRPrAttr(rPr, defRPr, "baseline", "0"), 10);
+          if (doWrap) {
+            const words = text.split(" ");
+            for (let wi = 0; wi < words.length; wi++) {
+              const word = words[wi];
+              let lineW = indent + marL;
+              for (const run of currentLine) {
+                ctx.font = run.fontInfo.fontStr;
+                lineW += ctx.measureText(run.text).width;
+              }
+              ctx.font = fontInfo.fontStr;
+              const wordW = ctx.measureText(word).width;
+              const sep = currentLine.length ? ctx.measureText(" ").width : 0;
+              if (lineW + sep + wordW > tw && currentLine.length > 0) {
+                paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, szPx) });
+                currentLine = [{ text: word, rPr, fontInfo, color, underline, strikethrough, baseline }];
+                maxSzPx = szPx;
+              } else {
+                if (currentLine.length > 0) {
+                  const spaceRun = { text: " ", rPr, fontInfo, color, underline: false, strikethrough: false, baseline };
+                  currentLine.push(spaceRun);
+                }
+                currentLine.push({ text: word, rPr, fontInfo, color, underline, strikethrough, baseline });
+              }
+            }
+          } else {
+            currentLine.push({ text, rPr, fontInfo, color, underline, strikethrough, baseline });
+            if (szPx > maxSzPx) maxSzPx = szPx;
+          }
         }
+        if (currentLine.length > 0) {
+          paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, paraDefSz * 127 * scale * currentFontScale) });
+        }
+        const lnSpcPx = lnSpc ? computeLineHeight(lnSpc, paraDefSz * 127 * scale * currentFontScale, scale) : null;
+        paraLayouts.push({ lines: paraLines, algn, marL, indent, spaceBefore, spaceAfter, lnSpcPx, emptyPara: false, bullet });
+        let paraHeight = 0;
+        for (const line of paraLines) {
+          paraHeight += (lnSpcPx || line.maxSzPx * 1.2);
+        }
+        totalHeight += spaceBefore + paraHeight + spaceAfter;
       }
-      if (currentLine.length > 0) {
-        paraLines.push({ runs: currentLine, maxSzPx: Math.max(maxSzPx, paraDefSz * 127 * scale) });
-      }
-      const lnSpcPx = lnSpc ? computeLineHeight(lnSpc, paraDefSz * 127 * scale * fontScaleAttr, scale) : null;
-      paraLayouts.push({ lines: paraLines, algn, marL, indent, spaceBefore, spaceAfter, lnSpcPx, emptyPara: false, bullet });
-      for (const line of paraLines) {
-        totalHeight += spaceBefore + (lnSpcPx || line.maxSzPx * 1.2) + spaceAfter;
-      }
+      return { paraLayouts, totalHeight };
     }
-    if (normAutoFit && !explicitFontScale && totalHeight > th && th > 0) {
+
+    let { paraLayouts, totalHeight } = generateLayout(fontScaleAttr);
+
+    if ((normAutoFit || spAutoFit || totalHeight > th) && !explicitFontScale && totalHeight > th && th > 0) {
       let lo = 0.3, hi = 1;
       for (let iter = 0; iter < 8; iter++) {
         const mid = (lo + hi) / 2;
-        let testH = 0;
-        for (const para of paragraphs) {
-          const pPr2 = g1(para, "pPr");
-          const defRPr2 = pPr2 ? g1(pPr2, "defRPr") : null;
-          let pSz = defaultFontSz;
-          if (lstDefRPr) {
-            const v = lstDefRPr.getAttribute("sz");
-            if (v) pSz = parseInt(v, 10);
-          }
-          if (defRPr2) {
-            const v = defRPr2.getAttribute("sz");
-            if (v) pSz = parseInt(v, 10);
-          }
-          const runEls2 = Array.from(para.children).filter((c) => ["r", "br", "fld"].includes(c.localName));
-          const szPx = pSz * 127 * scale * mid;
-          if (runEls2.length === 0) {
-            testH += szPx * 1.2;
-            continue;
-          }
-          const totalText = runEls2.reduce((s, e) => {
-            const t = g1(e, "t");
-            return s + (t ? t.textContent.length : 0);
-          }, 0);
-          const effectiveTw = tw > 0 ? tw : bw;
-          const sampleText = totalText > 0 ? runEls2.reduce((s, e) => {
-            const t = g1(e, "t");
-            return s + (t ? t.textContent : "");
-          }, "").slice(0, 20) : "W";
-          ctx.font = `${szPx}px sans-serif`;
-          const avgCharW = sampleText.length > 0 ? ctx.measureText(sampleText).width / sampleText.length : szPx * 0.6;
-          const charsPerLine = Math.max(1, Math.floor(effectiveTw / avgCharW));
-          const estLines = Math.max(1, Math.ceil(totalText / charsPerLine));
-          testH += estLines * szPx * 1.2;
-        }
-        if (testH <= th) lo = mid;
+        const testLayout = generateLayout(mid);
+        if (testLayout.totalHeight <= th) lo = mid;
         else hi = mid;
       }
-      fontScaleAttr = (lo + hi) / 2;
+      fontScaleAttr = lo;
+      const finalLayout = generateLayout(fontScaleAttr);
+      paraLayouts = finalLayout.paraLayouts;
+      totalHeight = finalLayout.totalHeight;
     }
+
     let startY = ty;
     if (anchor === "ctr") {
       startY = ty + (th - totalHeight) / 2;
@@ -3879,7 +3867,23 @@ var PptxCanvasRenderer = (() => {
     };
   }
   async function renderShape(ctx, spEl, rels, imageCache, themeColors, themeData, scale, parentGroup = null, placeholderMap = null) {
+    const nvSpPr = g1(spEl, "nvSpPr");
+    const nvPr = nvSpPr ? g1(nvSpPr, "nvPr") : null;
+    const ph = nvPr ? g1(nvPr, "ph") : null;
+    let phSpEl = null;
+    if (ph && placeholderMap) {
+      const phData = resolvePlaceholderXfrm(spEl, placeholderMap);
+      if (phData) phSpEl = phData.spEl;
+    }
     const spPr = g1(spEl, "spPr");
+    const getSpPrChild = (name) => {
+      let el = spPr ? g1(spPr, name) : null;
+      if (!el && phSpEl) {
+        const phSpPr = g1(phSpEl, "spPr");
+        if (phSpPr) el = g1(phSpPr, name);
+      }
+      return el;
+    };
     const xfrm = g1(spPr, "xfrm");
     let x = 0, y = 0, w = 0, h = 0;
     let rot = 0;
@@ -3928,8 +3932,8 @@ var PptxCanvasRenderer = (() => {
       if (flipV) ctx.scale(1, -1);
       ctx.translate(-cx, -cy);
     }
-    const prstGeom = g1(spPr, "prstGeom");
-    const custGeom = g1(spPr, "custGeom");
+    const prstGeom = getSpPrChild("prstGeom");
+    const custGeom = getSpPrChild("custGeom");
     const prst = prstGeom ? attr(prstGeom, "prst", "rect") : "rect";
     const adjValues = {};
     if (prstGeom) {
@@ -3947,43 +3951,49 @@ var PptxCanvasRenderer = (() => {
     const getFill = () => {
       const fillNames = ["noFill", "solidFill", "gradFill", "blipFill", "pattFill", "grpFill"];
       for (const fn of fillNames) {
-        const el = g1(spPr, fn);
+        const el = getSpPrChild(fn);
         if (el) return el;
       }
-      const styleEl = g1(spEl, "style");
-      if (styleEl) {
-        const fillRef = g1(styleEl, "fillRef");
-        if (fillRef) {
-          const idx = attrInt(fillRef, "idx", 1);
-          if (idx === 0) return parseXml("<noFill/>").documentElement;
-          const colorChild = findFirstColorChild(fillRef);
-          if (colorChild) {
-            const ns = "http://schemas.openxmlformats.org/drawingml/2006/main";
-            const doc = parseXml('<solidFill xmlns="' + ns + '">' + colorChild.outerHTML + "</solidFill>");
-            return doc.documentElement;
+      const resolveStyleFill = (el) => {
+        const styleEl = g1(el, "style");
+        if (styleEl) {
+          const fillRef = g1(styleEl, "fillRef");
+          if (fillRef) {
+            const idx = attrInt(fillRef, "idx", 1);
+            if (idx === 0) return parseXml("<noFill/>").documentElement;
+            const colorChild = findFirstColorChild(fillRef);
+            if (colorChild) {
+              const ns = "http://schemas.openxmlformats.org/drawingml/2006/main";
+              const doc = parseXml('<solidFill xmlns="' + ns + '">' + colorChild.outerHTML + "</solidFill>");
+              return doc.documentElement;
+            }
           }
         }
-      }
-      return null;
+        return null;
+      };
+      return resolveStyleFill(spEl) || (phSpEl ? resolveStyleFill(phSpEl) : null);
     };
     const getOutline = () => {
-      const ln = g1(spPr, "ln");
+      const ln = getSpPrChild("ln");
       if (ln) return ln;
-      const styleEl = g1(spEl, "style");
-      if (styleEl) {
-        const lnRef = g1(styleEl, "lnRef");
-        if (lnRef) {
-          const idx = attrInt(lnRef, "idx", 1);
-          if (idx === 0) return null;
-          const colorChild = findFirstColorChild(lnRef);
-          if (colorChild) {
-            const ns = "http://schemas.openxmlformats.org/drawingml/2006/main";
-            const doc = parseXml('<ln xmlns="' + ns + '"><solidFill>' + colorChild.outerHTML + "</solidFill></ln>");
-            return doc.documentElement;
+      const resolveStyleOutline = (el) => {
+        const styleEl = g1(el, "style");
+        if (styleEl) {
+          const lnRef = g1(styleEl, "lnRef");
+          if (lnRef) {
+            const idx = attrInt(lnRef, "idx", 1);
+            if (idx === 0) return null;
+            const colorChild = findFirstColorChild(lnRef);
+            if (colorChild) {
+              const ns = "http://schemas.openxmlformats.org/drawingml/2006/main";
+              const doc = parseXml('<ln xmlns="' + ns + '"><solidFill>' + colorChild.outerHTML + "</solidFill></ln>");
+              return doc.documentElement;
+            }
           }
         }
-      }
-      return null;
+        return null;
+      };
+      return resolveStyleOutline(spEl) || (phSpEl ? resolveStyleOutline(phSpEl) : null);
     };
     if (custGeom) {
       const pathLst = g1(custGeom, "pathLst");
@@ -4065,7 +4075,7 @@ var PptxCanvasRenderer = (() => {
         ctx.save();
         ctx.beginPath();
         ctx.rect(x, y, w, h);
-        ctx.clip();
+        // ctx.clip(); // Allow text to overflow the box to prevent cutoffs
         const defSz = getDefaultFontSize(spEl, themeData);
         await renderTextBody(ctx, txBody2, x, y, w, h, scale, themeColors, themeData, defSz);
         ctx.restore();
@@ -4074,9 +4084,13 @@ var PptxCanvasRenderer = (() => {
     }
     ctx.beginPath();
     const pathDrawn = drawPresetGeom(ctx, prst, x, y, w, h, adjValues);
-    const cleanupEffects = applyEffects(ctx, spPr, themeColors, scale);
+    let effectsSpPr = spPr;
+    if (phSpEl && (!spPr || (!g1(spPr, "effectLst") && !g1(spPr, "sp3d")))) {
+      effectsSpPr = g1(phSpEl, "spPr") || spPr;
+    }
+    const cleanupEffects = applyEffects(ctx, effectsSpPr, themeColors, scale);
     const fx3d = x, fy3d = y, fw3d = w, fh3d = h;
-    const effects3d = has3D(spPr) ? setup3D(ctx, spPr, themeColors, fx3d, fy3d, fw3d, fh3d, scale) : null;
+    const effects3d = has3D(effectsSpPr) ? setup3D(ctx, effectsSpPr, themeColors, fx3d, fy3d, fw3d, fh3d, scale) : null;
     try {
       const fillEl = getFill();
       let filled = false;
@@ -4113,7 +4127,7 @@ var PptxCanvasRenderer = (() => {
       }
       ctx.beginPath();
       ctx.rect(x, y, w, h);
-      ctx.clip();
+      // ctx.clip(); // Allow text to overflow the box to prevent cutoffs
       const defSz = getDefaultFontSize(spEl, themeData);
       await renderTextBody(ctx, txBody, x, y, w, h, scale, themeColors, themeData, defSz);
       ctx.restore();
@@ -4219,6 +4233,7 @@ var PptxCanvasRenderer = (() => {
           }
         }
       }
+      ctx.save();
       ctx.beginPath();
       drawPresetGeom(ctx, prst, x, y, w, h, adjValues);
       ctx.clip();
@@ -4244,6 +4259,7 @@ var PptxCanvasRenderer = (() => {
       } else {
         ctx.drawImage(img, x, y, w, h);
       }
+      ctx.restore();
       const lnEl = g1(spPr, "ln");
       if (lnEl) {
         ctx.beginPath();
@@ -4393,12 +4409,7 @@ var PptxCanvasRenderer = (() => {
       ctx.translate(-grpCx, -grpCy);
     }
     for (const child of grpSpEl.children) {
-      const ln = child.localName;
-      if (ln === "sp") await renderShape(ctx, child, rels, imageCache, themeColors, themeData, scale, parentGroup);
-      else if (ln === "pic") await renderPicture(ctx, child, rels, imageCache, themeColors, scale);
-      else if (ln === "grpSp") await renderGroupShape(ctx, child, rels, imageCache, themeColors, themeData, scale);
-      else if (ln === "graphicFrame") await renderGraphicFrame(ctx, child, themeColors, themeData, scale, files, rels);
-      else if (ln === "cxnSp") await renderConnector(ctx, child, themeColors, scale);
+      await renderSpTreeChildNode(ctx, child, rels, imageCache, themeColors, themeData, scale, parentGroup, null, files);
     }
     ctx.restore();
   }
@@ -4598,7 +4609,8 @@ var PptxCanvasRenderer = (() => {
           y: attrInt(off, "y", 0),
           w: attrInt(ext, "cx", 0),
           h: attrInt(ext, "cy", 0),
-          txBody: g1(sp, "txBody")
+          txBody: g1(sp, "txBody"),
+          spEl: sp
         };
       }
     }
@@ -4612,7 +4624,21 @@ var PptxCanvasRenderer = (() => {
     if (!ph) return null;
     const phType = attr(ph, "type", "body");
     const phIdx = attr(ph, "idx", "0");
-    return placeholderMap[`${phType}:${phIdx}`] || placeholderMap[`${phType}:0`] || placeholderMap[`body:${phIdx}`] || null;
+    let typesToCheck = [phType];
+    if (phType === "title" || phType === "ctrTitle" || phType === "subTitle") {
+      typesToCheck = [phType, "title", "ctrTitle", "subTitle"];
+    } else if (phType === "body" || phType === "obj") {
+      typesToCheck = [phType, "body", "obj"];
+    }
+    for (const t of typesToCheck) {
+      const match = placeholderMap[`${t}:${phIdx}`];
+      if (match) return match;
+    }
+    for (const t of typesToCheck) {
+      const match = placeholderMap[`${t}:0`] || placeholderMap[`${t}:`] || placeholderMap[t];
+      if (match) return match;
+    }
+    return placeholderMap[`body:${phIdx}`] || null;
   }
   async function renderGraphicFrame(ctx, graphicFrame, themeColors, themeData, scale, files2, slideRels) {
     const graphic = g1(graphicFrame, "graphic");
@@ -4674,19 +4700,65 @@ var PptxCanvasRenderer = (() => {
     ctx.textBaseline = "alphabetic";
     ctx.restore();
   }
+  function hasUnsupportedFeatures(node, rels) {
+    if (!node || !rels) return false;
+    const findBlips = (n) => {
+      let list = [];
+      if (n.localName === "blip") {
+        list.push(n);
+      }
+      if (n.children) {
+        for (const child of n.children) {
+          list = list.concat(findBlips(child));
+        }
+      }
+      return list;
+    };
+    const blips = findBlips(node);
+    for (const blip of blips) {
+      const rEmbed = blip.getAttribute("r:embed") || blip.getAttribute("embed") || blip.getAttribute("r:link") || blip.getAttribute("link");
+      if (rEmbed && rels[rEmbed]) {
+        const path = rels[rEmbed].fullPath || "";
+        const ext = path.split(".").pop().toLowerCase();
+        if (ext === "wmf" || ext === "emf") {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  async function renderSpTreeChildNode(ctx, child, rels, imageCache, themeColors, themeData, scale, parentGroup, placeholderMap, files2) {
+    const ln = child.localName;
+    try {
+      if (ln === "sp") await renderShape(ctx, child, rels, imageCache, themeColors, themeData, scale, parentGroup, placeholderMap);
+      else if (ln === "pic") await renderPicture(ctx, child, rels, imageCache, themeColors, scale);
+      else if (ln === "grpSp") await renderGroupShape(ctx, child, rels, imageCache, themeColors, themeData, scale);
+      else if (ln === "graphicFrame") await renderGraphicFrame(ctx, child, themeColors, themeData, scale, files2, rels);
+      else if (ln === "cxnSp") await renderConnector(ctx, child, themeColors, scale);
+      else if (ln === "AlternateContent") {
+        const choice = g1(child, "Choice");
+        const fallback = g1(child, "Fallback");
+        let target = choice;
+        if (choice && hasUnsupportedFeatures(choice, rels)) {
+          target = fallback || choice;
+        } else if (!target) {
+          target = fallback;
+        }
+        if (target) {
+          for (const gc of target.children) {
+            await renderSpTreeChildNode(ctx, gc, rels, imageCache, themeColors, themeData, scale, parentGroup, placeholderMap, files2);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Error rendering shape:", ln, e);
+    }
+  }
+
   async function renderSpTree(ctx, spTreeEl, rels, imageCache, themeColors, themeData, scale, placeholderMap, files2) {
     if (!spTreeEl) return;
     for (const child of spTreeEl.children) {
-      const ln = child.localName;
-      try {
-        if (ln === "sp") await renderShape(ctx, child, rels, imageCache, themeColors, themeData, scale, null, placeholderMap);
-        else if (ln === "pic") await renderPicture(ctx, child, rels, imageCache, themeColors, scale);
-        else if (ln === "grpSp") await renderGroupShape(ctx, child, rels, imageCache, themeColors, themeData, scale);
-        else if (ln === "graphicFrame") await renderGraphicFrame(ctx, child, themeColors, themeData, scale, files2, rels);
-        else if (ln === "cxnSp") await renderConnector(ctx, child, themeColors, scale);
-      } catch (e) {
-        console.warn("Error rendering shape:", ln, e);
-      }
+      await renderSpTreeChildNode(ctx, child, rels, imageCache, themeColors, themeData, scale, null, placeholderMap, files2);
     }
   }
   var init_render = __esm({
@@ -7507,12 +7579,12 @@ ${xrefOffset}
         if (!tEl) continue;
         const text = tEl.textContent;
         if (!text) continue;
-        const fi = buildFontInherited(rEl, defRPr, lstDefRPr, themeColors, themeData, paraDefSz);
+        const fi = buildFontInherited(rPr, defRPr, 1 / 9525, themeData, paraDefSz, lstDefRPr);
         const szPx = fi?.szPx || paraDefSz / 100 / 72 * 96;
         const family = fi?.family || "sans-serif";
         const bold = fi?.bold ? "bold" : "normal";
         const italic = fi?.italic ? "italic" : "normal";
-        const color = fi?.color ? colorToCss(fi.color) : "#000000";
+        const color = getRunColorInherited(rPr, defRPr, themeColors) || "#000000";
         const underline = rPr ? (rPr.getAttribute("u") || "none") !== "none" : false;
         const strike = rPr ? (rPr.getAttribute("strike") || "noStrike") !== "noStrike" : false;
         const baseline2 = rPr ? parseInt(rPr.getAttribute("baseline") || "0", 10) : 0;

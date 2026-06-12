@@ -1,6 +1,16 @@
 /* myMoodle ULTRA - Document Viewer Styles */
 
 .ultramoodle-viewer-backdrop {
+  /* Force dark theme palette inside the document viewer (since the backdrop is always dark) */
+  --ultra-bg: #0a0d14;
+  --ultra-surface: #151a24;
+  --ultra-surface-hover: #1e2535;
+  --ultra-border: #1d2633;
+  --ultra-text-main: #ffffff;
+  --ultra-text-sub: #8b95a5;
+  --ultra-accent: #ff8a00;
+  --ultra-accent-rgb: 255, 138, 0;
+
   position: fixed;
   top: 0;
   left: 0;
@@ -217,7 +227,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  overflow-y: auto;
+  overflow: hidden;
   overflow-x: hidden;
   position: relative;
   background: radial-gradient(circle at center, rgba(21, 26, 36, 0.3) 0%, rgba(10, 13, 20, 0) 80%);
@@ -283,39 +293,26 @@
   color: #1d4ed8 !important;
 }
 
-/* PPTX Specific Container styling */
-.ultramoodle-viewer-container-pptx {
-  width: 90%;
-  height: 80%;
-  max-width: 1100px;
-  max-height: 620px;
-  aspect-ratio: 16/9;
+/* PPTX Office Online Container styling */
+.ultramoodle-viewer-container-pptx-office {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  align-self: stretch;
   background: #151a24;
   border-radius: 12px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--ultra-border);
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  display: block;
   transform: scale(0.98);
   opacity: 0;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
 }
 
-.ultramoodle-viewer-container-pptx.loaded {
+.ultramoodle-viewer-container-pptx-office.loaded {
   transform: scale(1);
   opacity: 1;
-}
-
-.ultramoodle-viewer-pptx-canvas {
-  max-width: 100%;
-  max-height: 100%;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #ffffff;
 }
 
 /* Bottom Controls for PPTX */
@@ -345,36 +342,47 @@
 }
 
 .ultramoodle-viewer-control-btn {
-  background: transparent;
-  border: none;
-  color: var(--ultra-text-main);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  background: transparent !important;
+  border: none !important;
+  color: var(--ultra-text-main) !important;
+  cursor: pointer !important;
+  padding: 6px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+.ultramoodle-viewer-control-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+  display: inline-block !important;
 }
 
 .ultramoodle-viewer-control-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--ultra-accent);
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--ultra-accent) !important;
 }
 
 .ultramoodle-viewer-control-btn:disabled {
-  color: var(--ultra-text-sub);
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: transparent;
+  color: var(--ultra-text-sub) !important;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: transparent !important;
 }
 
 .ultramoodle-viewer-page-indicator {
-  font-size: 13px;
-  font-weight: 600;
-  min-width: 60px;
-  text-align: center;
-  letter-spacing: 0.5px;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  min-width: 60px !important;
+  text-align: center !important;
+  letter-spacing: 0.5px !important;
+  color: var(--ultra-text-main) !important;
 }
 
 .ultramoodle-viewer-divider {
@@ -486,4 +494,251 @@
 .activity-item .accesshide {
   display: none;
 }
+
+/* Text Mode specific styles */
+.ultramoodle-viewer-pptx-textmode-container {
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--ultra-text-main);
+  background: var(--ultra-surface);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  border: 1px solid var(--ultra-border);
+}
+
+.ultramoodle-viewer-textmode-slide {
+  border-bottom: 1px dashed var(--ultra-border);
+  padding-bottom: 32px;
+  margin-bottom: 8px;
+}
+
+.ultramoodle-viewer-textmode-slide:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.ultramoodle-viewer-textmode-slide-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ultra-accent);
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+  background: rgba(255, 138, 0, 0.08);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 138, 0, 0.2);
+  user-select: none;
+}
+
+.ultramoodle-viewer-textmode-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-left: 4px solid var(--ultra-accent);
+  padding-left: 12px;
+  line-height: 1.3;
+}
+
+.ultramoodle-viewer-textmode-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ultra-text-sub);
+  margin-top: 0;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.ultramoodle-viewer-textmode-shape {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.ultramoodle-viewer-textmode-shape p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+.ultramoodle-viewer-textmode-bullet {
+  color: var(--ultra-accent);
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.ultramoodle-viewer-control-btn.active {
+  background: rgba(255, 138, 0, 0.2) !important;
+  color: var(--ultra-accent) !important;
+  border-color: rgba(255, 138, 0, 0.4) !important;
+}
+
+/* Tables in Text Mode */
+.ultramoodle-viewer-textmode-table-wrapper {
+  overflow-x: auto;
+  margin: 16px 0;
+  border: 1px solid var(--ultra-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ultramoodle-viewer-textmode-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.ultramoodle-viewer-textmode-table td, 
+.ultramoodle-viewer-textmode-table th {
+  padding: 12px 16px;
+  border: 1px solid var(--ultra-border);
+  color: var(--ultra-text-main);
+  vertical-align: top;
+}
+
+.ultramoodle-viewer-textmode-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Speaker Notes in Text Mode */
+.ultramoodle-viewer-textmode-notes {
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid var(--ultra-border);
+}
+
+.ultramoodle-viewer-textmode-notes-header {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ultra-accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ultramoodle-viewer-textmode-notes-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ultra-text-sub);
+}
+
+/* Confirmation dialog for external upload */
+.ultramoodle-viewer-confirm-dialog-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 13, 20, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.ultramoodle-viewer-confirm-dialog {
+  background: var(--ultra-surface);
+  border: 1px solid var(--ultra-border);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  color: var(--ultra-text-main);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: scale(0.95);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ultramoodle-viewer-confirm-dialog h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ultramoodle-viewer-confirm-dialog p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ultra-text-sub);
+}
+
+.ultramoodle-viewer-confirm-dialog .warning-box {
+  background: rgba(255, 138, 0, 0.08);
+  border-left: 4px solid var(--ultra-accent);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ultra-text-main);
+}
+
+.ultramoodle-viewer-confirm-dialog .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ultramoodle-viewer-confirm-dialog button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.ultramoodle-viewer-confirm-dialog .btn-cancel {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ultramoodle-viewer-confirm-dialog .btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ultramoodle-viewer-confirm-dialog .btn-confirm {
+  background: var(--ultra-accent);
+  color: #ffffff;
+}
+
+.ultramoodle-viewer-confirm-dialog .btn-confirm:hover {
+  background: rgba(255, 138, 0, 0.85);
+}
+
+.ultramoodle-viewer-confirm-dialog .btn-confirm:disabled {
+  background: var(--ultra-border) !important;
+  color: var(--ultra-text-sub) !important;
+  cursor: not-allowed;
+}
+
 
