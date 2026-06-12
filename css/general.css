@@ -910,17 +910,20 @@ img[src*="/f/pdf"] {
 
 img[src*="/f/document"],
 img[src*="/f/docx"],
-img[src*="/f/doc"] {
+img[src*="/f/doc"],
+img[src*="/f/word"] {
   content: var(--ultra-word-icon) !important;
 }
 
 img[src*="/f/presentation"],
+img[src*="/f/powerpoint"],
 img[src*="/f/pptx"],
 img[src*="/f/ppt"] {
   content: var(--ultra-powerpoint-icon) !important;
 }
 
 img[src*="/f/spreadsheet"],
+img[src*="/f/excel"],
 img[src*="/f/xlsx"],
 img[src*="/f/xls"] {
   content: var(--ultra-excel-icon) !important;
@@ -931,10 +934,13 @@ img[src*="/f/pdf"],
 img[src*="/f/document"],
 img[src*="/f/docx"],
 img[src*="/f/doc"],
+img[src*="/f/word"],
 img[src*="/f/presentation"],
+img[src*="/f/powerpoint"],
 img[src*="/f/pptx"],
 img[src*="/f/ppt"],
 img[src*="/f/spreadsheet"],
+img[src*="/f/excel"],
 img[src*="/f/xlsx"],
 img[src*="/f/xls"],
 .ultramoodle-custom-icon {

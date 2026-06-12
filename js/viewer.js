@@ -66,7 +66,7 @@
       return;
     }
 
-    // T key to switch from Text Mode modal to Office Online (new tab)
+    // T key to switch from Text Mode modal to Google Docs (new tab)
     if (activeDocumentBuffer && (e.key === 't' || e.key === 'T')) {
       const fileUrl = documentFileUrl;
       const fileName = documentFileName;
@@ -135,17 +135,9 @@
   });
 
   /**
-   * Launch Office Online viewer in a new tab with background upload
+   * Launch Google Docs Viewer in a new tab with background upload
    */
-  function launchOfficeOnlineNewTab(fileUrl, fileName, fileType) {
-    const isPptx = fileType === 'powerpoint';
-    const mimeType = isPptx 
-      ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    const uploadFileName = isPptx ? 'presentation.pptx' : 'document.docx';
-    const officeServiceLabel = isPptx ? 'PowerPoint Online' : 'Word Online';
-    const docLabel = isPptx ? 'le diaporama' : 'le document';
-
+  function launchExternalViewerNewTab(fileUrl, fileName, fileType) {
     const newTab = window.open('', '_blank');
     if (newTab) {
       newTab.document.open();
@@ -230,39 +222,71 @@
         if (!response.ok) {
           throw new Error(`Erreur réseau : ${response.status}`);
         }
-        return response.arrayBuffer();
-      })
-      .then(async (arrayBuffer) => {
+        
+        // Detect actual MIME type and extension from response headers or URL
+        const contentType = response.headers.get('content-type') || '';
+        const finalUrl = response.url || fileUrl;
+        
+        let detectedExtension = '';
+        let detectedMime = '';
+        
+        if (contentType.includes('wordprocessingml') || finalUrl.endsWith('.docx')) {
+          detectedExtension = 'docx';
+          detectedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        } else if (contentType.includes('msword') || finalUrl.endsWith('.doc')) {
+          detectedExtension = 'doc';
+          detectedMime = 'application/msword';
+        } else if (contentType.includes('presentationml') || finalUrl.endsWith('.pptx')) {
+          detectedExtension = 'pptx';
+          detectedMime = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+        } else if (contentType.includes('powerpoint') || contentType.includes('mspowerpoint') || finalUrl.endsWith('.ppt')) {
+          detectedExtension = 'ppt';
+          detectedMime = 'application/vnd.ms-powerpoint';
+        } else {
+          detectedExtension = fileType === 'powerpoint' ? 'pptx' : 'docx';
+          detectedMime = fileType === 'powerpoint' 
+            ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+            : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        }
+
+        const isPptx = detectedExtension === 'pptx' || detectedExtension === 'ppt';
+        const docLabel = isPptx ? 'le diaporama' : 'le document';
+        const uploadFileName = isPptx 
+          ? (detectedExtension === 'pptx' ? 'presentation.pptx' : 'presentation.ppt')
+          : (detectedExtension === 'docx' ? 'document.docx' : 'document.doc');
+
         if (newTab) {
           const statusEl = newTab.document.getElementById('status');
-          if (statusEl) statusEl.textContent = "Téléversement sécurisé (tmpfiles)...";
+          if (statusEl) statusEl.textContent = "Téléversement sécurisé (Google Docs)...";
         }
 
-        const blob = new Blob([arrayBuffer], { type: mimeType });
-        const formData = new FormData();
-        formData.append('file', blob, uploadFileName);
+        return response.arrayBuffer().then(async (arrayBuffer) => {
+          const blob = new Blob([arrayBuffer], { type: detectedMime });
+          const formData = new FormData();
+          formData.append('file', blob, uploadFileName);
 
-        const response = await fetch('https://tmpfiles.org/api/v1/upload', {
-          method: 'POST',
-          body: formData
-        });
+          const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+            method: 'POST',
+            body: formData
+          });
 
-        if (!response.ok) {
-          throw new Error(`Erreur réseau : ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data.status === 'success' && data.data && data.data.url) {
-          const uploadUrl = data.data.url;
-          const directUrl = uploadUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-          const officeUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(directUrl)}`;
-          
-          if (newTab) {
-            newTab.location.href = officeUrl;
+          if (!response.ok) {
+            throw new Error(`Erreur réseau : ${response.status}`);
           }
-        } else {
-          throw new Error(data.message || "Réponse invalide du serveur");
-        }
+
+          const data = await response.json();
+          if (data.status === 'success' && data.data && data.data.url) {
+            const uploadUrl = data.data.url;
+            const directUrl = uploadUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(directUrl)}`;
+            
+            if (newTab) {
+              newTab.location.href = viewerUrl;
+            }
+          } else {
+            throw new Error(data.message || "Réponse invalide du serveur");
+          }
+        });
       })
       .catch(err => {
         console.error('[myMoodle ULTRA] Error uploading document to tmpfiles.org:', err);
@@ -274,8 +298,8 @@
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <div class="status-text" style="color:#ef4444; font-weight:600; font-size:18px;">Échec du visualiseur Office</div>
-            <p style="font-size:13px; color:#8b95a5; margin: 8px 0 0 0; max-width: 380px; text-align: center; line-height: 1.5;">Le service n'a pas pu héberger temporairement ${docLabel}. Veuillez réessayer ou télécharger le fichier directement.</p>
+            <div class="status-text" style="color:#ef4444; font-weight:600; font-size:18px;">Échec du visualiseur Google</div>
+            <p style="font-size:13px; color:#8b95a5; margin: 8px 0 0 0; max-width: 380px; text-align: center; line-height: 1.5;">Le service n'a pas pu héberger temporairement le document. Veuillez réessayer ou télécharger le fichier directement.</p>
             <a href="${fileUrl}" class="btn" download="${fileName}">Télécharger le document</a>
           `;
         }
@@ -498,9 +522,9 @@
   window.openDocumentViewer = function (fileUrl, fileName, fileType, initialMode = 'office') {
     console.log('[myMoodle ULTRA] openDocumentViewer:', fileUrl, fileName, fileType, initialMode);
     
-    // If the user wants visuel (Office Online), open in a new tab and exit
+    // If the user wants visuel (Google Docs Viewer), open in a new tab and exit
     if (initialMode === 'office') {
-      launchOfficeOnlineNewTab(fileUrl, fileName, fileType);
+      launchExternalViewerNewTab(fileUrl, fileName, fileType);
       return;
     }
 
@@ -556,13 +580,13 @@
           
           <!-- Floating control toolbar -->
           <div class="ultramoodle-viewer-pptx-controls" id="ultramoodle-viewer-pptx-controls">
-            <button class="ultramoodle-viewer-control-btn active" id="ultramoodle-viewer-btn-toggle-mode" title="Ouvrir dans Office Online (Office 365)" style="padding: 6px 12px !important; border-radius: 20px !important; display: inline-flex !important; align-items: center; gap: 8px;">
+            <button class="ultramoodle-viewer-control-btn active" id="ultramoodle-viewer-btn-toggle-mode" title="Ouvrir dans Google Docs Viewer" style="padding: 6px 12px !important; border-radius: 20px !important; display: inline-flex !important; align-items: center; gap: 8px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                 <line x1="8" y1="21" x2="16" y2="21"></line>
                 <line x1="12" y1="17" x2="12" y2="21"></line>
               </svg>
-              <span id="ultramoodle-viewer-toggle-btn-text" style="font-size: 12px; font-weight: 600;">Visualiseur Office</span>
+              <span id="ultramoodle-viewer-toggle-btn-text" style="font-size: 12px; font-weight: 600;">Visualiseur Google</span>
             </button>
             
             <div class="ultramoodle-viewer-divider"></div>
@@ -607,16 +631,62 @@
         if (!response.ok) {
           throw new Error(`Erreur réseau : ${response.status}`);
         }
+        
+        // Detect actual MIME type and extension from response headers or URL
+        const contentType = response.headers.get('content-type') || '';
+        const finalUrl = response.url || fileUrl;
+        
+        let detectedExtension = '';
+        let detectedMime = '';
+        
+        if (contentType.includes('wordprocessingml') || finalUrl.endsWith('.docx')) {
+          detectedExtension = 'docx';
+          detectedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        } else if (contentType.includes('msword') || finalUrl.endsWith('.doc')) {
+          detectedExtension = 'doc';
+          detectedMime = 'application/msword';
+        } else if (contentType.includes('presentationml') || finalUrl.endsWith('.pptx')) {
+          detectedExtension = 'pptx';
+          detectedMime = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+        } else if (contentType.includes('powerpoint') || contentType.includes('mspowerpoint') || finalUrl.endsWith('.ppt')) {
+          detectedExtension = 'ppt';
+          detectedMime = 'application/vnd.ms-powerpoint';
+        } else {
+          detectedExtension = fileType === 'powerpoint' ? 'pptx' : 'docx';
+          detectedMime = fileType === 'powerpoint' 
+            ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+            : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        }
+
+        // If it's a binary .doc or .ppt format, we cannot preview it locally.
+        // Alert the user and redirect to the corresponding external viewer.
+        if (detectedExtension === 'doc' || detectedExtension === 'ppt') {
+          const loaderText = document.getElementById('ultramoodle-viewer-loader-text');
+          const viewerLabel = detectedExtension === 'doc' ? 'Google Docs Viewer (format .doc)' : 'Google Docs Viewer (format .ppt)';
+          if (loaderText) {
+            loaderText.textContent = `Format ancien détecté. Redirection vers ${viewerLabel}...`;
+            loaderText.style.color = 'var(--ultra-accent)';
+          }
+          
+          setTimeout(() => {
+            closeDocumentViewer();
+            window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
+          }, 1500);
+          
+          return null; // Stop chain
+        }
+
         return response.arrayBuffer();
       })
       .then(async (arrayBuffer) => {
+        if (!arrayBuffer) return; // Redirection handled
+
         activeDocumentBuffer = arrayBuffer;
         
         // Bind toolbar buttons for the modal
         const toggleBtn = document.getElementById('ultramoodle-viewer-btn-toggle-mode');
         if (toggleBtn) {
           toggleBtn.addEventListener('click', () => {
-            // Close modal and open in a new tab
             closeDocumentViewer();
             window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
           });
@@ -650,7 +720,7 @@
               </svg>
               <div class="ultramoodle-viewer-loader-text" style="color:#ef4444; font-weight:600;">Échec de la liseuse</div>
               <p style="font-size:12px; color:var(--ultra-text-sub); margin-top:8px;">Nous n'avons pas pu charger le fichier. Le document nécessite peut-être une authentification active ou est indisponible.</p>
-              <a href="${fileUrl}" class="ultramoodle-viewer-btn ultramoodle-viewer-btn-primary" style="margin-top:16px; width: 100%; padding: 8px 16px;" download="${fileName}">
+              <a href="${fileUrl}" class="btn btn-primary" style="margin-top:16px; width: 100%; padding: 8px 16px;" download="${fileName}">
                 Télécharger le document
               </a>
             </div>
