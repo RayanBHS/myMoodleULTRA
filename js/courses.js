@@ -8,6 +8,83 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
   });
 }
 
+// Global capturing listener to hijack events on myMoodle ULTRA preview and modal buttons.
+// This is registered at the window capture level to run before Moodle's native scripts.
+(function () {
+  const stopEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
+  
+  stopEvents.forEach(evt => {
+    window.addEventListener(evt, (e) => {
+      const target = e.target;
+      if (!target) return;
+
+      // 1. Intercept custom course preview buttons (.ultramoodle-btn-preview)
+      const previewBtn = target.closest && target.closest('.ultramoodle-btn-preview');
+      if (previewBtn) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        if (evt === 'click') {
+          const fileUrl = previewBtn.dataset.fileUrl;
+          const fileName = previewBtn.dataset.fileName;
+          const fileType = previewBtn.dataset.fileType;
+          const mode = previewBtn.dataset.mode;
+
+          if (window.openDocumentViewer) {
+            window.openDocumentViewer(fileUrl, fileName, fileType, mode);
+          } else {
+            console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
+          }
+        }
+        return;
+      }
+
+      // 2. Intercept download links inside our modal (#ultramoodle-doc-viewer a[download])
+      const downloadLink = target.closest && target.closest('#ultramoodle-doc-viewer a[download]');
+      if (downloadLink) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        if (evt === 'click') {
+          const fileUrl = downloadLink.href;
+          const fileName = downloadLink.download || downloadLink.getAttribute('download') || 'document';
+
+          // Trigger download using a completely disconnected anchor element to bypass global handlers
+          const a = document.createElement('a');
+          a.href = fileUrl;
+          a.download = fileName;
+          a.click();
+        }
+        return;
+      }
+
+      // 3. Intercept toggle visualizer button inside our modal (#ultramoodle-viewer-btn-toggle-mode)
+      const toggleBtn = target.closest && target.closest('#ultramoodle-viewer-btn-toggle-mode');
+      if (toggleBtn) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        if (evt === 'click') {
+          const fileUrl = toggleBtn.dataset.fileUrl;
+          const fileName = toggleBtn.dataset.fileName;
+          const fileType = toggleBtn.dataset.fileType;
+
+          if (window.closeDocumentViewer) {
+            window.closeDocumentViewer();
+          }
+          if (window.openDocumentViewer) {
+            window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
+          }
+        }
+        return;
+      }
+    }, { capture: true, passive: false });
+  });
+})();
+
 const getCourseOverviewContainer = () => {
   return document.querySelector('[data-block="myoverview"], .block_myoverview, [data-region="course-overview"]');
 };
@@ -2161,36 +2238,16 @@ const customizeResourceIcons = () => {
         
         const fileType = isWord ? 'word' : 'powerpoint';
 
-        const stopEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
-        stopEvents.forEach(evt => {
-          previewBtn.addEventListener(evt, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (evt === 'click') {
-              if (window.openDocumentViewer) {
-                window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
-              } else {
-                console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
-              }
-            }
-          });
+        // Store file metadata on the buttons for the global capturing listener
+        previewBtn.dataset.fileUrl = fileUrl;
+        previewBtn.dataset.fileName = fileName;
+        previewBtn.dataset.fileType = fileType;
+        previewBtn.dataset.mode = 'office';
 
-          if (textBtn) {
-            textBtn.addEventListener(evt, (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              
-              if (evt === 'click') {
-                if (window.openDocumentViewer) {
-                  window.openDocumentViewer(fileUrl, fileName, fileType, 'text');
-                } else {
-                  console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
-                }
-              }
-            });
-          }
-        });
+        textBtn.dataset.fileUrl = fileUrl;
+        textBtn.dataset.fileName = fileName;
+        textBtn.dataset.fileType = fileType;
+        textBtn.dataset.mode = 'text';
         
         // Disable parent link hover effect when hovering either preview button
         [previewBtn, textBtn].forEach(btn => {

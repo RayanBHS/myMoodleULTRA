@@ -580,7 +580,7 @@
           
           <!-- Floating control toolbar -->
           <div class="ultramoodle-viewer-pptx-controls" id="ultramoodle-viewer-pptx-controls">
-            <button class="ultramoodle-viewer-control-btn active" id="ultramoodle-viewer-btn-toggle-mode" title="Ouvrir dans Google Docs Viewer" style="padding: 6px 12px !important; border-radius: 20px !important; display: inline-flex !important; align-items: center; gap: 8px;">
+            <button class="ultramoodle-viewer-control-btn active" id="ultramoodle-viewer-btn-toggle-mode" data-file-url="${fileUrl}" data-file-name="${fileName}" data-file-type="${fileType}" title="Ouvrir dans Google Docs Viewer" style="padding: 6px 12px !important; border-radius: 20px !important; display: inline-flex !important; align-items: center; gap: 8px;">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                 <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -684,13 +684,6 @@
         activeDocumentBuffer = arrayBuffer;
         
         // Bind toolbar buttons for the modal
-        const toggleBtn = document.getElementById('ultramoodle-viewer-btn-toggle-mode');
-        if (toggleBtn) {
-          toggleBtn.addEventListener('click', () => {
-            closeDocumentViewer();
-            window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
-          });
-        }
         const fsBtn = document.getElementById('ultramoodle-viewer-btn-fullscreen');
         if (fsBtn) {
           fsBtn.addEventListener('click', toggleFullscreen);
@@ -728,5 +721,7 @@
         }
       });
   };
+
+  window.closeDocumentViewer = closeDocumentViewer;
 
 })();
