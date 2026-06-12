@@ -2163,6 +2163,16 @@ const customizeResourceIcons = () => {
           });
         });
         
+        // Disable parent link hover effect when hovering the preview button
+        previewBtn.addEventListener('mouseenter', () => {
+          linkEl.style.setProperty('pointer-events', 'none', 'important');
+          linkEl.style.setProperty('text-decoration', 'none', 'important');
+        });
+        previewBtn.addEventListener('mouseleave', () => {
+          linkEl.style.removeProperty('pointer-events');
+          linkEl.style.removeProperty('text-decoration');
+        });
+        
         linkEl.after(previewBtn);
       }
     }
