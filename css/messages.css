@@ -1,0 +1,1608 @@
+/* myMoodle ULTRA - Apple iMessage Styling Aesthetics */
+
+/* --- Full Screen App Layout Overrides for /message/index.php --- */
+body.path-message #page-header,
+body.path-message #page-footer,
+body.path-message #block-region-side-pre,
+body.path-message .nav-drawer,
+body.path-message #nav-drawer,
+body.path-message .navbar,
+body.path-message header.navbar {
+  display: none !important;
+}
+
+body.path-message #page {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body.path-message #page-content {
+  padding: 0 !important;
+  height: 100vh !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  background-color: var(--ultra-bg) !important;
+}
+
+body.path-message #region-main-box,
+body.path-message #region-main,
+body.path-message .card,
+body.path-message .card-body {
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100vh !important;
+  max-width: 100% !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Hide Moodle's native content inside region-main except our custom UI app */
+body.path-message #region-main > *:not(.oneui-messaging-app) {
+  display: none !important;
+}
+
+/* --- Apple macOS iMessage Style Container --- */
+.oneui-messaging-app {
+  position: fixed !important; /* Standalone Full Viewport Fixed position (Responsiveness Fix) */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important; /* Float on top of everything to block background Moodle leaks */
+  display: flex !important;
+  flex-direction: row !important;
+  background-color: var(--ultra-bg) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  overflow: hidden !important;
+}
+
+/* --- Left Column: Conversations List (Google Messages style) --- */
+.oneui-left-panel {
+  width: 420px !important;
+  min-width: 380px !important;
+  max-width: 500px !important;
+  border-right: 1px solid var(--ultra-border) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+.ultramoodle-light .oneui-left-panel {
+  background-color: #f8fafd !important; /* Soft blue-gray Android-style background */
+}
+.ultramoodle-dark .oneui-left-panel {
+  background-color: #1e1f20 !important; /* Android-style dark background */
+}
+
+/* Top Navigation Pills (myMoodle & myEfrei) */
+.oneui-top-navigation-pills {
+  display: flex !important;
+  gap: 8px !important;
+  padding: 14px 20px 0 20px !important;
+}
+
+.nav-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px 14px !important;
+  border-radius: 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  transition: opacity 0.2s, transform 0.1s !important;
+}
+
+.nav-pill:hover {
+  opacity: 0.9 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.nav-pill:active {
+  transform: scale(0.95) !important;
+}
+
+.pill-moodle {
+  background-color: #f07f19 !important; /* Moodle Orange */
+}
+
+.pill-efrei {
+  background-color: #1a73e8 !important; /* Efrei Blue */
+}
+
+/* Google Messages Style Header */
+.oneui-message-header {
+  padding: 16px 20px 14px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.oneui-message-title-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 90px 0 52px 0 !important; /* Spacious top and bottom margin (5x larger + 2px bottom) */
+  width: 100% !important;
+}
+
+/* Messages Title Branding (Center aligned & Spacious) */
+.oneui-messages-title {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.5px !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+/* Unified filter + actions row styling */
+.oneui-message-tabs-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 12px !important;
+}
+
+/* Right actions in header */
+.oneui-header-right-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* Search toggle button */
+.oneui-search-toggle-btn {
+  background: none !important;
+  border: none !important;
+  color: #5f6368 !important;
+  cursor: pointer !important;
+  padding: 6px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+.ultramoodle-dark .oneui-search-toggle-btn {
+  color: #c7c7cc !important;
+}
+
+.oneui-search-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
+}
+.ultramoodle-dark .oneui-search-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* User profile button with clean border theme */
+.oneui-user-profile-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  background-color: transparent !important;
+  border: 2px solid var(--ultra-border) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  transition: transform 0.2s, border-color 0.2s !important;
+  overflow: hidden !important;
+}
+
+.oneui-user-profile-btn:hover {
+  transform: scale(1.05) !important;
+  border-color: var(--ultra-accent) !important;
+}
+
+.oneui-profile-inner {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  background-color: var(--ultra-surface) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--ultra-accent) !important;
+}
+
+.ultramoodle-dark .oneui-profile-inner {
+  background-color: #1e1f20 !important;
+  color: var(--ultra-accent) !important;
+}
+
+.oneui-profile-inner img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+/* Google-style search bar pill */
+.oneui-search-bar-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-radius: 24px !important;
+  padding: 8px 16px !important;
+  border: 1px solid var(--ultra-border) !important;
+  margin-top: 4px !important;
+}
+
+.ultramoodle-light .oneui-search-bar-wrapper {
+  background-color: #ffffff !important;
+  border-color: #dadce0 !important;
+}
+.ultramoodle-dark .oneui-search-bar-wrapper {
+  background-color: #303134 !important;
+  border-color: #3c4043 !important;
+}
+
+.oneui-search-bar-wrapper .search-icon {
+  display: flex !important;
+  align-items: center !important;
+  color: #8e8e93 !important;
+}
+
+.oneui-search-input {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  width: 100% !important;
+  color: var(--ultra-text-main) !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+}
+
+.oneui-search-input::placeholder {
+  color: #8e8e93 !important;
+}
+
+/* Google Material You Filter Chips */
+.oneui-message-tabs {
+  display: flex !important;
+  gap: 8px !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  margin-top: 4px !important;
+}
+
+.ultramoodle-light .oneui-message-tabs,
+.ultramoodle-dark .oneui-message-tabs {
+  background-color: transparent !important;
+}
+
+.oneui-tab {
+  flex: none !important;
+  padding: 6px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 18px !important;
+  border: 1px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.ultramoodle-light .oneui-tab {
+  background-color: #f1f3f4 !important;
+  color: #5f6368 !important;
+  border-color: #dadce0 !important;
+}
+.ultramoodle-dark .oneui-tab {
+  background-color: #303134 !important;
+  color: #e8eaed !important;
+  border-color: #3c4043 !important;
+}
+
+.ultramoodle-light .oneui-tab:hover {
+  background-color: #e8eaed !important;
+}
+.ultramoodle-dark .oneui-tab:hover {
+  background-color: #3c4043 !important;
+}
+
+.ultramoodle-light .oneui-tab.active {
+  background-color: #e8f0fe !important;
+  color: #1a73e8 !important;
+  border-color: #d2e3fc !important;
+  box-shadow: none !important;
+}
+.ultramoodle-dark .oneui-tab.active {
+  background-color: #004a77 !important;
+  color: #c2e7ff !important;
+  border-color: #004a77 !important;
+  box-shadow: none !important;
+}
+
+/* Conversation Scroll List (Google Messages Rounded Card) */
+.oneui-conv-list {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 16px 8px !important;
+  border-radius: 28px 28px 0 0 !important;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02) !important;
+}
+
+.ultramoodle-light .oneui-conv-list {
+  background-color: #ffffff !important;
+  border-top: 1px solid #eef2f6 !important;
+}
+.ultramoodle-dark .oneui-conv-list {
+  background-color: #131314 !important;
+  border-top: 1px solid #28282b !important;
+}
+
+.oneui-conv-list::-webkit-scrollbar,
+.oneui-chat-history::-webkit-scrollbar {
+  width: 5px !important;
+}
+.oneui-conv-list::-webkit-scrollbar-thumb,
+.oneui-chat-history::-webkit-scrollbar-thumb {
+  border-radius: 4px !important;
+}
+.ultramoodle-light .oneui-conv-list::-webkit-scrollbar-thumb,
+.ultramoodle-light .oneui-chat-history::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.12) !important;
+}
+.ultramoodle-dark .oneui-conv-list::-webkit-scrollbar-thumb,
+.ultramoodle-dark .oneui-chat-history::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.12) !important;
+}
+
+/* Conversation Item styled as Google Messages list items */
+.oneui-conv-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 14px 16px !important;
+  margin: 4px 8px !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: background-color 0.2s, transform 0.1s !important;
+  border: none !important;
+}
+
+.ultramoodle-light .oneui-conv-item:hover {
+  background-color: #f1f3f4 !important;
+}
+.ultramoodle-dark .oneui-conv-item:hover {
+  background-color: #202124 !important;
+}
+
+/* Material You Active Item styling */
+.ultramoodle-light .oneui-conv-item.active {
+  background-color: #e8f0fe !important;
+  color: #1967d2 !important;
+}
+.ultramoodle-dark .oneui-conv-item.active {
+  background-color: #004a77 !important;
+  color: #c2e7ff !important;
+}
+
+/* Avatars */
+.oneui-conv-avatar-wrapper {
+  position: relative !important;
+  width: 46px !important;
+  height: 46px !important;
+  flex-shrink: 0 !important;
+}
+
+.oneui-conv-avatar {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+.oneui-conv-avatar-initials {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 50% !important;
+  background-color: #d3e3fd !important;
+  color: #041e49 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  border: none !important;
+}
+
+.ultramoodle-dark .oneui-conv-avatar-initials {
+  background-color: #004a77 !important;
+  color: #c2e7ff !important;
+}
+
+/* RCS Unread Status Badge overlaying avatar bottom-right */
+.oneui-conv-status-badge {
+  position: absolute !important;
+  bottom: -2px !important;
+  right: -2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  background-color: #1a73e8 !important; /* Google Blue */
+  border: 2px solid #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  z-index: 20 !important;
+}
+.ultramoodle-dark .oneui-conv-status-badge {
+  border-color: #131314 !important;
+  background-color: #8ab4f8 !important;
+}
+
+.oneui-conv-status-badge::after {
+  content: "" !important;
+  width: 6px !important;
+  height: 6px !important;
+  background-color: #ffffff !important;
+  border-radius: 50% !important;
+}
+.ultramoodle-dark .oneui-conv-status-badge::after {
+  background-color: #131314 !important;
+}
+
+/* Details and Indented Divider styling */
+.oneui-conv-details {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  border-bottom: none !important; /* Remove separators entirely */
+}
+
+.oneui-conv-top-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  margin-bottom: 2px !important;
+}
+
+.oneui-conv-name {
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+  color: var(--ultra-text-main) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.oneui-conv-item.unread .oneui-conv-name {
+  font-weight: 700 !important;
+}
+
+.oneui-conv-time {
+  font-size: 11px !important;
+  color: var(--ultra-text-sub) !important;
+  flex-shrink: 0 !important;
+}
+
+.ultramoodle-light .oneui-conv-item.active .oneui-conv-time {
+  color: #1967d2 !important;
+}
+.ultramoodle-dark .oneui-conv-item.active .oneui-conv-time {
+  color: #c2e7ff !important;
+}
+
+.oneui-conv-bottom-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.oneui-conv-preview {
+  font-size: 13px !important;
+  color: var(--ultra-text-sub) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.oneui-conv-item.unread .oneui-conv-preview {
+  font-weight: 600 !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.ultramoodle-light .oneui-conv-item.active .oneui-conv-preview {
+  color: #1967d2 !important;
+  opacity: 0.8 !important;
+}
+.ultramoodle-dark .oneui-conv-item.active .oneui-conv-preview {
+  color: #c2e7ff !important;
+  opacity: 0.8 !important;
+}
+
+.ultramoodle-light .oneui-conv-item.active .oneui-conv-name {
+  color: #1967d2 !important;
+}
+.ultramoodle-dark .oneui-conv-item.active .oneui-conv-name {
+  color: #c2e7ff !important;
+}
+
+
+/* --- Right Column: Active Conversation (iMessage Chat Room style) --- */
+.oneui-right-panel {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: var(--ultra-bg) !important; /* Overriden below */
+  position: relative !important;
+}
+
+.ultramoodle-light .oneui-right-panel {
+  background-color: #ffffff !important;
+}
+.ultramoodle-dark .oneui-right-panel {
+  background-color: #121212 !important;
+}
+
+/* Layout views toggles */
+.oneui-chat-view {
+  display: none !important;
+}
+
+.oneui-chat-placeholder {
+  display: flex !important;
+  flex: 1 !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 48px !important;
+  text-align: center !important;
+  color: var(--ultra-text-sub) !important;
+}
+
+.oneui-right-panel.oneui-chat-active .oneui-chat-view {
+  display: flex !important;
+}
+
+.oneui-right-panel.oneui-chat-active .oneui-chat-placeholder {
+  display: none !important;
+}
+
+.oneui-placeholder-icon {
+  color: var(--ultra-text-sub) !important;
+  opacity: 0.3 !important;
+  margin-bottom: 16px !important;
+}
+
+.oneui-chat-placeholder h2 {
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  color: var(--ultra-text-main) !important;
+  margin: 0 0 12px 0 !important;
+}
+
+.oneui-chat-placeholder p {
+  font-size: 18px !important;
+  color: var(--ultra-text-sub) !important;
+  margin: 0 !important;
+  max-width: 500px !important;
+  line-height: 1.5 !important;
+}
+
+/* Chat view */
+.oneui-chat-view {
+  flex: 1 !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.oneui-placeholder-logo {
+  width: 192px !important;
+  height: 192px !important;
+  object-fit: contain !important;
+  margin-bottom: 32px !important;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.08)) !important;
+}
+.ultramoodle-dark .oneui-placeholder-logo {
+  filter: drop-shadow(0 8px 16px rgba(255, 255, 255, 0.05)) !important;
+}
+
+/* Chat view parent needs position relative for the floating card */
+.oneui-chat-view {
+  flex: 1 !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* iMessage Chat Header → Floating pill (avatar gauche, noms droite) */
+.oneui-chat-header {
+  position: absolute !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 100 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 21px !important;
+  padding: 15px 36px 15px 16px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--ultra-border) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10) !important;
+  white-space: nowrap !important;
+  animation: oneui-header-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  pointer-events: none !important;
+}
+
+.ultramoodle-dark .oneui-chat-header {
+  background: rgba(28, 28, 30, 0.88) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+@keyframes oneui-header-pop {
+  from { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+
+/* Floating back button — sits outside the header card, top-left of chat view */
+.oneui-back-btn {
+  position: absolute !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 101 !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: none !important; /* shown only on mobile via media query */
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: #007aff !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+  padding: 0 !important;
+}
+.ultramoodle-dark .oneui-back-btn {
+  background: rgba(28, 28, 30, 0.85) !important;
+}
+
+/* Avatar pill — cercle à gauche */
+.oneui-chat-header-avatar {
+  width: 78px !important;
+  height: 78px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.oneui-chat-header-avatar img,
+.oneui-chat-header-avatar .oneui-conv-avatar-initials {
+  width: 78px !important;
+  height: 78px !important;
+  border-radius: 50% !important;
+  font-size: 30px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Info — colonne à droite de l'avatar */
+.oneui-chat-header-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 1px !important;
+}
+
+/* Prénom — grand et gras */
+.oneui-chat-header-name {
+  font-size: 27px !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+  line-height: 1.2 !important;
+}
+
+/* Nom de famille — plus petit, discret */
+.oneui-chat-header-lastname {
+  font-size: 19px !important;
+  font-weight: 500 !important;
+  color: var(--ultra-text-sub) !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.oneui-chat-header-status,
+.oneui-chat-header-actions {
+  display: none !important;
+}
+
+/* iMessage Chat History — padded top so messages start below the floating pill */
+.oneui-chat-history {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 160px 30px 36px 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+.ultramoodle-light .oneui-chat-history {
+  background-color: #ffffff !important;
+}
+.ultramoodle-dark .oneui-chat-history {
+  background-color: #000000 !important; /* Deep pitch black background */
+}
+
+/* Day divider header: simple centered gray uppercase text */
+.oneui-chat-day-header {
+  align-self: center !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: #8e8e93 !important;
+  margin: 28px 0 14px 0 !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Bubble wrappers */
+.oneui-message-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: 65% !important;
+}
+
+.oneui-message-wrapper.self {
+  align-self: flex-end !important;
+  align-items: flex-end !important;
+}
+
+.oneui-message-wrapper.other {
+  align-self: flex-start !important;
+  align-items: flex-start !important;
+}
+
+/* Message Bubble elements */
+.oneui-message-bubble {
+  padding: 15px 24px !important;
+  font-size: 21px !important;
+  line-height: 1.4 !important;
+  word-break: break-word !important;
+  border-radius: 26px !important;
+}
+
+/* Vibrant iMessage bubble styling (Green SMS style) */
+.oneui-message-wrapper.self .oneui-message-bubble {
+  background-color: #24b646 !important;
+  color: #ffffff !important;
+  border-radius: 26px 26px 5px 26px !important;
+  box-shadow: 0 1px 2px rgba(36, 182, 70, 0.1) !important;
+}
+
+.oneui-message-wrapper.other .oneui-message-bubble {
+  color: var(--ultra-text-main) !important;
+  border: none !important;
+  border-radius: 26px 26px 26px 5px !important;
+}
+.ultramoodle-light .oneui-message-wrapper.other .oneui-message-bubble {
+  background-color: #e9e9eb !important; /* Light iMessage Gray bubble */
+}
+.ultramoodle-dark .oneui-message-wrapper.other .oneui-message-bubble {
+  background-color: #262629 !important; /* Dark iMessage Gray bubble */
+}
+
+/* Bubble Inner text */
+.oneui-message-text p {
+  margin: 0 !important;
+  color: inherit !important;
+}
+.oneui-message-text a {
+  color: inherit !important;
+  text-decoration: underline !important;
+}
+
+/* Message Timestamp */
+.oneui-message-time {
+  font-size: 14px !important;
+  color: #8e8e93 !important;
+  margin-top: 4px !important;
+  padding: 0 6px !important;
+}
+
+
+/* --- Emoji / GIF Picker Popup --- */
+.oneui-picker-popup {
+  position: absolute !important;
+  bottom: 130px !important;
+  right: 30px !important;
+  width: 520px !important;
+  height: 480px !important;
+  z-index: 300 !important;
+  display: flex; /* NO !important — JS controls visibility */
+  flex-direction: column !important;
+  border-radius: 24px !important;
+  border: 1px solid var(--ultra-border) !important;
+  background: var(--ultra-bg) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.22) !important;
+  overflow: hidden !important;
+  animation: oneui-picker-in 0.2s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+@keyframes oneui-picker-in {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.ultramoodle-dark .oneui-picker-popup {
+  background: #1c1c1e !important;
+}
+
+/* Picker tabs bar */
+.oneui-picker-tabs {
+  display: flex !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  flex-shrink: 0 !important;
+}
+.oneui-picker-tab {
+  flex: 1 !important;
+  border: none !important;
+  background: none !important;
+  padding: 16px !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  color: var(--ultra-text-sub) !important;
+  cursor: pointer !important;
+  transition: color 0.15s, border-bottom 0.15s !important;
+  border-bottom: 3px solid transparent !important;
+}
+.oneui-picker-tab.active {
+  color: #007aff !important;
+  border-bottom: 3px solid #007aff !important;
+}
+
+/* Emoji panel */
+.oneui-emoji-panel {
+  display: flex; /* NO !important — JS controls visibility */
+  flex-direction: column !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+.oneui-emoji-categories {
+  display: flex !important;
+  gap: 4px !important;
+  padding: 8px 10px !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  flex-shrink: 0 !important;
+  overflow-x: auto !important;
+}
+.oneui-emoji-cat-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 26px !important;
+  cursor: pointer !important;
+  border-radius: 10px !important;
+  padding: 6px 8px !important;
+  transition: background 0.1s !important;
+  opacity: 0.6 !important;
+}
+.oneui-emoji-cat-btn.active,
+.oneui-emoji-cat-btn:hover {
+  background: rgba(0,122,255,0.12) !important;
+  opacity: 1 !important;
+}
+.oneui-emoji-grid {
+  display: grid !important;
+  grid-template-columns: repeat(8, 1fr) !important;
+  gap: 2px !important;
+  padding: 8px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+}
+.oneui-emoji-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 28px !important;
+  cursor: pointer !important;
+  border-radius: 10px !important;
+  padding: 6px !important;
+  line-height: 1 !important;
+  transition: background 0.1s, transform 0.1s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.oneui-emoji-btn:hover {
+  background: rgba(0,0,0,0.07) !important;
+  transform: scale(1.2) !important;
+}
+.ultramoodle-dark .oneui-emoji-btn:hover {
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* GIF panel */
+.oneui-gif-panel {
+  display: flex; /* NO !important — JS controls visibility */
+  flex-direction: column !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+.oneui-gif-search {
+  margin: 12px !important;
+  padding: 10px 18px !important;
+  border-radius: 24px !important;
+  border: 1px solid var(--ultra-border) !important;
+  background: var(--ultra-bg) !important;
+  color: var(--ultra-text-main) !important;
+  font-size: 16px !important;
+  outline: none !important;
+  flex-shrink: 0 !important;
+}
+.ultramoodle-dark .oneui-gif-search {
+  background: #2c2c2e !important;
+}
+.oneui-gif-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 6px !important;
+  padding: 0 10px 10px 10px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+}
+.oneui-gif-item {
+  width: 100% !important;
+  aspect-ratio: 16/9 !important;
+  object-fit: cover !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s, opacity 0.15s !important;
+}
+.oneui-gif-item:hover {
+  transform: scale(1.04) !important;
+  opacity: 0.9 !important;
+}
+.oneui-gif-loading {
+  text-align: center !important;
+  color: var(--ultra-text-sub) !important;
+  font-size: 13px !important;
+  padding: 24px !important;
+  grid-column: 1/-1 !important;
+}
+
+/* GIF message bubble — no background, just the image */
+.oneui-bubble-gif {
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+.oneui-message-gif {
+  display: block !important;
+  max-width: 260px !important;
+  border-radius: 16px !important;
+  width: 100% !important;
+}
+
+/* --- Bottom Input Footer Area --- */
+.oneui-chat-footer {
+  padding: 18px 30px 36px 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+}
+
+.ultramoodle-light .oneui-chat-footer {
+  background-color: #ffffff !important;
+}
+.ultramoodle-dark .oneui-chat-footer {
+  background-color: #121212 !important;
+}
+
+/* Attach plus button on the left */
+.oneui-attach-btn {
+  background: none !important;
+  border: none !important;
+  color: #8e8e93 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 50% !important;
+  transition: opacity 0.15s !important;
+}
+
+.oneui-attach-btn:hover {
+  opacity: 0.8 !important;
+}
+
+/* Input pill wrapper */
+.oneui-input-pill {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  border-radius: 30px !important;
+  padding: 4px 9px 4px 21px !important;
+  transition: border-color 0.15s !important;
+}
+
+.ultramoodle-light .oneui-input-pill {
+  background-color: #ffffff !important;
+  border: 1px solid #d1d1d6 !important;
+}
+.ultramoodle-dark .oneui-input-pill {
+  background-color: #000000 !important;
+  border: 1px solid #2c2c2e !important;
+}
+
+/* Textarea inside pill */
+.oneui-input-field {
+  flex: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--ultra-text-main) !important;
+  font-size: 20px !important;
+  line-height: 1.4 !important;
+  max-height: 120px !important;
+  resize: none !important;
+  outline: none !important;
+  padding: 9px 0 !important;
+  font-family: inherit !important;
+}
+
+.oneui-input-field::placeholder {
+  color: #c7c7cc !important;
+}
+
+/* Right-aligned Dictation waveform and Emoji icons inside pill */
+.oneui-input-icons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  color: #8e8e93 !important;
+}
+
+.oneui-input-icon {
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  opacity: 0.8 !important;
+  transition: opacity 0.15s !important;
+}
+
+.oneui-input-icon:hover {
+  opacity: 1 !important;
+}
+
+/* iMessage Arrow Send Button (Inside the pill, far right) */
+.oneui-send-btn {
+  border: none !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: transform 0.1s ease !important;
+  background-color: #24b646 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+}
+
+.oneui-send-btn:active {
+  transform: scale(0.9) !important;
+}
+
+.oneui-send-btn svg {
+  transform: rotate(45deg) translate(-1px, 1px) !important;
+}
+
+
+/* --- Mobile & Tablet Screen size overrides (Responsive Viewport toggling) --- */
+@media (max-width: 768px) {
+  .oneui-messaging-app {
+    position: fixed !important;
+  }
+  
+  .oneui-left-panel {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+  }
+
+  .oneui-right-panel {
+    display: none !important; /* Hidden initially, toggled by JS */
+    width: 100% !important;
+  }
+  
+  .oneui-right-panel.oneui-chat-active {
+    display: flex !important;
+  }
+
+  /* Back arrow shown in header to close chat room on mobile views */
+  .oneui-back-btn {
+    display: flex !important;
+  }
+}
+
+/* --- Search Result Section Header in Sidebar --- */
+.oneui-conv-section-header {
+  padding: 14px 20px 6px 20px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: var(--ultra-muted) !important;
+  letter-spacing: 0.5px !important;
+  border-top: 1px solid var(--ultra-border) !important;
+  margin-top: 12px !important;
+  opacity: 0.85 !important;
+}
+
+/* Floating Action Buttons (FAB) */
+.oneui-fab-container {
+  position: absolute !important;
+  bottom: 36px !important;
+  right: 36px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+  z-index: 100 !important;
+}
+
+.oneui-fab {
+  width: 84px !important;
+  height: 84px !important;
+  border-radius: 24px !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.oneui-fab:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+.oneui-fab:active {
+  transform: translateY(0) scale(0.95) !important;
+}
+
+.fab-ai {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 50% !important;
+  background-color: #ffffff !important;
+  color: #1a73e8 !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1) !important;
+}
+.ultramoodle-dark .fab-ai {
+  background-color: #303134 !important;
+  color: #8ab4f8 !important;
+}
+
+.fab-chat {
+  background-color: #c2e7ff !important; /* Google Messages style chip FAB */
+  color: #001d35 !important;
+}
+.ultramoodle-dark .fab-chat {
+  background-color: #004a77 !important;
+  color: #c2e7ff !important;
+}
+
+/* --- Settings Overlay & Modal Styles --- */
+.oneui-settings-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10000 !important;
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  animation: oneui-fade-in 0.25s ease-out !important;
+}
+
+@keyframes oneui-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.oneui-settings-card {
+  width: 100% !important;
+  max-width: 480px !important;
+  max-height: 85% !important;
+  border-radius: 28px !important; /* Material Design 3 style */
+  box-shadow: var(--ultra-card-shadow) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: oneui-slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes oneui-slide-up {
+  from { transform: translateY(20px) scale(0.95); }
+  to { transform: translateY(0) scale(1); }
+}
+
+.ultramoodle-light .oneui-settings-card {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1f1f1f !important;
+}
+
+.ultramoodle-dark .oneui-settings-card {
+  background-color: #1f2023 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #e3e3e3 !important;
+}
+
+.oneui-settings-card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 24px 24px 16px 24px !important;
+}
+.ultramoodle-light .oneui-settings-card-header {
+  border-bottom: 1px solid #f1f3f4 !important;
+}
+.ultramoodle-dark .oneui-settings-card-header {
+  border-bottom: 1px solid #2d2e30 !important;
+}
+
+.oneui-settings-card-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.oneui-settings-close-btn {
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--ultra-text-sub) !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+
+.oneui-settings-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: var(--ultra-text-main) !important;
+}
+.ultramoodle-dark .oneui-settings-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.oneui-settings-card-body {
+  padding: 24px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.oneui-settings-loading {
+  display: flex;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 16px !important;
+  padding: 40px 0 !important;
+  color: var(--ultra-text-sub) !important;
+  font-size: 14px !important;
+}
+
+.oneui-spinner {
+  width: 32px !important;
+  height: 32px !important;
+  border: 3px solid rgba(0, 0, 0, 0.1) !important;
+  border-top-color: #1a73e8 !important;
+  border-radius: 50% !important;
+  animation: oneui-spin 0.8s linear infinite !important;
+}
+.ultramoodle-dark .oneui-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.1) !important;
+  border-top-color: #8ab4f8 !important;
+}
+
+@keyframes oneui-spin {
+  to { transform: rotate(360deg); }
+}
+
+.oneui-settings-section {
+  margin-bottom: 28px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.oneui-settings-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.oneui-settings-section h3 {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  margin: 0 0 12px 0 !important;
+  color: #1a73e8 !important;
+}
+.ultramoodle-dark .oneui-settings-section h3 {
+  color: #8ab4f8 !important;
+}
+
+.oneui-settings-section .section-desc {
+  font-size: 13px !important;
+  color: var(--ultra-text-sub) !important;
+  margin: -6px 0 16px 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* Custom Switch Toggle styling */
+.oneui-toggle-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 14px !important;
+  color: var(--ultra-text-main) !important;
+  padding: 4px 0 !important;
+}
+
+.oneui-switch {
+  position: relative !important;
+  display: inline-block !important;
+  width: 46px !important;
+  height: 24px !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+.oneui-switch input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.slider {
+  position: absolute !important;
+  cursor: pointer !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: #ccc !important;
+  transition: background-color 0.25s ease-out !important;
+  border-radius: 24px !important;
+}
+.ultramoodle-dark .slider {
+  background-color: #444746 !important;
+}
+
+.slider:before {
+  position: absolute !important;
+  content: "" !important;
+  height: 18px !important;
+  width: 18px !important;
+  left: 3px !important;
+  bottom: 3px !important;
+  background-color: #ffffff !important;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+.oneui-switch input:checked + .slider {
+  background-color: #1a73e8 !important;
+}
+.ultramoodle-dark .oneui-switch input:checked + .slider {
+  background-color: #8ab4f8 !important;
+}
+
+.oneui-switch input:checked + .slider:before {
+  transform: translateX(22px) !important;
+}
+
+/* Radio Group styling */
+.oneui-radio-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.oneui-radio-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-size: 14.5px !important;
+  cursor: pointer !important;
+  color: var(--ultra-text-main) !important;
+  user-select: none !important;
+}
+
+.oneui-radio-label input[type="radio"] {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  accent-color: #1a73e8 !important;
+}
+.ultramoodle-dark .oneui-radio-label input[type="radio"] {
+  accent-color: #8ab4f8 !important;
+}
+
+/* Contact Requests section styling */
+.oneui-contact-requests-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.oneui-no-requests {
+  font-size: 13.5px !important;
+  color: var(--ultra-text-sub) !important;
+  font-style: italic !important;
+  padding: 6px 0 !important;
+}
+
+.oneui-request-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 14px !important;
+  border-radius: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.ultramoodle-light .oneui-request-item {
+  background-color: #f1f3f4 !important;
+}
+.ultramoodle-dark .oneui-request-item {
+  background-color: #2a2b2e !important;
+}
+
+.req-user-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.req-avatar {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+.req-avatar-initials {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background-color: #e8f0fe !important;
+  color: #1a73e8 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+.ultramoodle-dark .req-avatar-initials {
+  background-color: #004a77 !important;
+  color: #c2e7ff !important;
+}
+
+.req-fullname {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: var(--ultra-text-main) !important;
+}
+
+.req-actions {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.req-btn {
+  border: none !important;
+  padding: 6px 12px !important;
+  border-radius: 18px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: opacity 0.2s, transform 0.1s !important;
+}
+.req-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.accept-btn {
+  background-color: #1a73e8 !important;
+  color: #ffffff !important;
+}
+.ultramoodle-dark .accept-btn {
+  background-color: #8ab4f8 !important;
+  color: #001d35 !important;
+}
+
+.decline-btn {
+  background-color: transparent !important;
+  border: 1px solid var(--ultra-border) !important;
+  color: var(--ultra-text-main) !important;
+}
+.ultramoodle-light .decline-btn {
+  border-color: #dadce0 !important;
+}
+.decline-btn:hover {
+  opacity: 0.8 !important;
+}
+
+/* --- Search Loading Spinner --- */
+.oneui-search-loading {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 40px 20px !important;
+  color: var(--ultra-text-sub) !important;
+  font-size: 13px !important;
+  text-align: center !important;
+}
+
+.oneui-search-loading-inline {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 16px 20px !important;
+  color: var(--ultra-text-sub) !important;
+  font-size: 12px !important;
+  border-top: 1px solid var(--ultra-border) !important;
+  margin-top: 8px !important;
+}
+
+.oneui-spinner.small {
+  width: 16px !important;
+  height: 16px !important;
+  border-width: 2px !important;
+}
