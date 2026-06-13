@@ -8,82 +8,33 @@ if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
   });
 }
 
-// Global capturing listener to hijack events on myMoodle ULTRA preview and modal buttons.
-// This is registered at the window capture level to run before Moodle's native scripts.
-(function () {
-  const stopEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
-  
-  stopEvents.forEach(evt => {
-    window.addEventListener(evt, (e) => {
-      const target = e.target;
-      if (!target) return;
+// Listen to events dispatched by the main world interceptor script (js/interceptor.js)
+window.addEventListener('ultramoodle-preview-click', (e) => {
+  const { fileUrl, fileName, fileType, mode } = e.detail;
+  if (window.openDocumentViewer) {
+    window.openDocumentViewer(fileUrl, fileName, fileType, mode);
+  } else {
+    console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
+  }
+});
 
-      // 1. Intercept custom course preview buttons (.ultramoodle-btn-preview)
-      const previewBtn = target.closest && target.closest('.ultramoodle-btn-preview');
-      if (previewBtn) {
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        e.preventDefault();
+window.addEventListener('ultramoodle-download-click', (e) => {
+  const { fileUrl, fileName } = e.detail;
+  const a = document.createElement('a');
+  a.href = fileUrl;
+  a.download = fileName;
+  a.click();
+});
 
-        if (evt === 'click') {
-          const fileUrl = previewBtn.dataset.fileUrl;
-          const fileName = previewBtn.dataset.fileName;
-          const fileType = previewBtn.dataset.fileType;
-          const mode = previewBtn.dataset.mode;
-
-          if (window.openDocumentViewer) {
-            window.openDocumentViewer(fileUrl, fileName, fileType, mode);
-          } else {
-            console.error('[myMoodle ULTRA] openDocumentViewer global function not loaded.');
-          }
-        }
-        return;
-      }
-
-      // 2. Intercept download links inside our modal (#ultramoodle-doc-viewer a[download])
-      const downloadLink = target.closest && target.closest('#ultramoodle-doc-viewer a[download]');
-      if (downloadLink) {
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        if (evt === 'click') {
-          const fileUrl = downloadLink.href;
-          const fileName = downloadLink.download || downloadLink.getAttribute('download') || 'document';
-
-          // Trigger download using a completely disconnected anchor element to bypass global handlers
-          const a = document.createElement('a');
-          a.href = fileUrl;
-          a.download = fileName;
-          a.click();
-        }
-        return;
-      }
-
-      // 3. Intercept toggle visualizer button inside our modal (#ultramoodle-viewer-btn-toggle-mode)
-      const toggleBtn = target.closest && target.closest('#ultramoodle-viewer-btn-toggle-mode');
-      if (toggleBtn) {
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        if (evt === 'click') {
-          const fileUrl = toggleBtn.dataset.fileUrl;
-          const fileName = toggleBtn.dataset.fileName;
-          const fileType = toggleBtn.dataset.fileType;
-
-          if (window.closeDocumentViewer) {
-            window.closeDocumentViewer();
-          }
-          if (window.openDocumentViewer) {
-            window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
-          }
-        }
-        return;
-      }
-    }, { capture: true, passive: false });
-  });
-})();
+window.addEventListener('ultramoodle-toggle-click', (e) => {
+  const { fileUrl, fileName, fileType } = e.detail;
+  if (window.closeDocumentViewer) {
+    window.closeDocumentViewer();
+  }
+  if (window.openDocumentViewer) {
+    window.openDocumentViewer(fileUrl, fileName, fileType, 'office');
+  }
+});
 
 const getCourseOverviewContainer = () => {
   return document.querySelector('[data-block="myoverview"], .block_myoverview, [data-region="course-overview"]');
@@ -1142,6 +1093,41 @@ const makeCardsFillRow = () => {
   });
 };
 
+const showEmptyState = (container, show, type = 'search') => {
+  let emptyEl = container.querySelector('.ultramoodle-empty-state');
+  
+  if (show) {
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.className = 'ultramoodle-empty-state';
+      
+      const title = type === 'course' ? 'Aucune matière' : (type === 'timeline' ? 'Aucune tâche' : 'Aucun résultat');
+      const desc = type === 'course' 
+        ? "Aucune matière ne correspond à votre recherche." 
+        : (type === 'timeline' ? "Aucune tâche à venir ne correspond." : "Aucun résultat trouvé.");
+      
+      emptyEl.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="8" y1="11" x2="14" y2="11" stroke-dasharray="1.5"></line>
+        </svg>
+        <h4>${title}</h4>
+        <p>${desc}</p>
+      `;
+      
+      const appendTarget = container.querySelector('[data-region="course-content"], [data-region="event-list-content"], .card-body, .content') || container;
+      appendTarget.appendChild(emptyEl);
+    }
+    emptyEl.classList.add('visible');
+  } else {
+    if (emptyEl) {
+      emptyEl.classList.remove('visible');
+    }
+  }
+};
+window.showEmptyState = showEmptyState;
+
 const normalizeText = (text) => {
   if (!text) return '';
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -1155,6 +1141,13 @@ const filterCourses = (query) => {
   if (nativeTimelineSearch) {
     nativeTimelineSearch.value = query;
     nativeTimelineSearch.dispatchEvent(new Event('input', { bubbles: true }));
+    nativeTimelineSearch.dispatchEvent(new Event('change', { bubbles: true }));
+    nativeTimelineSearch.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+  }
+
+  // Locally filter custom timeline cards and headers
+  if (window.filterTimeline) {
+    window.filterTimeline(query);
   }
 
   const cards = getCourseCards();
@@ -1166,6 +1159,23 @@ const filterCourses = (query) => {
     });
     showAllContainers();
     makeCardsFillRow();
+
+    // Show all blocks again
+    const blocks = document.querySelectorAll('.block, section[data-block]');
+    blocks.forEach(block => {
+      block.classList.remove('ultramoodle-block-search-hidden');
+    });
+
+    // Hide empty state for courses
+    const overviewBlock = getCourseOverviewContainer();
+    if (overviewBlock) {
+      showEmptyState(overviewBlock, false);
+      const pagingControls = overviewBlock.querySelectorAll('[data-region="paging-control-limit"], [data-region="paging-control-container"], .paging-bar, .pagination');
+      pagingControls.forEach(ctrl => {
+        ctrl.style.removeProperty('display');
+      });
+    }
+
     const feedback = document.getElementById('ultramoodle-search-results-feedback');
     if (feedback) {
       feedback.textContent = '';
@@ -1175,6 +1185,18 @@ const filterCourses = (query) => {
     }, 100);
     return;
   }
+
+  // Hide all right blocks except timeline
+  const blocks = document.querySelectorAll('.block, section[data-block]');
+  blocks.forEach(block => {
+    const isTimeline = block.classList.contains('block_timeline') || block.querySelector('[data-region="timeline"]');
+    const isOverview = block.classList.contains('block_myoverview') || block.querySelector('[data-region="course-overview"]');
+    if (!isTimeline && !isOverview) {
+      block.classList.add('ultramoodle-block-search-hidden');
+    } else {
+      block.classList.remove('ultramoodle-block-search-hidden');
+    }
+  });
 
   let matchCount = 0;
   cards.forEach(card => {
@@ -1199,6 +1221,16 @@ const filterCourses = (query) => {
       }
     }
   });
+
+  // Show or hide empty state for courses
+  const overviewBlock = getCourseOverviewContainer();
+  if (overviewBlock) {
+    showEmptyState(overviewBlock, matchCount === 0, 'course');
+    const pagingControls = overviewBlock.querySelectorAll('[data-region="paging-control-limit"], [data-region="paging-control-container"], .paging-bar, .pagination');
+    pagingControls.forEach(ctrl => {
+      ctrl.style.setProperty('display', matchCount === 0 ? 'none' : '', 'important');
+    });
+  }
 
   const feedback = document.getElementById('ultramoodle-search-results-feedback');
   if (feedback) {
@@ -2125,6 +2157,7 @@ const customizeResourceIcons = () => {
     let isWord = false;
     let isExcel = false;
     let isPowerPoint = false;
+    let isText = false;
     let isQcm = isQuiz;
 
     // 1. Detect by native icon image source
@@ -2136,6 +2169,8 @@ const customizeResourceIcons = () => {
       isPowerPoint = true;
     } else if (originalSrc.includes('spreadsheet') || originalSrc.includes('excel') || originalSrc.includes('xlsx')) {
       isExcel = true;
+    } else if (originalSrc.includes('text') || originalSrc.includes('txt')) {
+      isText = true;
     }
     // 2. Fallback to image alt text
     else if (imgAlt.includes('pdf')) {
@@ -2146,6 +2181,8 @@ const customizeResourceIcons = () => {
       isPowerPoint = true;
     } else if (imgAlt.includes('excel') || imgAlt.includes('calcul') || imgAlt.includes('xlsx')) {
       isExcel = true;
+    } else if (imgAlt.includes('text') || imgAlt.includes('texte') || imgAlt.includes('txt')) {
+      isText = true;
     }
     // 3. Fallback to file extension in link URL (href)
     else if (href.includes('.pdf')) {
@@ -2156,6 +2193,8 @@ const customizeResourceIcons = () => {
       isPowerPoint = true;
     } else if (href.includes('.xlsx') || href.includes('.xls') || href.includes('.csv')) {
       isExcel = true;
+    } else if (href.includes('.txt') || href.includes('.text')) {
+      isText = true;
     }
     // 4. Fallback to details metadata text
     else if (detailsText.includes('pdf')) {
@@ -2166,6 +2205,8 @@ const customizeResourceIcons = () => {
       isPowerPoint = true;
     } else if (detailsText.includes('excel') || detailsText.includes('xlsx') || detailsText.includes('xls') || detailsText.includes('calcul')) {
       isExcel = true;
+    } else if (detailsText.includes('text') || detailsText.includes('texte') || detailsText.includes('txt')) {
+      isText = true;
     }
 
     let iconUrl = null;
@@ -2183,6 +2224,9 @@ const customizeResourceIcons = () => {
     } else if (isPowerPoint) {
       iconUrl = chrome.runtime.getURL('img/powerpointIcone.png');
       typeName = 'powerpoint';
+    } else if (isText) {
+      iconUrl = chrome.runtime.getURL('img/blocnoteIcone.png');
+      typeName = 'text';
     } else if (isQcm) {
       iconUrl = chrome.runtime.getURL('img/qcmIcone.png');
       typeName = 'qcm';

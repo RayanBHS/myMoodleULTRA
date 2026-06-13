@@ -40,6 +40,16 @@
         "*://moodle.myefrei.fr/*"
       ],
       "js": [
+        "js/interceptor.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "*://moodle.myefrei.fr/*"
+      ],
+      "js": [
         "js/vendor/jszip.min.js",
         "js/vendor/docx-preview.js",
         "js/vendor/pptx-canvas-renderer.umd.js",
@@ -50,6 +60,7 @@
         "js/calendar.js",
         "js/timeline.js",
         "js/viewer.js",
+        "js/messages.js",
         "js/main.js"
       ],
       "css": [
@@ -60,7 +71,8 @@
         "css/courses.css",
         "css/calendar.css",
         "css/timeline.css",
-        "css/viewer.css"
+        "css/viewer.css",
+        "css/messages.css"
       ],
       "run_at": "document_start"
     }

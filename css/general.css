@@ -31,6 +31,70 @@ body.path-my #page-header h1 {
   display: none !important;
 }
 
+/* Hide right blocks except timeline when searching */
+.ultramoodle-block-search-hidden,
+#page .ultramoodle-block-search-hidden,
+.ultramoodle-event-hidden,
+#page .ultramoodle-event-hidden {
+  display: none !important;
+}
+
+/* Beautiful custom empty state design for courses and timeline */
+.ultramoodle-empty-state {
+  display: none;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 48px 24px !important;
+  text-align: center !important;
+  color: var(--ultra-text-sub) !important;
+  animation: ultramoodle-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  width: 100% !important;
+  min-width: 100% !important; /* Force full width stretch */
+  grid-column: 1 / -1 !important; /* Span full width of grid layout containers */
+  box-sizing: border-box !important;
+}
+
+.ultramoodle-empty-state.visible {
+  display: flex !important;
+}
+
+.ultramoodle-empty-state svg {
+  width: 48px !important;
+  height: 48px !important;
+  stroke: var(--ultra-text-sub) !important;
+  opacity: 0.6 !important;
+  margin-bottom: 16px !important;
+}
+
+.ultramoodle-empty-state h4 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.ultramoodle-empty-state p {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 0.85rem !important;
+  color: var(--ultra-text-sub) !important;
+  margin: 0 !important;
+  max-width: 260px !important;
+  line-height: 1.45 !important;
+}
+
+@keyframes ultramoodle-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Strip background and borders from the #page container on dashboard to make hero borderless */
 body.path-my #page,
 body.path-my #page-wrapper,
@@ -929,6 +993,11 @@ img[src*="/f/xls"] {
   content: var(--ultra-excel-icon) !important;
 }
 
+img[src*="/f/text"],
+img[src*="/f/txt"] {
+  content: var(--ultra-text-icon) !important;
+}
+
 /* Ensure these icons render cleanly with original aspect ratios and fit nicely */
 img[src*="/f/pdf"],
 img[src*="/f/document"],
@@ -943,6 +1012,8 @@ img[src*="/f/spreadsheet"],
 img[src*="/f/excel"],
 img[src*="/f/xlsx"],
 img[src*="/f/xls"],
+img[src*="/f/text"],
+img[src*="/f/txt"],
 .ultramoodle-custom-icon {
   object-fit: contain !important;
   filter: none !important; /* Reset Moodle native image filters (e.g. invert) */
@@ -999,3 +1070,437 @@ body .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
   min-height: 32px !important;
   transform: scale(1.2) !important; /* Scales up the graphic contents to match other document icons */
 }
+
+/* ==========================================================================
+   --- User Profile Page Customizations (path-user-profile) ---
+   ========================================================================== */
+
+/* Make body background show on the profile page by stripping outer card styles */
+body.path-user-profile #page,
+body.path-user-profile #page-wrapper,
+body.path-user-profile #page-content,
+body.path-user-profile #region-main-box,
+body.path-user-profile #region-main,
+body.path-user-profile .region-main-content,
+body.path-user-profile .container,
+body.path-user-profile .container-fluid,
+body.path-user-profile div[role="main"],
+body.path-user-profile #region-main > .card,
+body.path-user-profile #region-main > .card > .card-body,
+body#page-user-profile #page,
+body#page-user-profile #page-wrapper,
+body#page-user-profile #page-content,
+body#page-user-profile #region-main-box,
+body#page-user-profile #region-main,
+body#page-user-profile .region-main-content,
+body#page-user-profile .container,
+body#page-user-profile .container-fluid,
+body#page-user-profile div[role="main"],
+body#page-user-profile #region-main > .card,
+body#page-user-profile #region-main > .card > .card-body {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Style profile categories and user header as premium cards */
+body.path-user-profile .profile_category,
+body.path-user-profile section.profile_category,
+body.path-user-profile .userprofile .card,
+body.path-user-profile .user-profile .card,
+body.path-user-profile .userprofile section,
+body.path-user-profile #region-main .row .card,
+body#page-user-profile .profile_category,
+body#page-user-profile section.profile_category,
+body#page-user-profile .userprofile .card,
+body#page-user-profile .user-profile .card,
+body#page-user-profile .userprofile section,
+body#page-user-profile #region-main .row .card {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 24px !important;
+  padding: 24px !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  margin-bottom: 24px !important;
+  box-sizing: border-box !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+body.path-user-profile .profile_category:hover,
+body.path-user-profile .userprofile .card:hover,
+body.path-user-profile .user-profile .card:hover,
+body.path-user-profile .userprofile section:hover,
+body.path-user-profile #region-main .row .card:hover,
+body#page-user-profile .profile_category:hover,
+body#page-user-profile .userprofile .card:hover,
+body#page-user-profile .user-profile .card:hover,
+body#page-user-profile .userprofile section:hover,
+body#page-user-profile #region-main .row .card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--ultra-card-shadow-hover) !important;
+}
+
+/* Typography adjustments inside profile cards */
+body.path-user-profile .profile_category h2,
+body.path-user-profile .profile_category h3,
+body.path-user-profile .profile_category h4,
+body.path-user-profile .profile_category h5,
+body.path-user-profile .profile_category .card-title,
+body#page-user-profile .profile_category h2,
+body#page-user-profile .profile_category h3,
+body#page-user-profile .profile_category h4,
+body#page-user-profile .profile_category h5,
+body#page-user-profile .profile_category .card-title,
+body.path-user-profile #region-main .row .card h2,
+body.path-user-profile #region-main .row .card h3,
+body.path-user-profile #region-main .row .card h4,
+body.path-user-profile #region-main .row .card h5,
+body.path-user-profile #region-main .row .card .card-title,
+body#page-user-profile #region-main .row .card h2,
+body#page-user-profile #region-main .row .card h3,
+body#page-user-profile #region-main .row .card h4,
+body#page-user-profile #region-main .row .card h5,
+body#page-user-profile #region-main .row .card .card-title {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  color: var(--ultra-text-main) !important;
+  margin-top: 0 !important;
+  margin-bottom: 20px !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  padding-bottom: 10px !important;
+  font-size: 1.1rem !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Definition lists layout and visual cleanup */
+body.path-user-profile dl dt,
+body#page-user-profile dl dt {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: var(--ultra-text-sub) !important;
+  margin-top: 14px !important;
+  margin-bottom: 4px !important;
+  letter-spacing: 0.05em !important;
+}
+
+body.path-user-profile dl dd,
+body#page-user-profile dl dd {
+  font-size: 14px !important;
+  color: var(--ultra-text-main) !important;
+  margin-bottom: 14px !important;
+  line-height: 1.5 !important;
+}
+
+/* List group link aesthetics */
+body.path-user-profile .profile_category ul,
+body#page-user-profile .profile_category ul,
+body.path-user-profile #region-main .row .card ul,
+body#page-user-profile #region-main .row .card ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+body.path-user-profile .profile_category li,
+body#page-user-profile .profile_category li,
+body.path-user-profile #region-main .row .card li,
+body#page-user-profile #region-main .row .card li {
+  padding: 10px 0 !important;
+  border-bottom: 1px dashed var(--ultra-border) !important;
+}
+
+body.path-user-profile .profile_category li:last-child,
+body#page-user-profile .profile_category li:last-child,
+body.path-user-profile #region-main .row .card li:last-child,
+body#page-user-profile #region-main .row .card li:last-child {
+  border-bottom: none !important;
+}
+
+/* Smooth adaptive link colors matching dark/light design system */
+:root.ultramoodle-light body.path-user-profile #region-main a,
+:root.ultramoodle-light body#page-user-profile #region-main a {
+  color: #2563eb !important; /* Modern readable blue */
+}
+:root.ultramoodle-dark body.path-user-profile #region-main a,
+:root.ultramoodle-dark body#page-user-profile #region-main a {
+  color: #60a5fa !important; /* Bright blue for dark mode */
+}
+
+body.path-user-profile .profile_category a[href*="edit"],
+body#page-user-profile .profile_category a[href*="edit"],
+body.path-user-profile #region-main .row .card a[href*="edit"],
+body#page-user-profile #region-main .row .card a[href*="edit"] {
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+}
+
+/* Primary actions buttons custom layout (e.g. mobile app QR code trigger) */
+:root.ultramoodle-light body.path-user-profile #region-main .btn-primary,
+:root.ultramoodle-light body.path-user-profile #region-main .btn,
+:root.ultramoodle-light body.path-user-profile #region-main button,
+:root.ultramoodle-light body#page-user-profile #region-main .btn-primary,
+:root.ultramoodle-light body#page-user-profile #region-main .btn,
+:root.ultramoodle-light body#page-user-profile #region-main button {
+  background-color: #143361 !important; /* Deep Efrei Blue */
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 8px 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(20, 51, 97, 0.15) !important;
+  transition: opacity 0.2s, transform 0.1s !important;
+  cursor: pointer !important;
+}
+
+:root.ultramoodle-dark body.path-user-profile #region-main .btn-primary,
+:root.ultramoodle-dark body.path-user-profile #region-main .btn,
+:root.ultramoodle-dark body.path-user-profile #region-main button,
+:root.ultramoodle-dark body#page-user-profile #region-main .btn-primary,
+:root.ultramoodle-dark body#page-user-profile #region-main .btn,
+:root.ultramoodle-dark body#page-user-profile #region-main button {
+  background-color: #3b82f6 !important; /* Accent Blue */
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 8px 20px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+  transition: opacity 0.2s, transform 0.1s !important;
+  cursor: pointer !important;
+}
+
+body.path-user-profile #region-main .btn-primary:hover,
+body.path-user-profile #region-main .btn:hover,
+body.path-user-profile #region-main button:hover,
+body#page-user-profile #region-main .btn-primary:hover,
+body#page-user-profile #region-main .btn:hover,
+body#page-user-profile #region-main button:hover {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+  text-decoration: none !important;
+}
+
+/* Make profile pictures circular and clean */
+body.path-user-profile .userpicture,
+body#page-user-profile .userpicture {
+  border-radius: 50% !important;
+  border: 3px solid var(--ultra-border) !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+}
+
+/* Hide Moodle's native profile header context to avoid duplication with our custom banner */
+body.path-user-profile .page-context-header,
+body#page-user-profile .page-context-header,
+body.path-user-profile #page-header h1,
+body#page-user-profile #page-header h1 {
+  display: none !important;
+}
+
+/* Premium Profile Page Banner Layout */
+.ultramoodle-profile-banner {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 32px !important;
+  padding: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 32px !important;
+  margin-bottom: 32px !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-image: linear-gradient(135deg, rgba(20, 51, 97, 0.05) 0%, rgba(59, 130, 246, 0.03) 100%) !important;
+}
+
+/* Graphic circle accent in background */
+.ultramoodle-profile-banner::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  right: -20% !important;
+  width: 300px !important;
+  height: 300px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+.ultramoodle-profile-banner-avatar-container {
+  flex-shrink: 0 !important;
+  z-index: 1 !important;
+}
+
+.ultramoodle-profile-banner-avatar {
+  width: 100px !important;
+  height: 100px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 4px solid var(--ultra-border) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+  background-color: #e2e8f0 !important;
+}
+
+.ultramoodle-profile-banner-avatar-initials {
+  width: 100px !important;
+  height: 100px !important;
+  border-radius: 50% !important;
+  background-color: #ebf2fc !important;
+  color: #143361 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  border: 4px solid #d0e1fd !important;
+  box-shadow: 0 8px 20px rgba(20, 51, 97, 0.1) !important;
+  text-transform: uppercase !important;
+}
+
+.ultramoodle-profile-banner-info {
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  z-index: 1 !important;
+}
+
+.ultramoodle-profile-banner-name {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: var(--ultra-text-main) !important;
+  margin: 0 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.ultramoodle-profile-banner-email {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: 15px !important;
+  color: var(--ultra-text-sub) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ultramoodle-profile-banner-email svg {
+  opacity: 0.7 !important;
+  stroke: var(--ultra-text-sub) !important;
+}
+
+.ultramoodle-profile-banner-actions {
+  z-index: 1 !important;
+}
+
+/* Banner custom edit profile button style - highly specific to override native theme orange styles */
+body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
+body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
+body.path-user-profile a.ultramoodle-profile-banner-edit-btn,
+body#page-user-profile a.ultramoodle-profile-banner-edit-btn,
+.ultramoodle-profile-banner-edit-btn {
+  background-color: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 9999px !important;
+  padding: 10px 24px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  transition: background-color 0.2s, transform 0.1s, border-color 0.2s !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover,
+body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover,
+body.path-user-profile a.ultramoodle-profile-banner-edit-btn:hover,
+body#page-user-profile a.ultramoodle-profile-banner-edit-btn:hover,
+.ultramoodle-profile-banner-edit-btn:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  border-color: var(--ultra-text-sub) !important;
+  color: var(--ultra-text-main) !important;
+  transform: translateY(-1px) !important;
+  text-decoration: none !important;
+}
+
+body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg,
+body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg,
+.ultramoodle-profile-banner-edit-btn svg {
+  stroke: var(--ultra-text-main) !important;
+}
+
+/* Responsive Mobile Layout for Profile Banner */
+@media (max-width: 768px) {
+  .ultramoodle-profile-banner {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 30px 20px !important;
+    gap: 20px !important;
+  }
+  
+  .ultramoodle-profile-banner-info {
+    align-items: center !important;
+  }
+  
+  body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
+  body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
+  .ultramoodle-profile-banner-edit-btn {
+    width: 100% !important;
+  }
+}
+
+/* Custom Drawer Toggle button overrides to remove orange */
+:root.ultramoodle-light [data-region="drawer-toggle"],
+:root.ultramoodle-light .drawer-toggle,
+:root.ultramoodle-light [data-action="toggle-drawer"],
+:root.ultramoodle-light .btn-secondary[data-action="toggle-drawer"] {
+  background-color: #143361 !important;
+  color: #ffffff !important;
+  border-color: #143361 !important;
+}
+
+:root.ultramoodle-light [data-region="drawer-toggle"]:hover,
+:root.ultramoodle-light .drawer-toggle:hover,
+:root.ultramoodle-light [data-action="toggle-drawer"]:hover,
+:root.ultramoodle-light .btn-secondary[data-action="toggle-drawer"]:hover {
+  background-color: #1a427c !important;
+  border-color: #1a427c !important;
+  color: #ffffff !important;
+}
+
+:root.ultramoodle-dark [data-region="drawer-toggle"],
+:root.ultramoodle-dark .drawer-toggle,
+:root.ultramoodle-dark [data-action="toggle-drawer"],
+:root.ultramoodle-dark .btn-secondary[data-action="toggle-drawer"] {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+:root.ultramoodle-dark [data-region="drawer-toggle"]:hover,
+:root.ultramoodle-dark .drawer-toggle:hover,
+:root.ultramoodle-dark [data-action="toggle-drawer"]:hover,
+:root.ultramoodle-dark .btn-secondary[data-action="toggle-drawer"]:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+
+

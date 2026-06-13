@@ -6,6 +6,7 @@ const injectCSSVariables = () => {
     root.style.setProperty('--ultra-word-icon', `url("${chrome.runtime.getURL('img/wordIcone.png')}")`);
     root.style.setProperty('--ultra-powerpoint-icon', `url("${chrome.runtime.getURL('img/powerpointIcone.png')}")`);
     root.style.setProperty('--ultra-excel-icon', `url("${chrome.runtime.getURL('img/excelIcone.png')}")`);
+    root.style.setProperty('--ultra-text-icon', `url("${chrome.runtime.getURL('img/blocnoteIcone.png')}")`);
   }
 };
 injectCSSVariables();
@@ -36,6 +37,14 @@ const replaceFavicon = () => {
   }
 };
 
+const isProfilePage = () => {
+  return window.location.pathname.includes('/user/profile.php') || (document.body && document.body.classList.contains('path-user-profile')) || document.getElementById('page-user-profile') !== null;
+};
+
+const isMessageActive = () => {
+  return window.location.pathname.includes('/message/index.php') || (document.body && document.body.classList.contains('path-message')) || document.querySelector('[data-region="message-drawer"], .message-app') !== null;
+};
+
 const init = () => {
   injectCSSVariables();
   fetchMoodleCourses(); // warm-up API cache early
@@ -59,6 +68,16 @@ const init = () => {
     }
   } else if (window.isCalendarPage && window.isCalendarPage()) {
     window.initMoodleCalendar();
+  } else if (isProfilePage()) {
+    if (window.customizeUserProfilePage) {
+      window.customizeUserProfilePage();
+    }
+  }
+  
+  if (isMessageActive()) {
+    if (window.customizeMoodleMessaging) {
+      window.customizeMoodleMessaging();
+    }
   }
 };
 
@@ -129,6 +148,16 @@ const observer = new MutationObserver((mutations) => {
     } else if (window.isCalendarPage && window.isCalendarPage()) {
       if (!document.getElementById('mye-calendars-container')) {
         window.initMoodleCalendar();
+      }
+    } else if (isProfilePage()) {
+      if (window.customizeUserProfilePage) {
+        window.customizeUserProfilePage();
+      }
+    }
+    
+    if (isMessageActive()) {
+      if (window.customizeMoodleMessaging) {
+        window.customizeMoodleMessaging();
       }
     }
     cleanNavbarLinks();
