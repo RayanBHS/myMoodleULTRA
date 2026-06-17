@@ -11,6 +11,7 @@
   let allConversations = [];
   let entertosendEnabled = true;
   let enabledProcessors = ['popup'];
+  // AI state is now managed by the MyEfrei ULTRA - Chat extension
 
   // Helper to check Moodle message page
   const isMessagePage = () => {
@@ -279,6 +280,47 @@
     }
 
     listContainer.innerHTML = '';
+
+    // Prepend AI conversation if the Chat extension is enabled and query matches
+    const chatEnabled = document.documentElement.hasAttribute('data-myefrei-chat-enabled');
+    const showAiConv = chatEnabled && (filter === 'all') && (!searchQuery || 'mymoodle ai'.includes(searchQuery.toLowerCase()) || 'moodle'.includes(searchQuery.toLowerCase()) || 'ai'.includes(searchQuery.toLowerCase()));
+    
+    if (showAiConv) {
+      const aiItem = document.createElement('div');
+      aiItem.className = `oneui-conv-item ${activeConversationId === 'ai' ? 'active' : ''}`;
+      aiItem.dataset.id = 'ai';
+      aiItem.dataset.name = 'myMoodle AI';
+      
+      const avatarHTML = `
+        <div class="oneui-conv-avatar-initials" style="background: linear-gradient(135deg, #4285f4, #9b51e0); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: white; margin: 0;">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <path d="M11 8a3 3 0 0 1 3 3" stroke-width="2.5"/>
+          </svg>
+        </div>
+      `;
+      
+      aiItem.innerHTML = `
+        <div class="oneui-conv-avatar-wrapper">
+          ${avatarHTML}
+        </div>
+        <div class="oneui-conv-details">
+          <div class="oneui-conv-top-row">
+            <div class="oneui-conv-name">myMoodle AI</div>
+            <div class="oneui-conv-time"><span style="color: #4285f4; font-weight: bold; font-size: 11px;">✨ IA</span></div>
+          </div>
+          <div class="oneui-conv-bottom-row">
+            <div class="oneui-conv-preview">Recherche intelligente Moodle...</div>
+          </div>
+        </div>
+      `;
+      
+      aiItem.addEventListener('click', () => {
+        selectConversation('ai', 'myMoodle AI', avatarHTML, 0);
+      });
+      
+      listContainer.appendChild(aiItem);
+    }
     
     // Render local conversations
     filtered.forEach(conv => {
@@ -520,6 +562,8 @@
     }
   };
 
+  // AI chat rendering functions are now handled by the MyEfrei ULTRA - Chat extension.
+
   const selectConversation = async (convId, name, avatarHTML, otherUserId) => {
     activeConversationId = convId;
     activeOtherUserId = otherUserId;
@@ -528,10 +572,13 @@
     // Set highlight in list
     const items = document.querySelectorAll('.oneui-conv-item');
     items.forEach(item => {
-      const itemConvId = item.dataset.id ? parseInt(item.dataset.id, 10) : null;
+      const rawId = item.dataset.id;
+      const itemConvId = rawId === 'ai' ? 'ai' : (rawId ? parseInt(rawId, 10) : null);
       const itemUserId = item.dataset.userId ? parseInt(item.dataset.userId, 10) : null;
 
-      if (convId && itemConvId === convId) {
+      if (convId === 'ai' && itemConvId === 'ai') {
+        item.classList.add('active');
+      } else if (convId && convId !== 'ai' && itemConvId === convId) {
         item.classList.add('active');
         const badge = item.querySelector('.oneui-conv-unread');
         if (badge) badge.remove();
@@ -560,6 +607,34 @@
     const headerName = chatView.querySelector('.oneui-chat-header-name');
     const headerLastname = chatView.querySelector('.oneui-chat-header-lastname');
     if (headerAvatar) headerAvatar.innerHTML = avatarHTML;
+
+    // AI suggestions panel toggle and style adaptation
+    const footer = chatView.querySelector('.oneui-chat-footer');
+    const suggestionsContainer = chatView.querySelector('.ia-chatbot-suggestions');
+    if (footer) {
+      if (convId === 'ai') {
+        footer.classList.add('oneui-ai-mode');
+      } else {
+        footer.classList.remove('oneui-ai-mode');
+      }
+    }
+    if (suggestionsContainer) {
+      if (convId === 'ai') {
+        suggestionsContainer.style.setProperty('display', 'flex', 'important');
+      } else {
+        suggestionsContainer.style.setProperty('display', 'none', 'important');
+      }
+    }
+
+    if (convId === 'ai') {
+      if (headerName) headerName.textContent = 'myMoodle AI';
+      if (headerLastname) headerLastname.textContent = '';
+      if (pollTimeout) clearTimeout(pollTimeout);
+      // Delegate AI rendering to the MyEfrei ULTRA - Chat extension via CustomEvent
+      window.dispatchEvent(new CustomEvent('ultramoodle-ai-selected'));
+      return;
+    }
+
     // Moodle typically returns "LASTNAME Firstname" — split on first space
     if (headerName || headerLastname) {
       const parts = name.trim().split(' ');
@@ -627,6 +702,12 @@
 
     input.value = '';
     input.style.height = 'auto';
+
+    if (activeConversationId === 'ai') {
+      // Delegate message handling to the MyEfrei ULTRA - Chat extension via CustomEvent
+      window.dispatchEvent(new CustomEvent('ultramoodle-ai-send-message', { detail: { text } }));
+      return;
+    }
 
     try {
       if (activeConversationId) {
@@ -750,11 +831,13 @@
           <div class="oneui-loading-convs">Chargement des conversations...</div>
         </div>
         <div class="oneui-fab-container">
-          <button class="oneui-fab fab-ai" title="Assistant de rédaction IA">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M7.657 6.247c.11-.33.576-.33.686 0l.545 1.637a.333.333 0 0 0 .31.23l1.722.016c.347.003.491.448.209.65l-1.39 1.002a.333.333 0 0 0-.117.362l.54 1.639c.108.33-.292.622-.574.417L8.3 11.18a.333.333 0 0 0-.398 0l-1.31 1.018c-.282.205-.682-.087-.574-.417l.54-1.639a.333.333 0 0 0-.117-.362l-1.39-1.002c-.282-.202-.138-.647.209-.65l1.722-.016a.333.333 0 0 0 .31-.23zM1.2 11.2c.03-.09.155-.09.185 0l.148.446a.09.09 0 0 0 .083.062l.468.005c.095 0 .134.122.057.177l-.377-.272a.09.09 0 0 0-.032.099l.147.447c.03.09-.107.17-.184.113l-.356-.277a.09.09 0 0 0-.108 0l-.356.277c-.077.056-.214-.024-.184-.113l.147-.447a.09.09 0 0 0-.032-.099L.226 11.9a.09.09 0 0 0 .057-.177l.468-.005a.09.09 0 0 0 .083-.062zm11-.8c.04-.12.206-.12.246 0l.197.592a.12.12 0 0 0 .11.082l.623.007c.127 0 .178.163.076.236l-.503.363a.12.12 0 0 0-.042.13l.195.594c.04.12-.105.225-.208.15L13 13.08a.12.12 0 0 0-.144 0l-.474.368c-.103.075-.248-.03-.208-.15l.195-.594a.12.12 0 0 0-.042-.13l-.503-.363c-.102-.073-.051-.236.076-.236l.623-.007a.12.12 0 0 0 .11-.082z"/>
+          ${document.documentElement.hasAttribute('data-myefrei-chat-enabled') ? `
+          <button class="oneui-fab fab-ai" title="Recherche IA Moodle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <path d="M11 8a3 3 0 0 1 3 3" stroke-width="2.5"/>
             </svg>
-          </button>
+          </button>` : ''}
           <button class="oneui-fab fab-chat" title="Nouvelle discussion">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -799,6 +882,7 @@
             </div>
           </div>
           <div class="oneui-chat-footer">
+            <div class="ia-chatbot-suggestions" style="display: none; margin-bottom: 12px; width: 100%;"></div>
             <div class="oneui-input-pill">
               <textarea class="oneui-input-field" placeholder="Message" rows="1"></textarea>
               <div class="oneui-input-icons">
@@ -893,6 +977,8 @@
           </div>
         </div>
       </div>
+
+      <!-- Chatbot overlay integrated natively into the One UI messaging page -->
     `;
 
     mainRegion.insertBefore(appContainer, mainRegion.firstChild);
@@ -961,20 +1047,252 @@
       });
     }
 
-    // 1e. Clicking on the AI Spark FAB button
+    // 1e. Clicking on the AI Spark FAB button — switches to AI chatbot conversation
     const fabAi = appContainer.querySelector('.fab-ai');
+
+    // ── Non-AI helpers (used for conversation list / search) ─────────────
+    const normalizeStr = (s) => {
+      if (!s) return '';
+      let norm = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      norm = norm.replace(/([a-z])\s+(\d)/g, '$1$2').replace(/(\d)\s+([a-z])/g, '$1$2');
+      return norm.replace(/[^a-z0-9\s]/g, ' ').trim();
+    };
+
+    const cleanCourseTitle = (fullname) => {
+      if (!fullname) return '';
+      const cleanRegex = /^\s*\*?\s*([A-Z0-9]+(?:-[A-Z0-9]+)*)\s*(?:-|\u2013|\u2014)\s*/i;
+      return fullname.replace(cleanRegex, '').replace(/\s*\([^)]*\)\s*$/g, '').trim() || fullname;
+    };
+
+    const levenshtein = (a, b) => {
+      const m = a.length, n = b.length;
+      const dp = Array.from({length: m + 1}, (_, i) => Array.from({length: n + 1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+        }
+      }
+      return dp[m][n];
+    };
+
+    // Returns a score 0-1 (higher = better match). Tests substring + fuzzy token match.
+    const fuzzyScore = (query, target) => {
+      if (!query || !target) return 0;
+      const q = normalizeStr(query);
+      const t = normalizeStr(target);
+      if (!q || !t) return 0;
+
+      // Synonym / Acronym expansion mapping
+      const synonymGroups = [
+        ["ce", "controle ecrit"],
+        ["de", "dst", "devoir ecrit", "devoir sur table"],
+        ["qcm", "question a choix multiple", "questionnaire a choix multiples", "choix multiples"],
+        ["cm", "cours magistral"],
+        ["td", "travaux diriges", "travail dirige"],
+        ["tp", "travaux pratiques", "experience"],
+        ["cc", "controle continu"]
+      ];
+
+      const hasTerm = (str, term) => {
+        let idx = -1;
+        while ((idx = str.indexOf(term, idx + 1)) !== -1) {
+          const before = idx === 0 || str[idx - 1] === ' ';
+          if (before) {
+            const nextChar = str[idx + term.length];
+            const isEnd = nextChar === undefined;
+            const isSpace = nextChar === ' ';
+            const isDigit = nextChar >= '0' && nextChar <= '9';
+            
+            if (isEnd || isSpace || isDigit) {
+              // Special protection for grammatical French words "de" and "ce"
+              if (term === "de" || term === "ce") {
+                const isStart = idx === 0;
+                if (isStart || isEnd || isDigit) {
+                  return true;
+                }
+              } else {
+                return true;
+              }
+            }
+          }
+        }
+        return false;
+      };
+
+      for (const group of synonymGroups) {
+        let qMatched = null;
+        let tMatched = null;
+        for (const item of group) {
+          if (!qMatched && hasTerm(q, item)) qMatched = item;
+          if (!tMatched && hasTerm(t, item)) tMatched = item;
+        }
+        if (qMatched && tMatched && qMatched !== tMatched) {
+          return 0.95;
+        }
+      }
+
+      // Specific groups to resolve Montreal/Toronto conflict
+      const montrealGroup = [
+        "montreal", "concordia", "concordia university", 
+        "quebec", "yul", "hec montreal", "mcgill", "uqam", "vieux montreal", 
+        "plateau mont royal", "guy concordia", "loyola campus", "sgw campus"
+      ];
+      const torontoGroup = [
+        "toronto", "ilac", 
+        "ontario", "yyz", "gta", "greater toronto area", "ilac international college", 
+        "cn tower", "north york", "downtown toronto"
+      ];
+
+      const qHasMontreal = montrealGroup.some(item => hasTerm(q, item));
+      const tHasMontreal = montrealGroup.some(item => hasTerm(t, item));
+      const qHasToronto = torontoGroup.some(item => hasTerm(q, item));
+      const tHasToronto = torontoGroup.some(item => hasTerm(t, item));
+
+      const hasConflict = (qHasMontreal && tHasToronto) || (qHasToronto && tHasMontreal);
+
+      if (!hasConflict) {
+        const canadaGroup = ["canada", ...montrealGroup, ...torontoGroup];
+        let qHasCanada = canadaGroup.some(item => hasTerm(q, item));
+        let tHasCanada = canadaGroup.some(item => hasTerm(t, item));
+        if (qHasCanada && tHasCanada) {
+          return 0.95;
+        }
+      }
+
+      // Other Destination / Study Abroad association mapping (without Canada to prevent duplicates)
+      const destinationGroups = [
+        [
+          "etats unis", "usa", "us", "united states", "irvine", "uci", "california", "californie", 
+          "university of california irvine", "orange county", "oc", "socal", "southern california", 
+          "los angeles", "lax", "anteaters"
+        ],
+        [
+          "hongrie", "budapest", "essca", "hungary", 
+          "bud", "danube", "bme", "corvinus", "essca school of management", 
+          "pest", "buda", "europe centrale"
+        ],
+        [
+          "pologne", "varsovie", "warsaw", "agh", "agh university", "poland", 
+          "waw", "cracovie", "krakow", "malopolska", "mazovie", "vistule", 
+          "agh university of science and technology"
+        ],
+        [
+          "republique tcheque", "tchequie", "tcheque", "ostrava", "vsb", "tuo", "vsb tuo", "czech", "czech republic", 
+          "czechia", "boheme", "moravie", "silesie", "prague", "prg", "moravian silesian", "poruba"
+        ],
+        [
+          "malaisie", "kuala lumpur", "kuala lampur", "apu", "asia pacific university", "malaysia", 
+          "kl", "kul", "klcc", "selangor", "bukit jalil", "petronas", "asie du sud est"
+        ],
+        [
+          "afrique du sud", "south africa", "cput", "cape peninsula", 
+          "za", "cpt", "cape town", "le cap", "western cape", "peninsule du cap", 
+          "bellville", "district six"
+        ],
+        [
+          "inde", "india", "mahe", "manipal", 
+          "bom", "del", "karnataka", "manipal academy of higher education", 
+          "udupi", "bangalore", "bengaluru"
+        ],
+        [
+          "chine", "china", "seu", "southeast university", 
+          "nanjing", "nankin", "jiangsu", "pkin", "shanghai", "pvg", "nkg"
+        ],
+        [
+          "angleterre", "uk", "royaume uni", "united kingdom", "staffordshire", "england", 
+          "gb", "great britain", "stoke on trent", "midlands", "west midlands", "lhr", "london"
+        ]
+      ];
+
+      for (const group of destinationGroups) {
+        let qHas = false;
+        let tHas = false;
+        for (const item of group) {
+          if (!qHas && hasTerm(q, item)) qHas = true;
+          if (!tHas && hasTerm(t, item)) tHas = true;
+        }
+        if (qHas && tHas) {
+          return 0.95;
+        }
+      }
+
+      // Exact or contains (with word boundary / length protection for short queries)
+      if (t === q) return 1;
+      const isShort = q.length <= 3;
+      const matchesSafeSubstring = isShort
+        ? t.split(/\s+/).some(w => w.startsWith(q))
+        : t.includes(q);
+      if (matchesSafeSubstring) return 0.95;
+
+      // Space-insensitive matching (strict equality when stripped to avoid false positives)
+      const qStripped = q.replace(/\s+/g, '');
+      const tStripped = t.replace(/\s+/g, '');
+      if (qStripped && tStripped && qStripped === tStripped) {
+        return 0.90;
+      }
+
+      // Word-level match
+      const stopWords = new Set(['quand', 'est', 'ce', 'que', 'je', 'j', 'aurais', 'ai', 'un', 'une', 'des', 'le', 'la', 'les', 'du', 'de', 'en', 'pour', 'mes', 'mon', 'ma', 'ta', 'tes', 'son', 'ses', 'nous', 'vous', 'ils', 'elles', 'sont', 'ont', 'y', 'a', 't', 'il', 'elle', 'dans', 'avec', 'par', 'sur', 'pour', 'qui', 'quoi', 'dont', 'ou', 'comment', 'pourquoi', 'quel', 'quels', 'quelle', 'quelles', 'c', 'd', 'l', 's', 'm', 't', 'n']);
+      const qWordsRaw = q.split(/\s+/).filter(Boolean);
+      const qWordsFiltered = qWordsRaw.filter(w => !stopWords.has(w));
+      const qWords = qWordsFiltered.length > 0 ? qWordsFiltered : qWordsRaw;
+      const tWords = t.split(/\s+/).filter(Boolean);
+      let wordHits = 0;
+      for (const qw of qWords) {
+        for (const tw of tWords) {
+          const maxLen = Math.max(qw.length, tw.length);
+          if (maxLen === 0) continue;
+          const dist = levenshtein(qw, tw);
+          // Protect short acronyms/words from false positive typo matching
+          const threshold = qw.length <= 3 ? 0 : qw.length <= 5 ? 1 : qw.length <= 8 ? 2 : 3;
+          
+          // Prevent short grammatical words (like "de" and "ce" of length 2) in target from matching longer query words (like "devoir")
+          const isPrefixMatch = qw.length >= 2 && tw.length >= 2 && (tw.startsWith(qw) || (tw.length >= 3 && qw.startsWith(tw)));
+          const isSubstrMatch = qw.length >= 4 && tw.length >= 4 && (tw.includes(qw) || qw.includes(tw));
+          
+          if (dist <= threshold || isPrefixMatch || isSubstrMatch) { wordHits++; break; }
+        }
+      }
+      if (wordHits === qWords.length) return 0.8;
+      if (wordHits > 0) return 0.4 + (wordHits / qWords.length) * 0.3;
+      // Overall string levenshtein fallback
+      const dist = levenshtein(q, t.substring(0, Math.min(t.length, q.length + 10)));
+      const norm = dist / Math.max(q.length, 1);
+      return norm <= 0.4 ? Math.max(0, 0.4 - norm) : 0;
+    };
+
+    // ── Ensure userId is resolved before API calls ────────────────────
+    const waitForUserId = () => new Promise((resolve, reject) => {
+      if (currentUserId && currentUserId !== 0) { resolve(currentUserId); return; }
+      let tries = 0;
+      const check = () => {
+        const cfg = extractMoodleConfig();
+        if (cfg.sesskey) currentSesskey = cfg.sesskey;
+        if (cfg.userid && cfg.userid !== 0) { currentUserId = cfg.userid; resolve(currentUserId); return; }
+        if (currentUserId && currentUserId !== 0) { resolve(currentUserId); return; }
+        tries++;
+        if (tries > 50) { reject(new Error('Session Moodle non disponible. Reconnecte-toi.')); return; }
+        setTimeout(check, 100);
+      };
+      check();
+    });
+
     if (fabAi) {
       fabAi.addEventListener('click', () => {
-        const inputField = appContainer.querySelector('.oneui-input-field');
-        if (inputField) {
-          inputField.focus();
-          inputField.value = "Bonjour, j'aimerais vous poser une question concernant...";
-          inputField.dispatchEvent(new Event('input')); // trigger resizing
-        } else {
-          alert("Ouvrez une discussion pour utiliser l'assistant de rédaction IA !");
-        }
+        const aiAvatarHTML = `
+          <div class="oneui-conv-avatar-initials" style="background: linear-gradient(135deg, #4285f4, #9b51e0); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: white; margin: 0;">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <path d="M11 8a3 3 0 0 1 3 3" stroke-width="2.5"/>
+            </svg>
+          </div>
+        `;
+        selectConversation('ai', 'myMoodle AI', aiAvatarHTML, 0);
       });
     }
+
+    // All AI search functions (deepSearchMoodle, iaRenderResults, getAdaptedSuggestions, etc.)
+    // have been moved to the MyEfrei ULTRA - Chat extension (js/chat.js).
 
     // 1f. Profile settings modal logic
     const profileBtn = appContainer.querySelector('.oneui-user-profile-btn');
@@ -1580,6 +1898,26 @@
       if (!pickerPopup.contains(e.target) && !emojiBtn.contains(e.target)) {
         closePicker();
       }
+    });
+
+    // Intercept clicks and mouse/touch events on IA result cards to prevent Moodle's routing system from crashing the page
+    const stopResultCardEvents = ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup', 'touchstart', 'touchend'];
+    stopResultCardEvents.forEach(evt => {
+      document.addEventListener(evt, (e) => {
+        const card = e.target.closest && e.target.closest('.ia-result-card');
+        if (card) {
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          if (evt === 'click') {
+            e.preventDefault();
+            const url = card.getAttribute('href');
+            const target = card.getAttribute('target') || '_self';
+            if (url) {
+              window.open(url, target);
+            }
+          }
+        }
+      }, true);
     });
 
     // 6b. Attach mobile back button listener
