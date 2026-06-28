@@ -2370,6 +2370,107 @@ document.addEventListener('click', (e) => {
   }
 }, true);
 
+const getCoursePageTitle = () => {
+  const heading = document.querySelector('.page-header-headings h1, #page-header h1, h1');
+  if (heading) {
+    let title = heading.textContent.trim();
+    const cleanRegex = /^\s*\*?\s*([A-Z0-9]+(?:-[A-Z0-9]+)*)\s*(?:-|\u2013|\u2014)\s*/i;
+    return title.replace(cleanRegex, '').replace(/\s*\([^)]*\)\s*$/g, '').trim();
+  }
+  return '';
+};
+
+const getMoodleUserId = () => {
+  if (window.M?.cfg?.userid) return window.M.cfg.userid;
+  let userid = document.documentElement.getAttribute('data-moodle-userid');
+  if (!userid || userid === '0') {
+    const body = document.body;
+    if (body) {
+      const bodyClass = body.className || '';
+      const m = bodyClass.match(/\buser-(\d+)\b/);
+      if (m) userid = m[1];
+    }
+  }
+  if (!userid) {
+    try {
+      userid = sessionStorage.getItem('moodle_userid');
+    } catch (e) {}
+  }
+  return userid ? parseInt(userid) : null;
+};
+
+const callMoodleAjax = async (methodname, args) => {
+  const sesskey = getMoodleSesskey();
+  if (!sesskey) {
+    throw new Error('Moodle session key not loaded.');
+  }
+  const url = `${window.location.origin}/lib/ajax/service.php?sesskey=${sesskey}&info=${methodname}`;
+  const payload = [
+    {
+      index: 0,
+      methodname: methodname,
+      args: args
+    }
+  ];
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) throw new Error(`Fetch failed: ${response.statusText}`);
+  const data = await response.json();
+  if (!data || !data[0]) throw new Error('Invalid AJAX response format');
+  if (data[0].error) {
+    const exception = data[0].exception;
+    const errorMsg = exception ? (typeof exception === 'object' ? (exception.message || JSON.stringify(exception)) : exception) : 'Moodle AJAX exception';
+    throw new Error(errorMsg);
+  }
+  return data[0].data;
+};
+
+const fetchRecentMessageContacts = async () => {
+  const userId = getMoodleUserId();
+  if (!userId) return [];
+  try {
+    const result = await callMoodleAjax('core_message_get_conversations', {
+      userid: userId,
+      limitnum: 5,
+      limitfrom: 0
+    });
+    const conversations = result.conversations || [];
+    return conversations.map(conv => {
+      let name = conv.name || '';
+      let imageUrl = '';
+      
+      if (conv.members && conv.members.length > 0) {
+        // Try to find the other member (Moodle type 1 conversations only list the other person)
+        const otherMember = conv.members.find(m => m.id !== userId);
+        if (otherMember) {
+          name = otherMember.fullname || name;
+          imageUrl = otherMember.profileimageurlsmall || otherMember.profileimageurl || '';
+        } else if (conv.members.length === 1 && conv.members[0].id === userId) {
+          // Self-conversation (type 3)
+          name = `${conv.members[0].fullname} (Vous)`;
+          imageUrl = conv.members[0].profileimageurlsmall || conv.members[0].profileimageurl || '';
+        }
+      } else {
+        imageUrl = conv.imageurl || '';
+      }
+      
+      return {
+        id: conv.id,
+        name: name,
+        imageUrl: imageUrl
+      };
+    });
+  } catch (err) {
+    console.error('[myMoodle ULTRA] Error fetching message contacts:', err);
+    return [];
+  }
+};
+
 const showShareModal = (fileName, fileUrl) => {
   const existing = document.getElementById('ultramoodle-share-modal');
   if (existing) existing.remove();
@@ -2379,37 +2480,13 @@ const showShareModal = (fileName, fileUrl) => {
   backdrop.className = 'ultramoodle-modal-backdrop';
   
   backdrop.innerHTML = `
-    <div class="ultramoodle-modal-content" style="max-width: 480px !important;">
+    <div class="ultramoodle-modal-content" style="max-width: 480px !important; min-height: 380px; display: flex; flex-direction: column;">
       <div class="ultramoodle-modal-header">
-        <h3>Partager le fichier</h3>
+        <h3 id="ultramoodle-share-modal-title">Partager le fichier</h3>
         <button class="ultramoodle-modal-close" id="ultramoodle-share-close-btn">&times;</button>
       </div>
-      <div class="ultramoodle-modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
-          <div style="font-weight: 700; color: var(--ultra-text-main); font-size: 14px; word-break: break-word;">${fileName}</div>
-          <div style="font-size: 12px; color: var(--ultra-text-sub); word-break: break-all; opacity: 0.8;">${fileUrl}</div>
-        </div>
-        
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
-          <div style="font-size: 12px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Options de partage</div>
-          
-          <div style="display: flex; gap: 12px; width: 100%;">
-            <button id="ultramoodle-share-copy-link" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-              </svg>
-              Copier le lien
-            </button>
-            <button id="ultramoodle-share-email" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-              </svg>
-              Envoyer par email
-            </button>
-          </div>
-        </div>
+      <div id="ultramoodle-share-dynamic-body" style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
+        <!-- Views will be injected dynamically -->
       </div>
     </div>
   `;
@@ -2430,41 +2507,1077 @@ const showShareModal = (fileName, fileUrl) => {
   const closeBtn = backdrop.querySelector('#ultramoodle-share-close-btn');
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
-  // Copy Link Button Action
-  const copyBtn = backdrop.querySelector('#ultramoodle-share-copy-link');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(fileUrl).then(() => {
-        copyBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-          Lien copié !
+  const headerTitle = backdrop.querySelector('#ultramoodle-share-modal-title');
+  const dynamicBody = backdrop.querySelector('#ultramoodle-share-dynamic-body');
+
+  let attachedFiles = [
+    { name: fileName, url: fileUrl, isMoodle: true, fileObject: null }
+  ];
+
+  const getAllFilesOnPage = () => {
+    const links = Array.from(document.querySelectorAll('a[href*="/mod/resource/"], a[href*="forcedownload=1"]'));
+    const files = [];
+    const seenUrls = new Set();
+    
+    links.forEach(link => {
+      let url = link.href;
+      if (!url) return;
+      
+      let name = link.textContent.trim();
+      name = name.replace(/\s+Fichier$/, '')
+                 .replace(/\s+Document PDF$/, '')
+                 .replace(/\s+Document Word$/, '')
+                 .replace(/\s+Présentation PowerPoint$/, '')
+                 .replace(/\s+Dossier$/, '')
+                 .trim();
+
+      if (!name || seenUrls.has(url)) return;
+      seenUrls.add(url);
+      
+      files.push({ name, url });
+    });
+    
+    return files;
+  };
+
+  const escapeHtml = (unsafe) => {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
+  const renderAddFilesFromPageView = () => {
+    if (headerTitle) headerTitle.textContent = "Ajouter des fichiers du cours";
+    
+    const allPageFiles = getAllFilesOnPage().filter(pf => {
+      return !attachedFiles.some(af => af.url === pf.url);
+    });
+
+    if (allPageFiles.length === 0) {
+      dynamicBody.innerHTML = `
+        <div style="font-size: 13.5px; color: var(--ultra-text-sub); text-align: center; padding: 32px 16px; opacity: 0.85;">
+          Aucun autre fichier détecté sur cette page de cours.
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: auto;">
+          <button id="ultramoodle-picker-local-btn" style="width: 100%; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
+            Sélectionner un fichier de mon PC
+          </button>
+          <button id="ultramoodle-picker-back-btn" style="width: 100%; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer;">
+            Retour
+          </button>
+        </div>
+        <input type="file" id="ultramoodle-local-picker" multiple style="display: none;">
+      `;
+      
+      const localBtn = dynamicBody.querySelector('#ultramoodle-picker-local-btn');
+      const localPicker = dynamicBody.querySelector('#ultramoodle-local-picker');
+      if (localBtn && localPicker) {
+        localBtn.addEventListener('click', () => localPicker.click());
+        localPicker.addEventListener('change', (e) => {
+          if (e.target.files.length > 0) {
+            for (let file of e.target.files) {
+              attachedFiles.push({
+                name: file.name,
+                url: URL.createObjectURL(file),
+                isMoodle: false,
+                fileObject: file
+              });
+            }
+            renderDefaultView();
+          }
+        });
+      }
+      
+      const backBtn = dynamicBody.querySelector('#ultramoodle-picker-back-btn');
+      if (backBtn) backBtn.addEventListener('click', renderDefaultView);
+      return;
+    }
+
+    dynamicBody.innerHTML = `
+      <div style="position: relative; width: 100%;">
+        <input type="text" id="ultramoodle-picker-search" placeholder="Rechercher un fichier sur la page..." style="
+          width: 100%;
+          background-color: var(--ultra-surface-hover);
+          border: 1px solid var(--ultra-border);
+          border-radius: 14px;
+          padding: 12px 14px 12px 38px;
+          font-family: inherit;
+          font-size: 13.5px;
+          color: var(--ultra-text-main);
+          outline: none;
+          box-sizing: border-box;
+        ">
+        <svg style="position: absolute; left: 14px; top: 13px; color: var(--ultra-text-sub); opacity: 0.6;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px;">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--ultra-text-main); cursor: pointer;">
+          <input type="checkbox" id="ultramoodle-picker-select-all" style="width: 15px; height: 15px; accent-color: var(--ultra-accent);">
+          Tout sélectionner
+        </label>
+        <span id="ultramoodle-picker-count-label" style="font-size: 11px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase;">
+          ${allPageFiles.length} fichiers trouvés
+        </span>
+      </div>
+
+      <div id="ultramoodle-picker-files-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto; padding: 8px; border: 1px solid var(--ultra-border); border-radius: 14px; background-color: var(--ultra-surface-hover);">
+        <!-- File checkboxes list -->
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: auto; padding-bottom: 4px;">
+        <button id="ultramoodle-picker-local-link" style="flex: 1; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+          Fichier local...
+        </button>
+        <button id="ultramoodle-picker-add-selected" style="flex: 2; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
+          Ajouter (0)
+        </button>
+        <button id="ultramoodle-picker-back-btn" style="flex: 1; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+          Retour
+        </button>
+      </div>
+      <input type="file" id="ultramoodle-local-picker" multiple style="display: none;">
+    `;
+
+    const listContainer = dynamicBody.querySelector('#ultramoodle-picker-files-list');
+    const selectAllCheckbox = dynamicBody.querySelector('#ultramoodle-picker-select-all');
+    const addSelectedBtn = dynamicBody.querySelector('#ultramoodle-picker-add-selected');
+    const searchInput = dynamicBody.querySelector('#ultramoodle-picker-search');
+    
+    let selectedUrls = new Set();
+
+    const updateAddButtonState = () => {
+      addSelectedBtn.textContent = `Ajouter (${selectedUrls.size})`;
+      addSelectedBtn.disabled = selectedUrls.size === 0;
+      addSelectedBtn.style.opacity = selectedUrls.size === 0 ? '0.5' : '1';
+    };
+
+    const renderList = (filterQuery = '') => {
+      const filtered = allPageFiles.filter(f => f.name.toLowerCase().includes(filterQuery.toLowerCase()));
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); text-align: center; padding: 16px 0;">Aucun fichier trouvé.</div>`;
+        return;
+      }
+      
+      listContainer.innerHTML = filtered.map((file, idx) => {
+        const isChecked = selectedUrls.has(file.url);
+        return `
+          <label style="display: flex; align-items: center; justify-content: space-between; background-color: var(--ultra-surface); border: 1px solid var(--ultra-border); border-radius: 10px; padding: 8px 12px; gap: 10px; cursor: pointer; transition: background-color 0.15s;">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+              <input type="checkbox" class="ultramoodle-picker-checkbox" data-url="${file.url}" data-name="${file.name}" style="width: 15px; height: 15px; accent-color: var(--ultra-accent);" ${isChecked ? 'checked' : ''}>
+              <span style="font-size: 12.5px; font-weight: 500; color: var(--ultra-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</span>
+            </div>
+          </label>
         `;
-        copyBtn.style.backgroundColor = '#10B981'; // Green
-        setTimeout(() => {
-          copyBtn.innerHTML = `
+      }).join('');
+
+      listContainer.querySelectorAll('.ultramoodle-picker-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) {
+            selectedUrls.add(cb.dataset.url);
+          } else {
+            selectedUrls.delete(cb.dataset.url);
+          }
+          updateAddButtonState();
+          
+          selectAllCheckbox.checked = Array.from(listContainer.querySelectorAll('.ultramoodle-picker-checkbox')).every(c => c.checked);
+        });
+      });
+    };
+
+    renderList();
+    updateAddButtonState();
+
+    selectAllCheckbox.addEventListener('change', (e) => {
+      const checkboxes = listContainer.querySelectorAll('.ultramoodle-picker-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = e.target.checked;
+        if (e.target.checked) {
+          selectedUrls.add(cb.dataset.url);
+        } else {
+          selectedUrls.delete(cb.dataset.url);
+        }
+      });
+      updateAddButtonState();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      renderList(e.target.value.trim());
+    });
+
+    const localLinkBtn = dynamicBody.querySelector('#ultramoodle-picker-local-link');
+    const localPicker = dynamicBody.querySelector('#ultramoodle-local-picker');
+    if (localLinkBtn && localPicker) {
+      localLinkBtn.addEventListener('click', () => localPicker.click());
+      localPicker.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          for (let file of e.target.files) {
+            attachedFiles.push({
+              name: file.name,
+              url: URL.createObjectURL(file),
+              isMoodle: false,
+              fileObject: file
+            });
+          }
+          renderDefaultView();
+        }
+      });
+    }
+
+    addSelectedBtn.addEventListener('click', () => {
+      allPageFiles.forEach(file => {
+        if (selectedUrls.has(file.url)) {
+          attachedFiles.push({
+            name: file.name,
+            url: file.url,
+            isMoodle: true,
+            fileObject: null
+          });
+        }
+      });
+      renderDefaultView();
+    });
+
+    const backBtn = dynamicBody.querySelector('#ultramoodle-picker-back-btn');
+    if (backBtn) backBtn.addEventListener('click', renderDefaultView);
+  };
+
+  const renderAttachedFiles = () => {
+    const listContainer = dynamicBody.querySelector('#ultramoodle-attached-files-list');
+    if (!listContainer) return;
+    
+    listContainer.innerHTML = attachedFiles.map((file, idx) => {
+      return `
+        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--ultra-surface); border: 1px solid var(--ultra-border); border-radius: 10px; padding: 6px 12px; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ultra-text-sub)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span style="font-size: 12px; font-weight: 500; color: var(--ultra-text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</span>
+          </div>
+          ${attachedFiles.length > 1 ? `
+            <button class="ultramoodle-remove-file-btn" data-index="${idx}" style="background: none; border: none; color: #EF4444; font-size: 16px; cursor: pointer; padding: 0 4px; line-height: 1; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: opacity 0.2s;">
+              &times;
+            </button>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+
+    listContainer.querySelectorAll('.ultramoodle-remove-file-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => btn.style.opacity = '1');
+      btn.addEventListener('mouseleave', () => btn.style.opacity = '0.8');
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.index);
+        attachedFiles.splice(idx, 1);
+        renderAttachedFiles();
+      });
+    });
+  };
+
+  const renderDefaultView = () => {
+    if (headerTitle) headerTitle.textContent = "Partager le fichier";
+    
+    dynamicBody.innerHTML = `
+      <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Fichiers sélectionnés</div>
+        <div id="ultramoodle-attached-files-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 120px; overflow-y: auto; padding-right: 4px;">
+          <!-- File items will be rendered here -->
+        </div>
+        <button id="ultramoodle-add-file-btn" style="background: none; border: 1px dashed var(--ultra-accent); color: var(--ultra-accent); border-radius: 12px; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; transition: background 0.2s;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Ajouter d'autres fichiers
+        </button>
+        <input type="file" id="ultramoodle-file-picker" multiple style="display: none;">
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Partager par message</div>
+        <div id="ultramoodle-share-contacts-list" style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 12px 0; min-height: 85px;">
+          <div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 12px 0;">Chargement des contacts...</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Analyser avec une IA</div>
+        <div id="ultramoodle-share-ai-list" style="display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 12px 0; min-height: 85px;">
+          <!-- ChatGPT -->
+          <div class="ai-share-item" data-url="https://chatgpt.com/" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 72px; flex-shrink: 0; transition: transform 0.2s;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #10a37f, #0d8567); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; box-shadow: 0 4px 10px rgba(16, 163, 127, 0.2);">
+              GPT
+            </div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-main); text-align: center; width: 100%;">ChatGPT</div>
+          </div>
+          <!-- Claude -->
+          <div class="ai-share-item" data-url="https://claude.ai/new" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 72px; flex-shrink: 0; transition: transform 0.2s;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #d97753, #b2533e); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; box-shadow: 0 4px 10px rgba(217, 119, 83, 0.2);">
+              CLD
+            </div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-main); text-align: center; width: 100%;">Claude</div>
+          </div>
+          <!-- Gemini -->
+          <div class="ai-share-item" data-url="https://gemini.google.com/app" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 72px; flex-shrink: 0; transition: transform 0.2s;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #4f46e5, #9333ea); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);">
+              GEM
+            </div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-main); text-align: center; width: 100%;">Gemini</div>
+          </div>
+          <!-- Perplexity -->
+          <div class="ai-share-item" data-url="https://www.perplexity.ai/" style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; width: 72px; flex-shrink: 0; transition: transform 0.2s;">
+            <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #1995ad, #137487); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: white; box-shadow: 0 4px 10px rgba(25, 149, 173, 0.2);">
+              PPLX
+            </div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-main); text-align: center; width: 100%;">Perplexity</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px; margin-bottom: 8px;">
+        <div style="font-size: 12px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Options de partage</div>
+        
+        <div style="display: flex; gap: 12px; width: 100%;">
+          <button id="ultramoodle-share-copy-link" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
-            Copier le lien
+            Copier les liens
+          </button>
+          <button id="ultramoodle-share-email" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Email
+          </button>
+        </div>
+      </div>
+    `;
+
+    renderAttachedFiles();
+
+    const addFileBtn = dynamicBody.querySelector('#ultramoodle-add-file-btn');
+    if (addFileBtn) {
+      addFileBtn.addEventListener('click', renderAddFilesFromPageView);
+    }
+
+    const copyBtn = dynamicBody.querySelector('#ultramoodle-share-copy-link');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const linksText = attachedFiles.map(f => f.url).join('\n');
+        navigator.clipboard.writeText(linksText).then(() => {
+          copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Copié !
           `;
-          copyBtn.style.backgroundColor = 'var(--ultra-accent)';
-        }, 2000);
+          copyBtn.style.backgroundColor = '#10B981';
+          setTimeout(() => {
+            copyBtn.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              Copier les liens
+            `;
+            copyBtn.style.backgroundColor = 'var(--ultra-accent)';
+          }, 2000);
+        });
+      });
+    }
+
+    const emailBtn = dynamicBody.querySelector('#ultramoodle-share-email');
+    if (emailBtn) {
+      emailBtn.addEventListener('click', () => {
+        const subject = encodeURIComponent(`Partage de fichiers de cours`);
+        const body = encodeURIComponent(`Voici les liens vers les fichiers de cours :\n\n` + attachedFiles.map(f => `${f.name}\n${f.url}`).join('\n\n'));
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+      });
+    }
+
+    const aiItems = dynamicBody.querySelectorAll('.ai-share-item');
+    aiItems.forEach(item => {
+      item.addEventListener('mouseenter', () => item.style.transform = 'scale(1.05)');
+      item.addEventListener('mouseleave', () => item.style.transform = 'scale(1)');
+      
+      item.addEventListener('click', () => {
+        const baseUrl = item.dataset.url;
+        const subject = getCoursePageTitle();
+        uploadAndShareToAi(baseUrl, subject, item);
       });
     });
-  }
 
-  // Email Button Action
-  const emailBtn = backdrop.querySelector('#ultramoodle-share-email');
-  if (emailBtn) {
-    emailBtn.addEventListener('click', () => {
-      const subject = encodeURIComponent(`Partage de fichier : ${fileName}`);
-      const body = encodeURIComponent(`Voici le lien vers le fichier de cours :\n\n${fileName}\n${fileUrl}`);
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    fetchRecentMessageContacts().then(contacts => {
+      const listContainer = dynamicBody.querySelector('#ultramoodle-share-contacts-list');
+      if (!listContainer) return;
+      
+      listContainer.innerHTML = '';
+
+      const plusItem = document.createElement('div');
+      plusItem.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        width: 72px;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+      `;
+      plusItem.addEventListener('mouseenter', () => plusItem.style.transform = 'scale(1.05)');
+      plusItem.addEventListener('mouseleave', () => plusItem.style.transform = 'scale(1)');
+      
+      plusItem.innerHTML = `
+        <div style="
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          background-color: var(--ultra-surface-hover);
+          border: 1px dashed var(--ultra-accent);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          font-weight: 500;
+          color: var(--ultra-accent);
+          box-sizing: border-box;
+        ">
+          +
+        </div>
+        <div style="font-size: 11px; font-weight: 600; color: var(--ultra-accent); text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          Rechercher
+        </div>
+      `;
+      plusItem.addEventListener('click', () => {
+        renderSearchView();
+      });
+      listContainer.appendChild(plusItem);
+
+      if (contacts.length > 0) {
+        contacts.forEach(contact => {
+          const item = document.createElement('div');
+          item.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            width: 72px;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+          `;
+          item.addEventListener('mouseenter', () => item.style.transform = 'scale(1.05)');
+          item.addEventListener('mouseleave', () => item.style.transform = 'scale(1)');
+          
+          let avatarHtml = '';
+          if (contact.imageUrl) {
+            avatarHtml = `<img src="${contact.imageUrl}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1px solid var(--ultra-border);" />`;
+          } else {
+            const initials = contact.name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+            avatarHtml = `
+              <div style="width: 44px; height: 44px; border-radius: 50%; background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--ultra-text-main);">
+                ${initials}
+              </div>
+            `;
+          }
+          
+          const firstName = contact.name.split(' ')[0] || contact.name;
+          
+          item.innerHTML = `
+            <div style="position: relative; width: 44px; height: 44px;">
+              ${avatarHtml}
+            </div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--ultra-text-main); text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${contact.name}">
+              ${firstName}
+            </div>
+          `;
+          
+          item.addEventListener('click', () => {
+            renderWriteMessageView({
+              id: null,
+              name: contact.name,
+              imageUrl: contact.imageUrl,
+              conversationid: contact.id
+            });
+          });
+          
+          listContainer.appendChild(item);
+        });
+      }
+    }).catch(err => {
+      console.error('Error rendering share contacts:', err);
+      const listContainer = dynamicBody.querySelector('#ultramoodle-share-contacts-list');
+      if (listContainer) {
+        listContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 12px 0;">Erreur lors de la récupération des contacts.</div>`;
+      }
     });
+  };
+
+  const renderSearchView = () => {
+    if (headerTitle) headerTitle.textContent = "Rechercher un contact";
+
+    dynamicBody.innerHTML = `
+      <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+        <div style="position: relative; flex: 1;">
+          <input type="text" id="ultramoodle-search-contact-input" placeholder="Rechercher par nom..." style="
+            width: 100%;
+            background-color: var(--ultra-surface-hover);
+            border: 1px solid var(--ultra-border);
+            border-radius: 14px;
+            padding: 12px 14px 12px 38px;
+            font-family: inherit;
+            font-size: 13.5px;
+            color: var(--ultra-text-main);
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+          " />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ultra-text-sub)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+          ">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+      </div>
+
+      <div id="ultramoodle-search-results-list" style="
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+        overflow-y: auto;
+        max-height: 220px;
+        min-height: 150px;
+        padding-right: 4px;
+      ">
+        <div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 40px 0;">Tapez un nom pour commencer la recherche.</div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 4px; margin-bottom: 8px;">
+        <button id="ultramoodle-search-back-btn" style="width: 100%; background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; color: var(--ultra-text-main); border: 1px solid var(--ultra-border) !important; cursor: pointer; transition: background-color 0.2s;">
+          Retour
+        </button>
+      </div>
+    `;
+
+    const backBtn = dynamicBody.querySelector('#ultramoodle-search-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        renderDefaultView();
+      });
+    }
+
+    const input = dynamicBody.querySelector('#ultramoodle-search-contact-input');
+    const resultsContainer = dynamicBody.querySelector('#ultramoodle-search-results-list');
+    
+    if (input && resultsContainer) {
+      setTimeout(() => input.focus(), 100);
+
+      let searchTimeout = null;
+      input.addEventListener('input', () => {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        
+        const query = input.value.trim();
+        if (query.length < 2) {
+          resultsContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 40px 0;">Tapez au moins 2 caractères.</div>`;
+          return;
+        }
+
+        resultsContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 40px 0;">Recherche en cours...</div>`;
+
+        searchTimeout = setTimeout(async () => {
+          try {
+            const userId = getMoodleUserId();
+            const result = await callMoodleAjax('core_message_message_search_users', {
+              userid: userId,
+              search: query,
+              limitnum: 30
+            });
+            
+            const contacts = result.contacts || [];
+            const noncontacts = result.noncontacts || [];
+            const allUsers = [...contacts, ...noncontacts];
+
+            if (allUsers.length === 0) {
+              resultsContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 40px 0;">Aucun utilisateur trouvé.</div>`;
+              return;
+            }
+
+            resultsContainer.innerHTML = '';
+            allUsers.forEach(user => {
+              const item = document.createElement('div');
+              item.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                background-color: var(--ultra-surface-hover);
+                border: 1px solid var(--ultra-border);
+                border-radius: 14px;
+                padding: 10px 14px;
+                cursor: pointer;
+                transition: transform 0.15s, background-color 0.15s;
+              `;
+              item.addEventListener('mouseenter', () => {
+                item.style.transform = 'translateY(-1px)';
+                item.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
+              });
+              item.addEventListener('mouseleave', () => {
+                item.style.transform = 'none';
+                item.style.backgroundColor = 'var(--ultra-surface-hover)';
+              });
+
+              let avatarHtml = '';
+              const imageUrl = user.profileimageurlsmall || user.profileimageurl;
+              if (imageUrl) {
+                avatarHtml = `<img src="${imageUrl}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--ultra-border);" />`;
+              } else {
+                const initials = user.fullname.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+                avatarHtml = `
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--ultra-surface); border: 1px solid var(--ultra-border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--ultra-text-main);">
+                    ${initials}
+                  </div>
+                `;
+              }
+
+              item.innerHTML = `
+                ${avatarHtml}
+                <div style="font-weight: 650; font-size: 13.5px; color: var(--ultra-text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: left;">
+                  ${user.fullname}
+                </div>
+                <div style="font-size: 10px; color: var(--ultra-text-sub); font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px;">
+                  ${user.iscontact ? 'Contact' : 'Efrei'}
+                </div>
+              `;
+
+              item.addEventListener('click', () => {
+                renderWriteMessageView({
+                  id: user.id,
+                  name: user.fullname,
+                  imageUrl: imageUrl,
+                  conversationid: null
+                });
+              });
+
+              resultsContainer.appendChild(item);
+            });
+          } catch (err) {
+            console.error('Error during search users:', err);
+            resultsContainer.innerHTML = `<div style="font-size: 13px; color: var(--ultra-text-sub); opacity: 0.8; text-align: center; width: 100%; padding: 40px 0;">Erreur lors de la recherche.</div>`;
+          }
+        }, 300);
+      });
+    }
+  };
+
+  const prepareMessageText = async (customMessage) => {
+    let linksHtml = [];
+    const subject = getCoursePageTitle();
+    
+    for (let file of attachedFiles) {
+      if (file.isMoodle) {
+        let fileType = 'file';
+        if (file.url.toLowerCase().includes('.pdf')) fileType = 'pdf';
+        else if (file.url.toLowerCase().includes('.docx') || file.url.toLowerCase().includes('.doc')) fileType = 'word';
+        else if (file.url.toLowerCase().includes('.xlsx') || file.url.toLowerCase().includes('.xls') || file.url.toLowerCase().includes('.csv')) fileType = 'excel';
+        else if (file.url.toLowerCase().includes('.pptx') || file.url.toLowerCase().includes('.ppt')) fileType = 'powerpoint';
+        else if (file.url.toLowerCase().includes('.txt') || file.url.toLowerCase().includes('.text')) fileType = 'text';
+
+        const embedData = {
+          name: file.name,
+          type: fileType,
+          subject: subject
+        };
+        
+        const base64Data = btoa(unescape(encodeURIComponent(JSON.stringify(embedData))));
+        const richLink = `${file.url}#um-embed=${base64Data}`;
+        linksHtml.push(`<a href="${richLink}">${file.name}</a>`);
+      } else {
+        try {
+          const formData = new FormData();
+          formData.append('file', file.fileObject, file.name);
+          
+          const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+            method: 'POST',
+            body: formData
+          });
+          if (uploadRes.ok) {
+            const uploadData = await uploadRes.json();
+            if (uploadData.status === 'success' && uploadData.data && uploadData.data.url) {
+              const publicUrl = uploadData.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+              linksHtml.push(`<a href="${publicUrl}">${file.name}</a>`);
+            }
+          }
+        } catch (err) {
+          console.error('[myMoodle ULTRA] Failed to upload local file for message:', err);
+        }
+      }
+    }
+    
+    let messageText = '';
+    if (customMessage) {
+      messageText = escapeHtml(customMessage).replace(/\n/g, '<br>') + '<br><br>';
+    }
+    
+    if (linksHtml.length > 1) {
+      messageText += `Partage de fichiers :<br>` + linksHtml.map(l => `• ${l}`).join('<br>');
+    } else if (linksHtml.length === 1) {
+      messageText += `Partage de fichier : ${linksHtml[0]}`;
+    } else {
+      messageText += `Aucun fichier partagé`;
+    }
+    
+    return messageText;
+  };
+
+  const renderWriteMessageView = (contact) => {
+    if (headerTitle) headerTitle.textContent = `Partager avec ${contact.name.split(' ')[0]}`;
+
+    let filesHtml = '';
+    if (attachedFiles.length === 1) {
+      filesHtml = `
+        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(99, 102, 241, 0.12); color: var(--ultra-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
+            <div style="font-weight: 700; font-size: 12.5px; color: var(--ultra-text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles[0].name}</div>
+            <div style="font-size: 10.5px; color: var(--ultra-text-sub); opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pièce jointe</div>
+          </div>
+        </div>
+      `;
+    } else {
+      filesHtml = `
+        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(99, 102, 241, 0.12); color: var(--ultra-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
+            <div style="font-weight: 700; font-size: 12.5px; color: var(--ultra-text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles.length} fichiers sélectionnés</div>
+            <div style="font-size: 10.5px; color: var(--ultra-text-sub); opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles.map(f => f.name).join(', ')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    dynamicBody.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+        <textarea id="ultramoodle-share-textarea" placeholder="Écrire un message d'accompagnement (facultatif)..." style="
+          width: 100%;
+          min-height: 90px;
+          background-color: var(--ultra-surface-hover);
+          border: 1px solid var(--ultra-border);
+          border-radius: 16px;
+          padding: 14px;
+          font-family: inherit;
+          font-size: 13.5px;
+          color: var(--ultra-text-main);
+          resize: none;
+          outline: none;
+          box-sizing: border-box;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        " onfocus="this.style.borderColor='var(--ultra-accent)';this.style.boxShadow='0 0 0 3px rgba(var(--ultra-accent-rgb, 100, 100, 255), 0.15)';" onblur="this.style.borderColor='var(--ultra-border)';this.style.boxShadow='none';"></textarea>
+      </div>
+
+      ${filesHtml}
+
+      <div style="display: flex; gap: 12px; margin-top: 4px; margin-bottom: 8px;">
+        <button id="ultramoodle-share-back-btn" style="flex: 1; background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; color: var(--ultra-text-main); cursor: pointer; transition: background-color 0.2s;">
+          Retour
+        </button>
+        <button id="ultramoodle-share-send-btn" style="flex: 2; background-color: var(--ultra-accent); border: none; border-radius: 12px; padding: 12px; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s;">
+          Envoyer
+        </button>
+      </div>
+    `;
+
+    const backBtn = dynamicBody.querySelector('#ultramoodle-share-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', () => {
+        if (contact.fromSearch) {
+          renderSearchView();
+        } else {
+          renderDefaultView();
+        }
+      });
+    }
+
+    const sendBtn = dynamicBody.querySelector('#ultramoodle-share-send-btn');
+    const textarea = dynamicBody.querySelector('#ultramoodle-share-textarea');
+    
+    if (sendBtn && textarea) {
+      setTimeout(() => textarea.focus(), 100);
+
+      sendBtn.addEventListener('click', () => {
+        sendBtn.disabled = true;
+        sendBtn.style.opacity = '0.6';
+        sendBtn.textContent = 'Envoi en cours...';
+
+        const customMessage = textarea.value.trim();
+        
+        const sendMessage = (messageText) => {
+          return contact.conversationid
+            ? callMoodleAjax('core_message_send_messages_to_conversation', {
+                conversationid: contact.conversationid,
+                messages: [
+                  {
+                    text: messageText,
+                    textformat: 1 // HTML
+                  }
+                ]
+              })
+            : callMoodleAjax('core_message_get_conversation_between_users', {
+                userid: getMoodleUserId(),
+                otheruserid: contact.id,
+                includecontactrequests: true,
+                includeprivacyinfo: true
+              }).then(res => {
+                return callMoodleAjax('core_message_send_messages_to_conversation', {
+                  conversationid: res.id,
+                  messages: [
+                    {
+                      text: messageText,
+                      textformat: 1
+                    }
+                  ]
+                });
+              }).catch(() => {
+                return callMoodleAjax('core_message_send_instant_messages', {
+                  messages: [
+                    {
+                      touserid: contact.id,
+                      text: messageText,
+                      textformat: 1
+                    }
+                  ]
+                });
+              });
+        };
+
+        prepareMessageText(customMessage).then(messageText => {
+          sendMessage(messageText).then(() => {
+            sendBtn.textContent = 'Envoyé !';
+            sendBtn.style.backgroundColor = '#10B981';
+            
+            setTimeout(() => {
+              closeModal();
+            }, 1200);
+          }).catch(err => {
+            console.error('[myMoodle ULTRA] Failed to send files via Moodle messages:', err);
+            alert('Erreur lors de l\'envoi du message.');
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = '1';
+            sendBtn.textContent = 'Envoyer';
+          });
+        });
+      });
+    }
+  };
+
+  const uploadAndShareToAi = async (baseUrl, subject, buttonElement) => {
+    const originalText = buttonElement.querySelector('div:last-child').textContent;
+    const iconContainer = buttonElement.querySelector('div:first-child');
+    const textLabel = buttonElement.querySelector('div:last-child');
+    const originalBg = iconContainer.style.background;
+    
+    textLabel.textContent = "Lecture...";
+    iconContainer.style.background = "#64748b";
+    iconContainer.innerHTML = `
+      <svg class="um-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="2" x2="12" y2="6"></line>
+        <line x1="12" y1="18" x2="12" y2="22"></line>
+        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+        <line x1="2" y1="12" x2="6" y2="12"></line>
+        <line x1="18" y1="12" x2="22" y2="12"></line>
+        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+      </svg>
+    `;
+    
+    try {
+      let filesToSave = [];
+      let targetDomain = "";
+      if (baseUrl.includes("chatgpt.com")) targetDomain = "chatgpt.com";
+      else if (baseUrl.includes("claude.ai")) targetDomain = "claude.ai";
+      else if (baseUrl.includes("gemini.google.com")) targetDomain = "gemini.google.com";
+      else if (baseUrl.includes("perplexity.ai")) targetDomain = "perplexity.ai";
+
+      const isGemini = targetDomain === "gemini.google.com";
+      let promptFilesText = [];
+
+      for (let file of attachedFiles) {
+        let detectedExtension = '';
+        let detectedMime = '';
+        let arrayBuffer;
+
+        if (file.isMoodle) {
+          const res = await fetch(file.url);
+          if (!res.ok) throw new Error(`Erreur de téléchargement pour ${file.name}`);
+          arrayBuffer = await res.arrayBuffer();
+          
+          const contentType = res.headers.get('content-type') || '';
+          const finalUrl = res.url || file.url;
+          
+          if (contentType.includes('wordprocessingml') || finalUrl.endsWith('.docx')) {
+            detectedExtension = 'docx';
+            detectedMime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+          } else if (contentType.includes('msword') || finalUrl.endsWith('.doc')) {
+            detectedExtension = 'doc';
+            detectedMime = 'application/msword';
+          } else if (contentType.includes('presentationml') || finalUrl.endsWith('.pptx')) {
+            detectedExtension = 'pptx';
+            detectedMime = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+          } else if (contentType.includes('powerpoint') || contentType.includes('mspowerpoint') || finalUrl.endsWith('.ppt')) {
+            detectedExtension = 'ppt';
+            detectedMime = 'application/vnd.ms-powerpoint';
+          } else if (contentType.includes('pdf') || finalUrl.endsWith('.pdf')) {
+            detectedExtension = 'pdf';
+            detectedMime = 'application/pdf';
+          } else if (contentType.includes('spreadsheet') || finalUrl.endsWith('.xlsx')) {
+            detectedExtension = 'xlsx';
+            detectedMime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+          } else {
+            detectedExtension = file.url.split('.').pop().split('?')[0] || 'pdf';
+            detectedMime = 'application/octet-stream';
+          }
+        } else {
+          arrayBuffer = await file.fileObject.arrayBuffer();
+          detectedMime = file.fileObject.type || 'application/octet-stream';
+          detectedExtension = file.name.split('.').pop() || 'bin';
+        }
+
+        const cleanName = file.name.endsWith(`.${detectedExtension}`) ? file.name : `${file.name}.${detectedExtension}`;
+
+        if (isGemini) {
+          const downloadLink = document.createElement('a');
+          downloadLink.href = URL.createObjectURL(new Blob([arrayBuffer], { type: detectedMime }));
+          downloadLink.download = cleanName;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.remove();
+          promptFilesText.push(`"${cleanName}"`);
+        } else {
+          const blob = new Blob([arrayBuffer], { type: detectedMime });
+          const base64Data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+          
+          filesToSave.push({
+            base64: base64Data,
+            fileName: cleanName,
+            mimeType: detectedMime
+          });
+        }
+      }
+
+      let promptText = `Peux-tu m'expliquer ce cours en détail, me faire un résumé structuré et me lister les notions clés à retenir ?`;
+      if (isGemini) {
+        promptText = `Voici les cours : ${promptFilesText.join(', ')}` + (subject ? ` de la matière "${subject}"` : "") + `.\n\n[Les fichiers ont été téléchargés dans votre dossier. Veuillez les glisser-déposer tous ici pour les analyser.]\n\n` + promptText;
+      } else {
+        promptText = `Voici les documents de cours` + (subject ? ` de la matière "${subject}"` : "") + `.\n\n` + promptText;
+      }
+
+      await chrome.storage.local.set({
+        pendingAiShare: {
+          files: filesToSave,
+          prompt: promptText,
+          targetDomain: targetDomain,
+          timestamp: Date.now()
+        }
+      });
+
+      window.open(baseUrl, '_blank');
+
+      textLabel.textContent = "Prêt !";
+      iconContainer.style.background = "#10B981";
+      iconContainer.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+      setTimeout(() => {
+        textLabel.textContent = originalText;
+        iconContainer.style.background = originalBg;
+        const initials = originalText === "ChatGPT" ? "GPT" : (originalText === "Claude" ? "CLD" : (originalText === "Gemini" ? "GEM" : "PPLX"));
+        iconContainer.textContent = initials;
+      }, 2000);
+
+    } catch (err) {
+      console.error('[myMoodle ULTRA] Failed to prepare files for AI:', err);
+      alert("Impossible de préparer les fichiers pour l'IA.");
+      textLabel.textContent = originalText;
+      iconContainer.style.background = originalBg;
+      const initials = originalText === "ChatGPT" ? "GPT" : (originalText === "Claude" ? "CLD" : (originalText === "Gemini" ? "GEM" : "PPLX"));
+      iconContainer.textContent = initials;
+    }
+  };
+
+  renderDefaultView();
+};
+
+const extractTextFromDocx = async (arrayBuffer) => {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const docFile = zip.file("word/document.xml");
+  if (!docFile) throw new Error("Format Word invalide");
+  const docXml = await docFile.async("text");
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(docXml, "text/xml");
+  const textElements = xmlDoc.getElementsByTagName("w:t");
+  let text = "";
+  for (let i = 0; i < textElements.length; i++) {
+    text += textElements[i].textContent + " ";
   }
+  return text.trim();
+};
+
+const extractTextFromPptx = async (arrayBuffer) => {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  let slideIndex = 1;
+  let text = "";
+  
+  while (true) {
+    const slideFile = zip.file(`ppt/slides/slide${slideIndex}.xml`);
+    if (!slideFile) break;
+    
+    const slideXml = await slideFile.async("text");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(slideXml, "text/xml");
+    const textElements = xmlDoc.getElementsByTagName("a:t");
+    
+    text += `--- Slide ${slideIndex} ---\n`;
+    for (let i = 0; i < textElements.length; i++) {
+      text += textElements[i].textContent + " ";
+    }
+    text += "\n\n";
+    slideIndex++;
+  }
+  
+  if (text === "") throw new Error("Format PowerPoint invalide ou vide");
+  return text.trim();
 };
 
 

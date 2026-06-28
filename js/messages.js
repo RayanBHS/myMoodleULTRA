@@ -481,6 +481,167 @@
     }
   };
 
+  const parseRichEmbeds = (text) => {
+    if (!text || !text.includes('#um-embed=')) return text;
+    
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, 'text/html');
+      const links = doc.querySelectorAll('a[href*="#um-embed="]');
+      
+      if (links.length === 0) return text;
+      
+      links.forEach(link => {
+        try {
+          const href = link.href;
+          const hashMatch = href.match(/#um-embed=([A-Za-z0-9+/=]+)/);
+          if (!hashMatch) return;
+          
+          const base64Data = hashMatch[1];
+          const jsonStr = decodeURIComponent(escape(atob(base64Data)));
+          const data = JSON.parse(jsonStr);
+          
+          if (!data || !data.name) return;
+          
+          let iconSvg = '';
+          let iconBg = 'rgba(100, 116, 139, 0.1)';
+          let iconColor = '#64748b';
+          
+          if (data.type === 'pdf') {
+            iconSvg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            `;
+            iconBg = 'rgba(239, 68, 68, 0.12)';
+            iconColor = '#ef4444';
+          } else if (data.type === 'word') {
+            iconSvg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            `;
+            iconBg = 'rgba(59, 130, 246, 0.12)';
+            iconColor = '#3b82f6';
+          } else if (data.type === 'excel') {
+            iconSvg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            `;
+            iconBg = 'rgba(34, 197, 94, 0.12)';
+            iconColor = '#22c55e';
+          } else if (data.type === 'powerpoint') {
+            iconSvg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            `;
+            iconBg = 'rgba(234, 88, 12, 0.12)';
+            iconColor = '#ea580c';
+          } else {
+            iconSvg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+            `;
+            iconBg = 'rgba(100, 116, 139, 0.1)';
+            iconColor = '#64748b';
+          }
+          
+          const cleanFileUrl = href.split('#')[0];
+          
+          const cardHtml = `
+            <div class="ultramoodle-message-embed-card" style="
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              background-color: var(--ultra-surface-hover, rgba(0, 0, 0, 0.02));
+              border: 1px solid var(--ultra-border, rgba(0, 0, 0, 0.08));
+              border-radius: 16px;
+              padding: 12px;
+              margin: 8px 0;
+              width: 280px;
+              max-width: 100%;
+              cursor: pointer;
+              box-sizing: border-box;
+              transition: transform 0.2s, box-shadow 0.2s;
+              text-align: left;
+            " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none';this.style.boxShadow='none';" onclick="window.open('${cleanFileUrl}', '_blank')">
+              <div style="
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                background-color: ${iconBg};
+                color: ${iconColor};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              ">
+                ${iconSvg}
+              </div>
+              <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                min-width: 0;
+                flex: 1;
+              ">
+                <div style="
+                  font-weight: 700;
+                  font-size: 13.5px;
+                  color: var(--ultra-text-main, #0f172a);
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  line-height: 1.3;
+                " title="${data.name}">${data.name}</div>
+                <div style="
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: var(--ultra-text-sub, #64748b);
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  opacity: 0.85;
+                ">${data.subject || 'Fichier de cours'}</div>
+              </div>
+            </div>
+          `;
+          
+          const wrapperSpan = doc.createElement('span');
+          wrapperSpan.innerHTML = cardHtml;
+          link.parentNode.replaceChild(wrapperSpan, link);
+        } catch (innerErr) {
+          console.warn('[myMoodle ULTRA] Error parsing link details:', innerErr);
+        }
+      });
+      
+      return doc.body.innerHTML;
+    } catch (err) {
+      console.warn('[myMoodle ULTRA] DOMParser failed:', err);
+      return text;
+    }
+  };
+
   const renderMessages = (messages) => {
     const history = document.querySelector('.oneui-chat-history');
     if (!history) return;
@@ -490,7 +651,7 @@
 
     messages.forEach(msg => {
       const isSelf = msg.useridfrom === currentUserId;
-      const text = msg.text;
+      const text = parseRichEmbeds(msg.text);
       
       const date = new Date(msg.timecreated * 1000);
       const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
