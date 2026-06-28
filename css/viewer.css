@@ -2,7 +2,7 @@
 
 .ultramoodle-viewer-backdrop {
   /* Force dark theme palette inside the document viewer (since the backdrop is always dark) */
-  --ultra-bg: #0a0d14;
+  --ultra-bg: #000000;
   --ultra-surface: #151a24;
   --ultra-surface-hover: #1e2535;
   --ultra-border: #1d2633;
@@ -16,7 +16,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(10, 13, 20, 0.88);
+  background-color: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   z-index: 999999;
@@ -209,7 +209,7 @@
   position: absolute;
   bottom: 6px;
   left: 6px;
-  background: rgba(10, 13, 20, 0.85);
+  background: rgba(0, 0, 0, 0.85);
   color: var(--ultra-text-main);
   font-size: 10px;
   font-weight: 600;
@@ -230,7 +230,7 @@
   overflow: hidden;
   overflow-x: hidden;
   position: relative;
-  background: radial-gradient(circle at center, rgba(21, 26, 36, 0.3) 0%, rgba(10, 13, 20, 0) 80%);
+  background: radial-gradient(circle at center, rgba(21, 26, 36, 0.3) 0%, rgba(0, 0, 0, 0) 80%);
 }
 
 /* DOCX Specific Container styling */
@@ -647,7 +647,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 13, 20, 0.7);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 100;

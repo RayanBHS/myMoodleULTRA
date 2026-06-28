@@ -1,7 +1,9 @@
 /* myMoodle ULTRA - General & Layout Overrides */
 
 /* Hide Moodle's native title headers on Dashboard to keep it clean */
-body.path-my #page-header h1 {
+body.path-my #page-header h1,
+body.path-site #page-header h1,
+body#page-site-index #page-header h1 {
   display: none !important;
 }
 
@@ -95,28 +97,67 @@ body.path-my #page-header h1 {
   }
 }
 
-/* Strip background and borders from the #page container on dashboard to make hero borderless */
+/* Strip background and borders from the #page container on dashboard and site home to make hero borderless */
 body.path-my #page,
+body.path-site #page,
+body#page-site-index #page,
 body.path-my #page-wrapper,
+body.path-site #page-wrapper,
+body#page-site-index #page-wrapper,
 body.path-my #page-content,
+body.path-site #page-content,
+body#page-site-index #page-content,
 body.path-my #region-main-box,
+body.path-site #region-main-box,
+body#page-site-index #region-main-box,
 body.path-my #region-main,
+body.path-site #region-main,
+body#page-site-index #region-main,
 body.path-my .region-main-content,
+body.path-site .region-main-content,
+body#page-site-index .region-main-content,
 body.path-my .region_main_settings_menu_proxy,
+body.path-site .region_main_settings_menu_proxy,
+body#page-site-index .region_main_settings_menu_proxy,
 body.path-my [data-region="blocks-column"],
+body.path-site [data-region="blocks-column"],
+body#page-site-index [data-region="blocks-column"],
 body.path-my .container,
+body.path-site .container,
+body#page-site-index .container,
 body.path-my .container-fluid,
+body.path-site .container-fluid,
+body#page-site-index .container-fluid,
 body.path-my .course-content,
-body.path-my div[role="main"] {
+body.path-site .course-content,
+body#page-site-index .course-content,
+body.path-my div[role="main"],
+body.path-site div[role="main"],
+body#page-site-index div[role="main"],
+body.path-my #learnrpage,
+body.path-site #learnrpage,
+body#page-site-index #learnrpage,
+body.path-my .contentwrapper,
+body.path-site .contentwrapper,
+body#page-site-index .contentwrapper {
+  background: transparent !important;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
 
 body.path-my #region-main > .card,
+body.path-site #region-main > .card,
+body#page-site-index #region-main > .card,
 body.path-my #region-main > .card > .card-body,
+body.path-site #region-main > .card > .card-body,
+body#page-site-index #region-main > .card > .card-body,
 body.path-my .region-main-content > .card,
-body.path-my .region-main-content > .card > .card-body {
+body.path-site .region-main-content > .card,
+body#page-site-index .region-main-content > .card,
+body.path-my .region-main-content > .card > .card-body,
+body.path-site .region-main-content > .card > .card-body,
+body#page-site-index .region-main-content > .card > .card-body {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -129,7 +170,11 @@ body {
 
 /* Wrap each category/block in its own white popup instead of a global wrapper */
 body.path-my .block,
-body.path-my section[data-block] {
+body.path-site .block,
+body#page-site-index .block,
+body.path-my section[data-block],
+body.path-site section[data-block],
+body#page-site-index section[data-block] {
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 48px !important; /* Pronounced rounded corners to match the header pill shape */
@@ -141,35 +186,69 @@ body.path-my section[data-block] {
 
 @media (max-width: 768px) {
   body.path-my .block,
-  body.path-my section[data-block] {
+  body.path-site .block,
+  body#page-site-index .block,
+  body.path-my section[data-block],
+  body.path-site section[data-block],
+  body#page-site-index section[data-block] {
     border-radius: 24px !important; /* Slightly less round on small devices to fit mobile aesthetic */
   }
 }
 
 /* Ensure course cards don't have double spacing if they are inside a block */
-body.path-my .block [data-region="course-overview"] {
+body.path-my .block [data-region="course-overview"],
+body.path-site .block [data-region="course-overview"],
+body#page-site-index .block [data-region="course-overview"] {
   padding: 0 !important;
 }
 
 /* Remove double padding if the block uses Moodle's native .card-body */
-body.path-my .block .card-body {
+body.path-my .block .card-body,
+body.path-site .block .card-body,
+body#page-site-index .block .card-body {
   padding: 0 !important;
 }
 
 /* Hide native Moodle block headers on Dashboard to prevent layout shift when NOT editing */
 body.path-my:not(.editing) .block [data-region="header"],
+body.path-site:not(.editing) .block [data-region="header"],
+body#page-site-index:not(.editing) .block [data-region="header"],
 body.path-my:not(.editing) section[data-block] [data-region="header"],
+body.path-site:not(.editing) section[data-block] [data-region="header"],
+body#page-site-index:not(.editing) section[data-block] [data-region="header"],
 body.path-my:not(.editing) .block .card-body > h2,
+body.path-site:not(.editing) .block .card-body > h2,
+body#page-site-index:not(.editing) .block .card-body > h2,
 body.path-my:not(.editing) .block .card-body > h3,
+body.path-site:not(.editing) .block .card-body > h3,
+body#page-site-index:not(.editing) .block .card-body > h3,
 body.path-my:not(.editing) .block .card-body > h4,
+body.path-site:not(.editing) .block .card-body > h4,
+body#page-site-index:not(.editing) .block .card-body > h4,
 body.path-my:not(.editing) .block .card-body > h5,
+body.path-site:not(.editing) .block .card-body > h5,
+body#page-site-index:not(.editing) .block .card-body > h5,
 body.path-my:not(.editing) .block .card-body > .card-title,
+body.path-site:not(.editing) .block .card-body > .card-title,
+body#page-site-index:not(.editing) .block .card-body > .card-title,
 body.path-my:not(.editing) .block > h2,
+body.path-site:not(.editing) .block > h2,
+body#page-site-index:not(.editing) .block > h2,
 body.path-my:not(.editing) .block > h3,
+body.path-site:not(.editing) .block > h3,
+body#page-site-index:not(.editing) .block > h3,
 body.path-my:not(.editing) .block > h4,
+body.path-site:not(.editing) .block > h4,
+body#page-site-index:not(.editing) .block > h4,
 body.path-my:not(.editing) .block > h5,
+body.path-site:not(.editing) .block > h5,
+body#page-site-index:not(.editing) .block > h5,
 body.path-my:not(.editing) .block > .card-title,
-body.path-my:not(.editing) .block .block-controls {
+body.path-site:not(.editing) .block > .card-title,
+body#page-site-index:not(.editing) .block > .card-title,
+body.path-my:not(.editing) .block .block-controls,
+body.path-site:not(.editing) .block .block-controls,
+body#page-site-index:not(.editing) .block .block-controls {
   display: none !important;
 }
 

@@ -148,7 +148,7 @@
           <title>Chargement myMoodle ULTRA...</title>
           <style>
             body {
-              background-color: #0a0d14;
+              background-color: #000000;
               color: #ffffff;
               font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
               display: flex;

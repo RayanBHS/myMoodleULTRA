@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --ultra-bg: #0a0d14;               /* Deep Navy Black */
+  --ultra-bg: #000000;               /* Pure Black */
   --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
   --ultra-surface-hover: #1e2535;
   --ultra-border: #1d2633;           /* Cold Border */
@@ -19,7 +19,7 @@
 }
 
 :root.ultramoodle-dark {
-  --ultra-bg: #0a0d14;               /* Deep Navy Black */
+  --ultra-bg: #000000;               /* Pure Black */
   --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
   --ultra-surface-hover: #1e2535;
   --ultra-border: #1d2633;           /* Cold Border */
