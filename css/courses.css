@@ -647,6 +647,13 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 }
 
 /* --- Container layout overrides for custom list view --- */
+.ultramoodle-view-list .dashboard-card-deck,
+.ultramoodle-view-list .card-deck,
+.ultramoodle-view-list [data-region="course-content"] > div,
+.ultramoodle-view-list [data-region="card-view"],
+.ultramoodle-view-list .row:not(.ultramoodle-native-filter-bar),
+.ultramoodle-view-list [data-region="card-view"] .row,
+.ultramoodle-view-list [data-region="card-view"] > div,
 #page .ultramoodle-view-list .dashboard-card-deck,
 #page .ultramoodle-view-list .card-deck,
 #page .ultramoodle-view-list [data-region="course-content"] > div,
@@ -656,8 +663,11 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 #page .ultramoodle-view-list [data-region="card-view"] > div {
   display: flex !important;
   flex-direction: column !important;
+  grid-template-columns: none !important; /* Disable CSS Grid columns */
+  grid-template-rows: none !important;
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 100% !important;
   flex-wrap: nowrap !important;
   margin-left: 0 !important;
   margin-right: 0 !important;
@@ -665,19 +675,58 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   padding-right: 0 !important;
 }
 
+/* Detach list view from header banner */
+.ultramoodle-view-list [data-region="card-view"],
+.ultramoodle-view-list .dashboard-card-deck,
+.ultramoodle-view-list .card-deck,
+.ultramoodle-view-list [data-region="course-content"] {
+  margin-top: 24px !important;
+}
+
 /* Force the direct parents of course cards/boxes to span 100% width, overriding Bootstrap grid column sizing */
+.ultramoodle-view-list .card-deck > *,
+.ultramoodle-view-list .dashboard-card-deck > *,
+.ultramoodle-view-list [data-region="course-content"] > div > *,
+.ultramoodle-view-list [data-region="card-view"] > *,
+.ultramoodle-view-list [data-region="card-view"] .row > *,
+.ultramoodle-view-list [data-region="card-view"] > div > *,
+.ultramoodle-view-list [class*="col-"],
+.ultramoodle-view-list [class*="col"],
+.ultramoodle-view-list *:has(> .card),
+.ultramoodle-view-list *:has(> .coc-course-box),
+.ultramoodle-view-list *:has(> .coursebox),
+.ultramoodle-view-list *:has(> .course-list-item),
+.ultramoodle-view-list *:has(> .course-summaryitem),
+.ultramoodle-view-list *:has(> .ultramoodle-custom-card-inner),
+.ultramoodle-view-list div:has(> .card),
+.ultramoodle-view-list div:has(> .coc-course-box),
+.ultramoodle-view-list div:has(> .coursebox),
+.ultramoodle-view-list div:has(> .course-list-item),
+.ultramoodle-view-list div:has(> .course-summaryitem),
+.ultramoodle-view-list div:has(> .ultramoodle-custom-card-inner),
 #page .ultramoodle-view-list .card-deck > *,
 #page .ultramoodle-view-list .dashboard-card-deck > *,
 #page .ultramoodle-view-list [data-region="course-content"] > div > *,
 #page .ultramoodle-view-list [data-region="card-view"] > *,
 #page .ultramoodle-view-list [data-region="card-view"] .row > *,
 #page .ultramoodle-view-list [data-region="card-view"] > div > *,
+#page .ultramoodle-view-list [class*="col-"],
 #page .ultramoodle-view-list [class*="col"],
 #page .ultramoodle-view-list *:has(> .card),
 #page .ultramoodle-view-list *:has(> .coc-course-box),
-#page .ultramoodle-view-list *:has(> .ultramoodle-custom-card-inner) {
+#page .ultramoodle-view-list *:has(> .coursebox),
+#page .ultramoodle-view-list *:has(> .course-list-item),
+#page .ultramoodle-view-list *:has(> .course-summaryitem),
+#page .ultramoodle-view-list *:has(> .ultramoodle-custom-card-inner),
+#page .ultramoodle-view-list div:has(> .card),
+#page .ultramoodle-view-list div:has(> .coc-course-box),
+#page .ultramoodle-view-list div:has(> .coursebox),
+#page .ultramoodle-view-list div:has(> .course-list-item),
+#page .ultramoodle-view-list div:has(> .course-summaryitem),
+#page .ultramoodle-view-list div:has(> .ultramoodle-custom-card-inner) {
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 100% !important;
   flex: 0 0 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
@@ -686,6 +735,16 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 }
 
 /* --- Horizontal Custom List View Cards (High Specificity Overrides) --- */
+.ultramoodle-view-list .card,
+.ultramoodle-view-list .coc-course-box,
+.ultramoodle-view-list .coursebox,
+.ultramoodle-view-list .course-list-item,
+.ultramoodle-view-list .course-summaryitem,
+.ultramoodle-view-list .course-info-container,
+.ultramoodle-view-list [data-purpose="course-card"],
+.ultramoodle-view-list [data-block="myoverview"] .card,
+.ultramoodle-view-list .block_myoverview .card,
+.ultramoodle-view-list [data-region="course-overview"] .card,
 #page .ultramoodle-view-list [data-block="myoverview"] .card,
 #page .ultramoodle-view-list .block_myoverview .card,
 #page .ultramoodle-view-list [data-region="course-overview"] .card,
@@ -696,21 +755,35 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 #page .ultramoodle-view-list .block_myoverview .coc-course-box,
 #page .ultramoodle-view-list [data-region="course-overview"] .coc-course-box,
 #page .ultramoodle-view-list .card,
-#page .ultramoodle-view-list .coc-course-box {
-  min-height: 110px !important;
-  height: 110px !important;
-  max-height: 110px !important;
+#page .ultramoodle-view-list .coc-course-box,
+#page .ultramoodle-view-list .coursebox,
+#page .ultramoodle-view-list .course-list-item,
+#page .ultramoodle-view-list .course-summaryitem,
+#page .ultramoodle-view-list .course-info-container,
+#page .ultramoodle-view-list [data-purpose="course-card"] {
+  min-height: 120px !important;
+  height: 120px !important;
+  max-height: 120px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100% !important;
+  flex: 1 1 100% !important;
   padding: 0 !important;
   margin-bottom: 16px !important;
   border-radius: 20px !important;
   border: 1px solid var(--ultra-border) !important;
   box-shadow: var(--ultra-card-shadow) !important;
-  overflow: visible !important;
+  overflow: hidden !important; /* Ensure image and content are strictly clipped by rounded borders */
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   display: flex !important;
   flex-direction: column !important;
 }
 
+.ultramoodle-view-list .card:hover,
+.ultramoodle-view-list .coc-course-box:hover,
+.ultramoodle-view-list .coursebox:hover,
+.ultramoodle-view-list .course-list-item:hover,
+.ultramoodle-view-list .course-summaryitem:hover,
 #page .ultramoodle-view-list [data-block="myoverview"] .card:hover,
 #page .ultramoodle-view-list .block_myoverview .card:hover,
 #page .ultramoodle-view-list [data-region="course-overview"] .card:hover,
@@ -718,73 +791,102 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 #page .ultramoodle-view-list .block_myoverview .coc-course-box:hover,
 #page .ultramoodle-view-list [data-region="course-overview"] .coc-course-box:hover,
 #page .ultramoodle-view-list .card:hover,
-#page .ultramoodle-view-list .coc-course-box:hover {
+#page .ultramoodle-view-list .coc-course-box:hover,
+#page .ultramoodle-view-list .coursebox:hover,
+#page .ultramoodle-view-list .course-list-item:hover,
+#page .ultramoodle-view-list .course-summaryitem:hover {
   transform: translateY(-2px) !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
 }
 
-/* card-inner: row, children aligned to top, relative for absolute footer */
+/* card-inner: row, vertically centered children */
 .ultramoodle-view-list .ultramoodle-custom-card-inner {
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
+  align-items: center !important;
+  justify-content: space-between !important;
   position: relative !important;
   width: 100% !important;
   height: 100% !important;
-  padding: 0 !important;
-  gap: 0 !important;
+  padding: 0 16px 0 0 !important;
+  gap: 16px !important;
   box-sizing: border-box !important;
 }
 
 /* link-wrapper: image + text, fills remaining width */
+.ultramoodle-view-list .card .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list .coc-course-box .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list .coursebox .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list .course-list-item .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list .course-summaryitem .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list .course-info-container .ultramoodle-card-link-wrapper,
+.ultramoodle-view-list [data-purpose="course-card"] .ultramoodle-card-link-wrapper,
 .ultramoodle-view-list .ultramoodle-card-link-wrapper {
   display: flex !important;
   flex-direction: row !important;
-  align-items: flex-start !important;
+  align-items: center !important;
   flex: 1 !important;
-  gap: 14px !important;
+  gap: 16px !important;
   text-decoration: none !important;
   color: inherit !important;
   min-width: 0 !important;
   overflow: hidden !important;
+  height: 100% !important;
+  width: 100% !important;
 }
 
-/* image: 10px margin on top, left, bottom = same gap as card border-radius appearance */
+/* image: 12px margin on top/bottom/left = perfectly centered in 120px card */
+.ultramoodle-view-list .card .ultramoodle-card-image-container,
+.ultramoodle-view-list .coc-course-box .ultramoodle-card-image-container,
+.ultramoodle-view-list .coursebox .ultramoodle-card-image-container,
+.ultramoodle-view-list .course-list-item .ultramoodle-card-image-container,
+.ultramoodle-view-list .course-summaryitem .ultramoodle-card-image-container,
+.ultramoodle-view-list .course-info-container .ultramoodle-card-image-container,
+.ultramoodle-view-list [data-purpose="course-card"] .ultramoodle-card-image-container,
 .ultramoodle-view-list .ultramoodle-card-image-container {
-  width: 130px !important;
-  max-width: 130px !important;
-  min-width: 130px !important;
-  height: 90px !important;
+  width: 140px !important;
+  max-width: 140px !important;
+  min-width: 140px !important;
+  height: 96px !important;
+  max-height: 96px !important;
+  min-height: 96px !important;
   flex-shrink: 0 !important;
-  margin: 10px 0 10px 10px !important;
-  border-radius: 12px !important;
+  margin: 12px 0 12px 12px !important;
+  border-radius: 14px !important;
   border: 1px solid var(--ultra-border) !important;
   overflow: hidden !important;
   position: relative !important;
-  align-self: auto !important;
 }
 
-/* body: text starts at the top */
+/* body: text vertically centered */
+.ultramoodle-view-list .card .ultramoodle-card-body,
+.ultramoodle-view-list .coc-course-box .ultramoodle-card-body,
+.ultramoodle-view-list .coursebox .ultramoodle-card-body,
+.ultramoodle-view-list .course-list-item .ultramoodle-card-body,
+.ultramoodle-view-list .course-summaryitem .ultramoodle-card-body,
+.ultramoodle-view-list .course-info-container .ultramoodle-card-body,
+.ultramoodle-view-list [data-purpose="course-card"] .ultramoodle-card-body,
 .ultramoodle-view-list .ultramoodle-card-body {
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: flex-start !important;
+  justify-content: center !important;
   align-items: flex-start !important;
-  gap: 3px !important;
-  margin: 10px 0 0 14px !important;
+  gap: 4px !important;
+  margin: 0 !important;
   padding: 0 !important;
   min-width: 0 !important;
   overflow: hidden !important;
+  height: 100% !important;
 }
 
-/* List view: tighter/smaller code badge to fit the compact 110px card */
+/* List view: tighter/smaller code badge */
 .ultramoodle-view-list .ultramoodle-card-code {
-  font-size: 9px !important;
-  padding: 1px 6px !important;
-  border-radius: 5px !important;
-  margin-bottom: 1px !important;
+  font-size: 10px !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  margin-bottom: 2px !important;
+  line-height: 1.3 !important;
 }
 
 .ultramoodle-view-list .ultramoodle-card-title {
@@ -794,6 +896,7 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   font-size: 16px !important;
   font-weight: 700 !important;
   line-height: 1.35 !important;
+  color: var(--ultra-text-main) !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
@@ -808,11 +911,12 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   height: auto !important;
   margin-bottom: 0 !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-  font-size: 12px !important;
+  font-size: 12.5px !important;
   font-weight: 500 !important;
   line-height: 1.35 !important;
+  color: var(--ultra-text-sub) !important;
   display: -webkit-box !important;
-  -webkit-line-clamp: 3 !important;
+  -webkit-line-clamp: 1 !important;
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -821,18 +925,18 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   width: 100% !important;
 }
 
-/* footer: ABSOLUTE position at bottom-right of card, always inside card bounds */
+/* footer: STATIC position inline to avoid any overlap */
 .ultramoodle-view-list .ultramoodle-card-footer {
-  position: absolute !important;
-  bottom: 10px !important;
-  right: 10px !important;
+  position: static !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  gap: 8px !important;
+  gap: 12px !important;
   margin: 0 !important;
   padding: 0 !important;
+  height: 100% !important;
+  flex-shrink: 0 !important;
 }
 
 .ultramoodle-view-list .ultramoodle-card-pills {
@@ -842,6 +946,7 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   gap: 8px !important;
   margin: 0 !important;
   padding: 0 !important;
+  order: 1 !important;
 }
 
 .ultramoodle-view-list .ultramoodle-pill-progress,
@@ -850,11 +955,13 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   font-size: 11px !important;
   font-weight: 600 !important;
   border: 1px solid var(--ultra-border) !important;
-  padding: 5px 12px !important;
+  padding: 6px 14px !important;
   border-radius: 9999px !important;
   white-space: nowrap !important;
   background-color: var(--ultra-surface-hover) !important;
   color: var(--ultra-text-sub) !important;
+  display: inline-flex !important;
+  align-items: center !important;
 }
 
 .ultramoodle-view-list .ultramoodle-pill-progress::before {
@@ -862,12 +969,11 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
 }
 
 .ultramoodle-view-list .ultramoodle-card-menu-placeholder {
-  margin-left: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
   align-items: center !important;
+  order: 3 !important;
 }
 
 .ultramoodle-view-list .ultramoodle-card-menu-placeholder .dropdown {
@@ -890,12 +996,13 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   padding: 0 !important;
   box-shadow: none !important;
   cursor: pointer !important;
-  transition: transform 0.2s ease !important;
+  transition: background-color 0.2s, transform 0.2s ease !important;
 }
 
 .ultramoodle-view-list .ultramoodle-card-menu-placeholder .dropdown-toggle:hover {
-  transform: scale(1.08) !important;
+  background-color: var(--ultra-border) !important;
 }
+
 
 /* Light mode (default) list view colors */
 :root.ultramoodle-light #page .ultramoodle-view-list [data-block="myoverview"] .card,
@@ -1752,9 +1859,13 @@ body:not(.editing) [data-region="course-overview"] > .card-body > h5 {
   fill: var(--ultra-accent) !important;
 }
 
-/* Hide card fav button in list view to avoid clutter */
+/* Style card fav button in list view next to dropdown menu */
 .ultramoodle-view-list .ultramoodle-card-fav-btn {
-  display: none !important;
+  display: flex !important;
+  margin-left: 0 !important;
+  box-shadow: none !important;
+  background-color: var(--ultra-surface-hover) !important;
+  order: 2 !important;
 }
 
 /* --- Course Cover Image Edit Modal (Premium Glassmorphism & Apple D.A.) --- */

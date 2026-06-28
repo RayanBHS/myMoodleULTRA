@@ -1581,5 +1581,432 @@ body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg,
   color: #ffffff !important;
 }
 
+/* ==========================================================================
+   --- Course Page & Standard Moodle Content Cards Overrides ---
+   ========================================================================== */
+
+/* Main content wrapper cards (Turn them dark in dark mode, light in light mode) */
+.path-course-view #region-main > .card,
+#page-course-view #region-main > .card,
+.path-course-view .region-main-content > .card,
+#page-course-view .region-main-content > .card,
+body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card,
+body:not(.path-my):not(.path-site):not(#page-site-index) .region-main-content > .card,
+body:not(.path-my):not(.path-site):not(#page-site-index) #page-content > .card,
+.path-course-view #learnrpage,
+#page-course-view #learnrpage,
+.path-course-view .contentwrapper,
+#page-course-view .contentwrapper,
+body:not(.path-my):not(.path-site):not(#page-site-index) #learnrpage,
+body:not(.path-my):not(.path-site):not(#page-site-index) .contentwrapper {
+  background: var(--ultra-surface) !important;
+  background-color: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+  border: 1px solid var(--ultra-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--ultra-card-shadow) !important;
+  padding: 32px !important;
+}
+
+/* Force inner card bodies to be transparent to avoid white backgrounds */
+.path-course-view #region-main > .card > .card-body,
+#page-course-view #region-main > .card > .card-body,
+body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card > .card-body {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Specific EFREI/Moodle theme container overrides (like learnrpage inner contents) */
+#learnrpage.contentwrapper,
+.contentwrapper {
+  color: var(--ultra-text-main) !important;
+}
+
+/* --- Breadcrumb Styling --- */
+.path-course-view .breadcrumb,
+#page-course-view .breadcrumb,
+body:not(.path-my) .breadcrumb {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 0 16px 0 !important;
+  margin-bottom: 16px !important;
+}
+
+.path-course-view .breadcrumb-item a,
+#page-course-view .breadcrumb-item a,
+body:not(.path-my) .breadcrumb-item a {
+  color: var(--ultra-text-sub) !important;
+}
+
+.path-course-view .breadcrumb-item.active,
+#page-course-view .breadcrumb-item.active,
+body:not(.path-my) .breadcrumb-item.active {
+  color: var(--ultra-text-main) !important;
+}
+
+.path-course-view .breadcrumb-item + .breadcrumb-item::before,
+#page-course-view .breadcrumb-item + .breadcrumb-item::before,
+body:not(.path-my) .breadcrumb-item + .breadcrumb-item::before {
+  color: var(--ultra-text-sub) !important;
+}
+
+/* --- Navigation Tabs Styling --- */
+.path-course-view .nav-tabs,
+#page-course-view .nav-tabs,
+body:not(.path-my) .nav-tabs {
+  border-bottom: 1px solid var(--ultra-border) !important;
+  margin-bottom: 24px !important;
+}
+
+.path-course-view .nav-tabs .nav-link,
+#page-course-view .nav-tabs .nav-link,
+body:not(.path-my) .nav-tabs .nav-link {
+  color: var(--ultra-text-sub) !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 10px 16px !important;
+  font-weight: 500 !important;
+}
+
+.path-course-view .nav-tabs .nav-link:hover,
+#page-course-view .nav-tabs .nav-link:hover,
+body:not(.path-my) .nav-tabs .nav-link:hover {
+  color: var(--ultra-text-main) !important;
+}
+
+.path-course-view .nav-tabs .nav-link.active,
+#page-course-view .nav-tabs .nav-link.active,
+body:not(.path-my) .nav-tabs .nav-link.active {
+  color: var(--ultra-text-main) !important;
+  border-bottom: 2px solid var(--ultra-accent) !important;
+  background: transparent !important;
+}
+
+/* Secondary navigation wrappers & recursive child elements (force transparency on tabs header globally) */
+.secondary-navigation,
+.secondarynavigation,
+.moremenu,
+.secondary-navigation *,
+.secondarynavigation *,
+.moremenu * {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+}
+
+/* --- Typography and Header Overrides --- */
+.path-course-view h1, .path-course-view h2, .path-course-view h3, .path-course-view h4, .path-course-view h5, .path-course-view h6,
+#page-course-view h1, #page-course-view #page-header h1, #page-course-view h2, #page-course-view h3, #page-course-view h4, #page-course-view h5, #page-course-view h6,
+body:not(.path-my) h1, body:not(.path-my) h2, body:not(.path-my) h3, body:not(.path-my) h4, body:not(.path-my) h5, body:not(.path-my) h6,
+.path-course-view .sectionname,
+#page-course-view .sectionname,
+.path-course-view .section-title,
+#page-course-view .section-title {
+  color: var(--ultra-text-main) !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* --- Links, activity text and description overrides --- */
+.path-course-view #region-main a,
+#page-course-view #region-main a,
+body:not(.path-my):not(.path-site) #region-main a {
+  color: var(--ultra-text-main) !important;
+}
+
+.path-course-view #region-main a:hover,
+#page-course-view #region-main a:hover,
+body:not(.path-my):not(.path-site) #region-main a:hover {
+  color: var(--ultra-accent) !important;
+  text-decoration: none !important;
+}
+
+.path-course-view #region-main .instancename,
+#page-course-view #region-main .instancename,
+.path-course-view #region-main .activityname,
+#page-course-view #region-main .activityname {
+  color: var(--ultra-text-main) !important;
+}
+
+.path-course-view #region-main .resourcelinkdetails,
+#page-course-view #region-main .resourcelinkdetails,
+.path-course-view #region-main .text-muted,
+#page-course-view #region-main .text-muted,
+.path-course-view #region-main .contentafterlink,
+#page-course-view #region-main .contentafterlink {
+  color: var(--ultra-text-sub) !important;
+}
+
+/* --- Borders and dividers between activities/sections --- */
+.path-course-view #region-main .section,
+#page-course-view #region-main .section,
+.path-course-view #region-main .activity,
+#page-course-view #region-main .activity,
+.path-course-view #region-main .course-content li.section,
+#page-course-view #region-main .course-content li.section,
+.path-course-view #region-main .course-content li.activity,
+#page-course-view #region-main .course-content li.activity {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  border-color: var(--ultra-border) !important;
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Remove any duplicate borders on inner activity item wrappers (causes double lines) */
+.path-course-view #region-main .activity-item,
+#page-course-view #region-main .activity-item,
+.path-course-view #region-main .activityinstance,
+#page-course-view #region-main .activityinstance,
+.path-course-view #region-main .activity-wrapper,
+#page-course-view #region-main .activity-wrapper {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Collapse/Expand links styling */
+.path-course-view .collapsible-actions .collapseexpand,
+#page-course-view .collapsible-actions .collapseexpand {
+  color: var(--ultra-accent) !important;
+  font-weight: 500 !important;
+}
+
+/* --- Alerts, Callouts & Activity Descriptions Dark Mode Overrides (to prevent flashbangs) --- */
+
+/* 1. Reset wrapper containers to be completely transparent so they don't show white backgrounds/borders around content */
+:root.ultramoodle-dark .contentafterlink,
+:root.ultramoodle-dark .activity-description,
+:root.ultramoodle-dark .description,
+:root.ultramoodle-dark .mod-indent-outer {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Turn standard callouts and inner blocks into dark gray boxes */
+:root.ultramoodle-dark .alert,
+:root.ultramoodle-dark .alert-info,
+:root.ultramoodle-dark .alert-warning,
+:root.ultramoodle-dark .alert-success,
+:root.ultramoodle-dark .alert-danger,
+:root.ultramoodle-dark .bg-light,
+:root.ultramoodle-dark .bg-faded,
+:root.ultramoodle-dark .well,
+:root.ultramoodle-dark .card.bg-light,
+:root.ultramoodle-dark .card.bg-faded,
+:root.ultramoodle-dark .mod_introbox,
+:root.ultramoodle-dark .generalbox,
+:root.ultramoodle-dark .messagebox,
+:root.ultramoodle-dark .info,
+:root.ultramoodle-dark div.box.py-3,
+:root.ultramoodle-dark .no-overflow {
+  background-color: var(--ultra-surface-hover) !important;
+  background: var(--ultra-surface-hover) !important;
+  border-top: 1px solid var(--ultra-border) !important;
+  border-right: 1px solid var(--ultra-border) !important;
+  border-bottom: 1px solid var(--ultra-border) !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  color: var(--ultra-text-main) !important;
+}
+
+/* 3a. Recursive transparency on children of activity descriptions to eliminate backgrounds */
+:root.ultramoodle-dark .contentafterlink *,
+:root.ultramoodle-dark .activity-description *,
+:root.ultramoodle-dark .no-overflow *,
+:root.ultramoodle-dark .description * {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* 3b. Strip borders/outlines from layout elements (tables, cells, generic divs) while preserving callout borders */
+:root.ultramoodle-dark .contentafterlink *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
+:root.ultramoodle-dark .activity-description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
+:root.ultramoodle-dark .no-overflow *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
+:root.ultramoodle-dark .description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info) {
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 4. Force all text inside these components to be white so they have perfect contrast on the new dark background */
+:root.ultramoodle-dark .alert *,
+:root.ultramoodle-dark .alert-info *,
+:root.ultramoodle-dark .alert-warning *,
+:root.ultramoodle-dark .alert-success *,
+:root.ultramoodle-dark .alert-danger *,
+:root.ultramoodle-dark .bg-light *,
+:root.ultramoodle-dark .bg-faded *,
+:root.ultramoodle-dark .well *,
+:root.ultramoodle-dark .card.bg-light *,
+:root.ultramoodle-dark .card.bg-faded *,
+:root.ultramoodle-dark .mod_introbox *,
+:root.ultramoodle-dark .generalbox *,
+:root.ultramoodle-dark .messagebox *,
+:root.ultramoodle-dark .info *,
+:root.ultramoodle-dark div.box.py-3 *,
+:root.ultramoodle-dark .no-overflow *,
+:root.ultramoodle-dark .activity-description *,
+:root.ultramoodle-dark .contentafterlink *,
+:root.ultramoodle-dark .no-overflow * {
+  color: var(--ultra-text-main) !important;
+}
+
+/* --- Table & Gradebook Dark Mode Overrides (to prevent flashbangs) --- */
+:root.ultramoodle-dark table,
+:root.ultramoodle-dark .table,
+:root.ultramoodle-dark table.gradetable,
+:root.ultramoodle-dark table.user-grade {
+  background-color: var(--ultra-surface) !important;
+  background: var(--ultra-surface) !important;
+  border-color: var(--ultra-border) !important;
+}
+
+:root.ultramoodle-dark table th,
+:root.ultramoodle-dark table td,
+:root.ultramoodle-dark table tr,
+:root.ultramoodle-dark .table th,
+:root.ultramoodle-dark .table td,
+:root.ultramoodle-dark .table tr,
+:root.ultramoodle-dark .gradetable th,
+:root.ultramoodle-dark .gradetable td,
+:root.ultramoodle-dark .user-grade th,
+:root.ultramoodle-dark .user-grade td {
+  background-color: var(--ultra-surface) !important;
+  background: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+  border-color: var(--ultra-border) !important;
+}
+
+/* Striped rows override in dark mode for better legibility */
+:root.ultramoodle-dark .table-striped tbody tr:nth-of-type(odd),
+:root.ultramoodle-dark table.gradetable tbody tr:nth-of-type(odd),
+:root.ultramoodle-dark table.user-grade tbody tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Hover rows override in dark mode */
+:root.ultramoodle-dark .table-hover tbody tr:hover,
+:root.ultramoodle-dark table.gradetable tbody tr:hover,
+:root.ultramoodle-dark table.user-grade tbody tr:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  background: var(--ultra-surface-hover) !important;
+}
+
+/* Force all text elements inside tables to be white/readable */
+:root.ultramoodle-dark table *,
+:root.ultramoodle-dark .table *,
+:root.ultramoodle-dark table.gradetable *,
+:root.ultramoodle-dark table.user-grade * {
+  color: var(--ultra-text-main) !important;
+}
+
+/* Identifiable and interactive links inside tables */
+:root.ultramoodle-dark table a,
+:root.ultramoodle-dark .table a {
+  color: var(--ultra-text-main) !important;
+  text-decoration: underline !important;
+}
+
+:root.ultramoodle-dark table a:hover,
+:root.ultramoodle-dark .table a:hover {
+  color: var(--ultra-accent) !important;
+  text-decoration: none !important;
+}
+
+/* Ensure containers are transparent */
+:root.ultramoodle-dark .table-responsive,
+:root.ultramoodle-dark .gradetreebox,
+:root.ultramoodle-dark .grade-report {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* --- Pagination & Initials Bar (Letter Filters) Dark Mode Overrides --- */
+:root.ultramoodle-dark .pagination,
+:root.ultramoodle-dark .page-item,
+:root.ultramoodle-dark .page-link,
+:root.ultramoodle-dark .initialbar .page-link,
+:root.ultramoodle-dark .initialbar .page-item {
+  background-color: var(--ultra-surface) !important;
+  background: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+  border-color: var(--ultra-border) !important;
+}
+
+:root.ultramoodle-dark .page-item.active .page-link,
+:root.ultramoodle-dark .page-link.active,
+:root.ultramoodle-dark .initialbar .page-item.active .page-link {
+  background-color: var(--ultra-accent) !important;
+  background: var(--ultra-accent) !important;
+  color: #ffffff !important;
+  border-color: var(--ultra-accent) !important;
+}
+
+:root.ultramoodle-dark .page-item.disabled .page-link {
+  background-color: var(--ultra-surface) !important;
+  background: var(--ultra-surface) !important;
+  color: var(--ultra-text-sub) !important;
+  opacity: 0.5;
+  border-color: var(--ultra-border) !important;
+}
+
+:root.ultramoodle-dark .page-link:hover,
+:root.ultramoodle-dark .initialbar .page-link:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  background: var(--ultra-surface-hover) !important;
+  color: var(--ultra-accent) !important;
+}
+
+/* --- Form Fields, Dropdowns, Inputs & Moodle Filter Manager Dark Mode Overrides --- */
+:root.ultramoodle-dark select,
+:root.ultramoodle-dark input,
+:root.ultramoodle-dark textarea,
+:root.ultramoodle-dark .form-control,
+:root.ultramoodle-dark .custom-select,
+:root.ultramoodle-dark .form-select,
+:root.ultramoodle-dark .filter-row,
+:root.ultramoodle-dark .filter-row-input,
+:root.ultramoodle-dark .filter-row-operator,
+:root.ultramoodle-dark .filter-row-value,
+:root.ultramoodle-dark [data-region="filter-manager"] .filter-row,
+:root.ultramoodle-dark .filter-wrapper {
+  background-color: var(--ultra-surface) !important;
+  background: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+  border-color: var(--ultra-border) !important;
+  border: 1px solid var(--ultra-border) !important;
+}
+
+/* Ensure focus states on forms look premium */
+:root.ultramoodle-dark select:focus,
+:root.ultramoodle-dark input:focus,
+:root.ultramoodle-dark textarea:focus,
+:root.ultramoodle-dark .form-control:focus,
+:root.ultramoodle-dark .custom-select:focus,
+:root.ultramoodle-dark .form-select:focus {
+  background-color: var(--ultra-surface-hover) !important;
+  background: var(--ultra-surface-hover) !important;
+  color: var(--ultra-text-main) !important;
+  border-color: var(--ultra-accent) !important;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Make sure select dropdown options are dark in dark mode */
+:root.ultramoodle-dark option {
+  background-color: var(--ultra-surface) !important;
+  color: var(--ultra-text-main) !important;
+}
+
 
 

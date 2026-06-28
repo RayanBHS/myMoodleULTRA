@@ -544,6 +544,7 @@ const injectBlockHeaders = () => {
                 courseOverview.classList.remove('ultramoodle-view-list');
                 courseOverview.classList.add('ultramoodle-view-grid');
               }
+              makeCardsFillRow();
               window.dispatchEvent(new Event('resize'));
             });
 
@@ -558,6 +559,7 @@ const injectBlockHeaders = () => {
                 courseOverview.classList.remove('ultramoodle-view-grid');
                 courseOverview.classList.add('ultramoodle-view-list');
               }
+              makeCardsFillRow();
               window.dispatchEvent(new Event('resize'));
             });
           }
@@ -1063,8 +1065,6 @@ const customizeRecentItems = () => {
 // Make card column wrappers fill row space evenly, with a min-width so they wrap properly
 const makeCardsFillRow = () => {
   const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
-  if (currentLayout !== 'grid') return;
-
   const container = getCourseOverviewContainer();
   if (!container) return;
 
@@ -1077,19 +1077,25 @@ const makeCardsFillRow = () => {
     const isWrapper = parent !== container && !parent.matches('[data-region], .dashboard-card-deck, .card-deck');
     const target = isWrapper ? parent : card;
 
-    if (card.classList.contains('ultramoodle-course-hidden')) {
+    if (currentLayout !== 'grid') {
       target.style.removeProperty('flex');
       target.style.removeProperty('max-width');
       target.style.removeProperty('min-width');
-      return;
-    }
+    } else {
+      if (card.classList.contains('ultramoodle-course-hidden')) {
+        target.style.removeProperty('flex');
+        target.style.removeProperty('max-width');
+        target.style.removeProperty('min-width');
+        return;
+      }
 
-    // flex: 1 1 300px → grow equally, but each card needs at least 300px before wrapping to next line
-    // max-width: 50% → never wider than half the row
-    // min-width: 300px → ensures cards don't get squeezed too small
-    target.style.setProperty('flex', '1 1 300px', 'important');
-    target.style.setProperty('max-width', '50%', 'important');
-    target.style.setProperty('min-width', '300px', 'important');
+      // flex: 1 1 300px → grow equally, but each card needs at least 300px before wrapping to next line
+      // max-width: 50% → never wider than half the row
+      // min-width: 300px → ensures cards don't get squeezed too small
+      target.style.setProperty('flex', '1 1 300px', 'important');
+      target.style.setProperty('max-width', '50%', 'important');
+      target.style.setProperty('min-width', '300px', 'important');
+    }
   });
 };
 
@@ -2331,5 +2337,134 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+
+// Shift + Click file sharing modal listener (intercept in capture phase)
+document.addEventListener('click', (e) => {
+  if (e.shiftKey) {
+    const linkEl = e.target.closest('a[href*="/mod/resource/"], a[href*="/mod/folder/"], a[href*="forcedownload=1"], .ultramoodle-btn-preview');
+    if (linkEl) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Extract file details
+      let fileUrl = linkEl.href || linkEl.dataset.fileUrl || '';
+      let fileName = linkEl.textContent.trim() || linkEl.dataset.fileName || 'Fichier';
+      
+      // If the target was a custom preview button, try to find the main resource text/title
+      if (linkEl.classList.contains('ultramoodle-btn-preview')) {
+        const activityItem = linkEl.closest('.activity-item, .activity');
+        if (activityItem) {
+          const mainLink = activityItem.querySelector('a.aalink, a');
+          if (mainLink) {
+            fileUrl = mainLink.href;
+            fileName = mainLink.textContent.trim();
+          }
+        }
+      }
+      
+      // Clean Moodle keywords suffix
+      const cleanName = fileName.replace(/\s*(?:Fichier|Présentation|Document|Word|PowerPoint|PDF|Excel)\s*$/gi, '').trim();
+      
+      showShareModal(cleanName, fileUrl);
+    }
+  }
+}, true);
+
+const showShareModal = (fileName, fileUrl) => {
+  const existing = document.getElementById('ultramoodle-share-modal');
+  if (existing) existing.remove();
+
+  const backdrop = document.createElement('div');
+  backdrop.id = 'ultramoodle-share-modal';
+  backdrop.className = 'ultramoodle-modal-backdrop';
+  
+  backdrop.innerHTML = `
+    <div class="ultramoodle-modal-content" style="max-width: 480px !important;">
+      <div class="ultramoodle-modal-header">
+        <h3>Partager le fichier</h3>
+        <button class="ultramoodle-modal-close" id="ultramoodle-share-close-btn">&times;</button>
+      </div>
+      <div class="ultramoodle-modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-weight: 700; color: var(--ultra-text-main); font-size: 14px; word-break: break-word;">${fileName}</div>
+          <div style="font-size: 12px; color: var(--ultra-text-sub); word-break: break-all; opacity: 0.8;">${fileUrl}</div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--ultra-text-sub); text-transform: uppercase; letter-spacing: 0.5px;">Options de partage</div>
+          
+          <div style="display: flex; gap: 12px; width: 100%;">
+            <button id="ultramoodle-share-copy-link" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              Copier le lien
+            </button>
+            <button id="ultramoodle-share-email" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              Envoyer par email
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+
+  const closeModal = () => {
+    backdrop.classList.add('closing');
+    backdrop.addEventListener('transitionend', () => {
+      backdrop.remove();
+    }, { once: true });
+  };
+
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  const closeBtn = backdrop.querySelector('#ultramoodle-share-close-btn');
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  // Copy Link Button Action
+  const copyBtn = backdrop.querySelector('#ultramoodle-share-copy-link');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(fileUrl).then(() => {
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Lien copié !
+        `;
+        copyBtn.style.backgroundColor = '#10B981'; // Green
+        setTimeout(() => {
+          copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Copier le lien
+          `;
+          copyBtn.style.backgroundColor = 'var(--ultra-accent)';
+        }, 2000);
+      });
+    });
+  }
+
+  // Email Button Action
+  const emailBtn = backdrop.querySelector('#ultramoodle-share-email');
+  if (emailBtn) {
+    emailBtn.addEventListener('click', () => {
+      const subject = encodeURIComponent(`Partage de fichier : ${fileName}`);
+      const body = encodeURIComponent(`Voici le lien vers le fichier de cours :\n\n${fileName}\n${fileUrl}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+  }
+};
 
 
