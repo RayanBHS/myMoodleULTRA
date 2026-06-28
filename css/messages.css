@@ -1630,3 +1630,27 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
   border-width: 2px !important;
 }
 
+/* --- Instagram-style Message Replies CSS --- */
+.oneui-message-wrapper:hover .oneui-message-reply-btn {
+  opacity: 1 !important;
+}
+
+@keyframes flash-highlight-anim {
+  0% {
+    background-color: rgba(0, 122, 255, 0.4) !important;
+    filter: brightness(1.2) !important;
+  }
+  100% {
+    background-color: inherit;
+    filter: none;
+  }
+}
+
+.flash-highlight .oneui-message-bubble {
+  animation: flash-highlight-anim 1.2s ease-out !important;
+}
+
+.um-reply-meta, .um-handshake-meta {
+  display: none !important;
+}
+

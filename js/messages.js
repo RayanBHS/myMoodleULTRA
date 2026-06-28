@@ -13,6 +13,9 @@
   let enabledProcessors = ['popup'];
 
   let ultraConversations = {};
+  let activeReplyMessage = null;
+  let activeConversationMessages = [];
+  let handshakeSentThisSession = {};
 
   const loadUltraConversations = () => {
     return new Promise((resolve) => {
@@ -79,7 +82,7 @@
               conversationid: convid,
               messages: [
                 {
-                  text: '<span style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>',
+                  text: '<span class="um-handshake-meta" style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>',
                   textformat: 1
                 }
               ]
@@ -124,9 +127,49 @@
 
   const cleanMessageText = (text) => {
     if (!text) return '';
-    let clean = text.replace(/<span[^>]*style="display:\s*none;?"[^>]*>ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA<\/span>/gi, '');
+    let clean = text.replace(/<span[^>]*class="[^"]*um-handshake-meta[^"]*"[^>]*>[\s\S]*?<\/span>/gi, '');
+    clean = clean.replace(/<span[^>]*style="display:\s*none;?"[^>]*>ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA<\/span>/gi, '');
     clean = clean.replace(/ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA/g, '');
+    
+    clean = clean.replace(/<span[^>]*class="[^"]*um-reply-meta[^"]*"[^>]*>[\s\S]*?<\/span>/gi, '');
+    clean = clean.replace(/<span[^>]*style="display:\s*none;?"[^>]*>UM_REPLY:[A-Za-z0-9\+\/=]*<\/span>/gi, '');
+    clean = clean.replace(/UM_REPLY:[A-Za-z0-9\+\/=]*/g, '');
     return clean.trim();
+  };
+
+  const setReplyToMessage = (msgId, text, senderId) => {
+    const firstnameEl = document.querySelector('.oneui-chat-header-name');
+    const lastnameEl = document.querySelector('.oneui-chat-header-lastname');
+    const senderName = (senderId === currentUserId) 
+      ? 'Vous' 
+      : ((firstnameEl ? firstnameEl.textContent : '') + ' ' + (lastnameEl ? lastnameEl.textContent : '')).trim() || 'Collaborateur';
+    
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/UM_REPLY:[A-Za-z0-9\+\/=]*/gi, '').trim();
+    const snippet = cleanText.length > 60 ? cleanText.substring(0, 60) + '...' : cleanText;
+    
+    activeReplyMessage = {
+      id: msgId,
+      sender: senderName,
+      text: snippet
+    };
+
+    const replyBar = document.querySelector('.oneui-reply-preview-bar');
+    const replySender = document.querySelector('.oneui-reply-preview-sender');
+    const replyText = document.querySelector('.oneui-reply-preview-text');
+    if (replyBar && replySender && replyText) {
+      replySender.textContent = `Répondre à ${senderName}`;
+      replyText.textContent = snippet;
+      replyBar.style.display = 'flex';
+    }
+
+    const inputField = document.querySelector('.oneui-input-field');
+    if (inputField) inputField.focus();
+  };
+
+  const cancelReply = () => {
+    activeReplyMessage = null;
+    const replyBar = document.querySelector('.oneui-reply-preview-bar');
+    if (replyBar) replyBar.style.display = 'none';
   };
 
   // Helper to check Moodle message page
@@ -854,17 +897,103 @@
         }
       }
 
+      wrapper.id = `oneui-msg-${msg.id}`;
+
+      let replyCardHtml = '';
+      if (msg.text && msg.text.includes('UM_REPLY:')) {
+        const match = msg.text.match(/UM_REPLY:([A-Za-z0-9\+\/=]+)/);
+        if (match) {
+          try {
+            const base64Data = match[1];
+            const jsonStr = decodeURIComponent(escape(atob(base64Data)));
+            const replyData = JSON.parse(jsonStr);
+            if (replyData && replyData.sender) {
+              replyCardHtml = `
+                <div class="oneui-message-reply-card" data-reply-to-id="${replyData.id}" style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 2px;
+                  padding: 6px 10px;
+                  background-color: var(--ultra-surface);
+                  border-left: 3px solid var(--ultra-accent);
+                  border-radius: 8px;
+                  margin-bottom: 4px;
+                  font-size: 11px;
+                  cursor: pointer;
+                  opacity: 0.85;
+                  transition: opacity 0.15s;
+                  max-width: 250px;
+                  text-align: left;
+                " onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.85';">
+                  <span style="font-weight: 700; color: var(--ultra-accent);">${replyData.sender}</span>
+                  <span style="color: var(--ultra-text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${replyData.text}</span>
+                </div>
+              `;
+            }
+          } catch (e) {
+            console.warn('[myMoodle ULTRA] Failed to parse reply metadata:', e);
+          }
+        }
+      }
+
+      const replyButtonHtml = `
+        <button class="oneui-message-reply-btn" title="Répondre" style="
+          background: none;
+          border: none;
+          color: var(--ultra-text-sub);
+          cursor: pointer;
+          padding: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.15s, color 0.15s;
+          border-radius: 50%;
+        " onmouseover="this.style.color='var(--ultra-accent)'; this.style.backgroundColor='var(--ultra-surface)';" onmouseout="this.style.color='var(--ultra-text-sub)'; this.style.backgroundColor='transparent';">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin: 0; transform: scaleX(-1);">
+            <path d="M9 14L4 9l5-5"/>
+            <path d="M4 9h10c3.87 0 7 3.13 7 7v1"/>
+          </svg>
+        </button>
+      `;
+
       wrapper.innerHTML = `
+        ${replyCardHtml}
         ${cardsHtml}
-        ${hasText ? `
-          <div class="oneui-message-bubble${gifPattern.test(plainUrl) ? ' oneui-bubble-gif' : ''}">
-            ${bubbleContent}
-          </div>
-        ` : ''}
+        <div class="oneui-message-bubble-row" style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: ${isSelf ? 'flex-end' : 'flex-start'};">
+          ${isSelf ? replyButtonHtml : ''}
+          ${hasText ? `
+            <div class="oneui-message-bubble${gifPattern.test(plainUrl) ? ' oneui-bubble-gif' : ''}" style="margin: 0;">
+              ${bubbleContent}
+            </div>
+          ` : ''}
+          ${!isSelf ? replyButtonHtml : ''}
+        </div>
         <div class="oneui-message-time" style="display: inline-flex; align-items: center; gap: 4px;">${timeStr}${statusHTML}</div>
       `;
 
       history.appendChild(wrapper);
+
+      const replyBtn = wrapper.querySelector('.oneui-message-reply-btn');
+      if (replyBtn) {
+        replyBtn.addEventListener('click', () => {
+          setReplyToMessage(msg.id, cleanedText, msg.useridfrom);
+        });
+      }
+
+      const replyCard = wrapper.querySelector('.oneui-message-reply-card');
+      if (replyCard) {
+        replyCard.addEventListener('click', () => {
+          const targetId = replyCard.dataset.replyToId;
+          const targetEl = document.getElementById(`oneui-msg-${targetId}`);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetEl.classList.remove('flash-highlight');
+            void targetEl.offsetWidth; // trigger reflow
+            targetEl.classList.add('flash-highlight');
+          }
+        });
+      }
     });
 
     history.scrollTop = history.scrollHeight;
@@ -888,6 +1017,7 @@
       if (!history) return;
 
       const messages = result.messages || [];
+      activeConversationMessages = messages;
 
       if (activeConversationId) {
         await detectAndProcessHandshake(messages, activeConversationId, activeOtherUserId);
@@ -918,6 +1048,7 @@
     activeConversationId = convId;
     activeOtherUserId = otherUserId;
     lastMessageCount = 0;
+    activeConversationMessages = [];
 
     // Set highlight in list
     const items = document.querySelectorAll('.oneui-conv-item');
@@ -1066,7 +1197,35 @@
 
     try {
       const isUltra = (activeConversationId && ultraConversations[activeConversationId]) || (activeOtherUserId && ultraConversations['user_' + activeOtherUserId]);
-      const textWithHandshake = text + (isUltra ? '' : ' <span style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>');
+      
+      const weAlreadySentHandshake = (activeConversationId && handshakeSentThisSession[activeConversationId]) || activeConversationMessages.some(msg => 
+        msg.useridfrom === currentUserId && 
+        msg.text && 
+        msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA')
+      );
+
+      let textWithHandshake = text;
+      if (!isUltra && !weAlreadySentHandshake) {
+        textWithHandshake += ' <span class="um-handshake-meta" style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>';
+        if (activeConversationId) {
+          handshakeSentThisSession[activeConversationId] = true;
+        }
+      }
+
+      if (activeReplyMessage) {
+        try {
+          const jsonStr = JSON.stringify({
+            id: activeReplyMessage.id,
+            sender: activeReplyMessage.sender,
+            text: activeReplyMessage.text
+          });
+          const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+          textWithHandshake += ` <span class="um-reply-meta" style="display:none;">UM_REPLY:${base64}</span>`;
+        } catch (err) {
+          console.warn('[myMoodle ULTRA] Failed to construct reply metadata:', err);
+        }
+        cancelReply();
+      }
 
       if (activeConversationId) {
         await callMoodleAjax('core_message_send_messages_to_conversation', {
@@ -1239,9 +1398,21 @@
               <div class="oneui-gif-grid"></div>
             </div>
           </div>
-          <div class="oneui-chat-footer">
+          <div class="oneui-chat-footer" style="flex-direction: column !important; align-items: stretch !important;">
             <div class="ia-chatbot-suggestions" style="display: none; margin-bottom: 12px; width: 100%;"></div>
-            <div class="oneui-input-pill">
+            <div class="oneui-reply-preview-bar" style="display: none; width: 100%; align-items: center; justify-content: space-between; padding: 8px 16px; background-color: var(--ultra-surface); border-radius: 14px; border: 1px solid var(--ultra-border); margin-bottom: 8px; box-sizing: border-box;">
+              <div class="oneui-reply-preview-content" style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; text-align: left;">
+                <span class="oneui-reply-preview-sender" style="font-size: 12px; font-weight: 700; color: var(--ultra-accent);">Répondre à ...</span>
+                <span class="oneui-reply-preview-text" style="font-size: 12px; color: var(--ultra-text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Message snippet</span>
+              </div>
+              <button class="oneui-reply-preview-close" style="background: none; border: none; color: var(--ultra-text-sub); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.15s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin: 0;">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="oneui-input-pill" style="display: flex; width: 100%; box-sizing: border-box;">
               <textarea class="oneui-input-field" placeholder="Message" rows="1"></textarea>
               <div class="oneui-input-icons">
                 <span class="oneui-input-icon emoji" title="Emojis &amp; GIFs">
@@ -2284,6 +2455,14 @@
         if (rightPanel) {
           rightPanel.classList.remove('oneui-chat-active');
         }
+      });
+    }
+
+    // 6c. Attach reply preview close listener
+    const replyCloseBtn = appContainer.querySelector('.oneui-reply-preview-close');
+    if (replyCloseBtn) {
+      replyCloseBtn.addEventListener('click', () => {
+        cancelReply();
       });
     }
 
