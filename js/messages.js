@@ -36,15 +36,11 @@
   const detectAndProcessHandshake = async (messages, convid, otherUserId) => {
     if (!messages || messages.length === 0) return;
     
-    let hasHandshakeCode = false;
-    for (const msg of messages) {
-      if (msg.useridfrom !== currentUserId && msg.text && msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA')) {
-        hasHandshakeCode = true;
-        break;
-      }
-    }
+    const otherSentCode = messages.some(msg => msg.useridfrom !== currentUserId && msg.text && msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA'));
+    const weSentCode = messages.some(msg => msg.useridfrom === currentUserId && msg.text && msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA'));
 
-    if (hasHandshakeCode) {
+    if (otherSentCode && weSentCode) {
+      // BOTH have sent the code: mark conversation as ULTRA
       let changed = false;
       if (convid && !ultraConversations[convid]) {
         ultraConversations[convid] = true;
@@ -54,14 +50,31 @@
         ultraConversations['user_' + otherUserId] = true;
         changed = true;
       }
-      
       if (changed) {
         saveUltraConversations();
-        console.log('[myMoodle ULTRA] Handshake detected! Conversation/User marked as ULTRA.', { convid, otherUserId });
-        
-        // Auto-reply to finalize handshake if we are in a conversation
-        if (convid) {
-          try {
+        console.log('[myMoodle ULTRA] Handshake completed successfully! Conversation/User marked as ULTRA.', { convid, otherUserId });
+      }
+    } else {
+      // Not both have sent the code: ensure it is NOT marked as ULTRA in storage (self-healing)
+      let changed = false;
+      if (convid && ultraConversations[convid]) {
+        delete ultraConversations[convid];
+        changed = true;
+      }
+      if (otherUserId && ultraConversations['user_' + otherUserId]) {
+        delete ultraConversations['user_' + otherUserId];
+        changed = true;
+      }
+      if (changed) {
+        saveUltraConversations();
+        console.log('[myMoodle ULTRA] Corrected conversation state: handshake not complete.', { convid, otherUserId });
+      }
+
+      // If other sent the code but we haven't: automatically send our code response
+      if (otherSentCode && !weSentCode && convid) {
+        try {
+          if (!detectAndProcessHandshake.sendingResponse) {
+            detectAndProcessHandshake.sendingResponse = true;
             await callMoodleAjax('core_message_send_messages_to_conversation', {
               conversationid: convid,
               messages: [
@@ -72,9 +85,11 @@
               ]
             });
             console.log('[myMoodle ULTRA] Sent auto-handshake response.');
-          } catch (e) {
-            console.warn('[myMoodle ULTRA] Failed to send auto-handshake response:', e);
+            detectAndProcessHandshake.sendingResponse = false;
           }
+        } catch (e) {
+          detectAndProcessHandshake.sendingResponse = false;
+          console.warn('[myMoodle ULTRA] Failed to send auto-handshake response:', e);
         }
       }
     }
@@ -112,30 +127,6 @@
     let clean = text.replace(/<span[^>]*style="display:\s*none;?"[^>]*>ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA<\/span>/gi, '');
     clean = clean.replace(/ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA/g, '');
     return clean.trim();
-  };
-
-  const scanConversationsForHandshake = (conversations) => {
-    if (!conversations) return;
-    let changed = false;
-    for (const conv of conversations) {
-      if (conv.messages && conv.messages.length > 0) {
-        const lastMsg = conv.messages[conv.messages.length - 1];
-        if (lastMsg.text && lastMsg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA')) {
-          if (!ultraConversations[conv.id]) {
-            ultraConversations[conv.id] = true;
-            const otherMember = conv.members && conv.members.find(m => m.id !== currentUserId);
-            if (otherMember) {
-              ultraConversations['user_' + otherMember.id] = true;
-            }
-            changed = true;
-            console.log('[myMoodle ULTRA] Handshake detected in conversation list for conversation', conv.id);
-          }
-        }
-      }
-    }
-    if (changed) {
-      saveUltraConversations();
-    }
   };
 
   // Helper to check Moodle message page
@@ -373,8 +364,6 @@
     const listContainer = document.querySelector('.oneui-conv-list');
     if (!listContainer) return;
 
-    scanConversationsForHandshake(conversations);
-
     let filtered = conversations || [];
 
     // Filter by tab
@@ -418,14 +407,7 @@
       aiItem.dataset.id = 'ai';
       aiItem.dataset.name = 'myMoodle AI';
       
-      const avatarHTML = `
-        <div class="oneui-conv-avatar-initials" style="background: linear-gradient(135deg, #4285f4, #9b51e0); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: white; margin: 0;">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            <path d="M11 8a3 3 0 0 1 3 3" stroke-width="2.5"/>
-          </svg>
-        </div>
-      `;
+      const avatarHTML = `<img src="${chrome.runtime.getURL('img/logoMyHub.png')}" class="oneui-conv-avatar" alt="myMoodle AI">`;
       
       aiItem.innerHTML = `
         <div class="oneui-conv-avatar-wrapper">
@@ -1655,14 +1637,7 @@
 
     if (fabAi) {
       fabAi.addEventListener('click', () => {
-        const aiAvatarHTML = `
-          <div class="oneui-conv-avatar-initials" style="background: linear-gradient(135deg, #4285f4, #9b51e0); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: white; margin: 0;">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              <path d="M11 8a3 3 0 0 1 3 3" stroke-width="2.5"/>
-            </svg>
-          </div>
-        `;
+        const aiAvatarHTML = `<img src="${chrome.runtime.getURL('img/logoMyHub.png')}" class="oneui-conv-avatar" alt="myMoodle AI">`;
         selectConversation('ai', 'myMoodle AI', aiAvatarHTML, 0);
       });
     }
