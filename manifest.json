@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Une interface moderne, épurée et ultra-rapide pour le Moodle de l'EFREI.",
   "permissions": [
-    "storage"
+    "storage",
+    "unlimitedStorage"
   ],
   "host_permissions": [
     "https://tmpfiles.org/"
@@ -35,6 +36,18 @@
     }
   ],
   "content_scripts": [
+    {
+      "matches": [
+        "*://chatgpt.com/*",
+        "*://claude.ai/*",
+        "*://gemini.google.com/*",
+        "*://*.perplexity.ai/*"
+      ],
+      "js": [
+        "js/ai_injector.js"
+      ],
+      "run_at": "document_idle"
+    },
     {
       "matches": [
         "*://moodle.myefrei.fr/*"

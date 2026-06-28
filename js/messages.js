@@ -11,7 +11,132 @@
   let allConversations = [];
   let entertosendEnabled = true;
   let enabledProcessors = ['popup'];
-  // AI state is now managed by the MyEfrei ULTRA - Chat extension
+
+  let ultraConversations = {};
+
+  const loadUltraConversations = () => {
+    return new Promise((resolve) => {
+      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get('ultra_conversations', (res) => {
+          ultraConversations = res.ultra_conversations || {};
+          resolve(ultraConversations);
+        });
+      } else {
+        resolve({});
+      }
+    });
+  };
+
+  const saveUltraConversations = () => {
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ 'ultra_conversations': ultraConversations });
+    }
+  };
+
+  const detectAndProcessHandshake = async (messages, convid, otherUserId) => {
+    if (!messages || messages.length === 0) return;
+    
+    let hasHandshakeCode = false;
+    for (const msg of messages) {
+      if (msg.useridfrom !== currentUserId && msg.text && msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA')) {
+        hasHandshakeCode = true;
+        break;
+      }
+    }
+
+    if (hasHandshakeCode) {
+      let changed = false;
+      if (convid && !ultraConversations[convid]) {
+        ultraConversations[convid] = true;
+        changed = true;
+      }
+      if (otherUserId && !ultraConversations['user_' + otherUserId]) {
+        ultraConversations['user_' + otherUserId] = true;
+        changed = true;
+      }
+      
+      if (changed) {
+        saveUltraConversations();
+        console.log('[myMoodle ULTRA] Handshake detected! Conversation/User marked as ULTRA.', { convid, otherUserId });
+        
+        // Auto-reply to finalize handshake if we are in a conversation
+        if (convid) {
+          try {
+            await callMoodleAjax('core_message_send_messages_to_conversation', {
+              conversationid: convid,
+              messages: [
+                {
+                  text: '<span style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>',
+                  textformat: 1
+                }
+              ]
+            });
+            console.log('[myMoodle ULTRA] Sent auto-handshake response.');
+          } catch (e) {
+            console.warn('[myMoodle ULTRA] Failed to send auto-handshake response:', e);
+          }
+        }
+      }
+    }
+  };
+
+  const sendReadReceipt = async (convId) => {
+    if (!convId || !ultraConversations[convId]) return;
+    try {
+      const timestamp = Math.floor(Date.now() / 1000);
+      await callMoodleAjax('core_message_send_messages_to_conversation', {
+        conversationid: convId,
+        messages: [
+          {
+            text: `Ce message a été envoyé via mymoodle ultra. Ainsi, vous n'avez pas acces a la fonctionalitée utilisé par votre collègue - ULTRA-bbzbegcgdehzh-${timestamp}`,
+            textformat: 1
+          }
+        ]
+      });
+      console.log('[myMoodle ULTRA] Sent read receipt for conversation', convId, 'at', timestamp);
+    } catch (e) {
+      console.warn('[myMoodle ULTRA] Failed to send read receipt:', e);
+    }
+  };
+
+  const isControlMessage = (text) => {
+    if (!text) return false;
+    const plainText = text.replace(/<[^>]*>/g, '').trim();
+    if (plainText === 'ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA') return true;
+    if (plainText.includes("Ce message a été envoyé via mymoodle ultra. Ainsi, vous n'avez pas acces a la fonctionalitée utilisé par votre collègue - ULTRA-bbzbegcgdehzh")) return true;
+    return false;
+  };
+
+  const cleanMessageText = (text) => {
+    if (!text) return '';
+    let clean = text.replace(/<span[^>]*style="display:\s*none;?"[^>]*>ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA<\/span>/gi, '');
+    clean = clean.replace(/ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA/g, '');
+    return clean.trim();
+  };
+
+  const scanConversationsForHandshake = (conversations) => {
+    if (!conversations) return;
+    let changed = false;
+    for (const conv of conversations) {
+      if (conv.messages && conv.messages.length > 0) {
+        const lastMsg = conv.messages[conv.messages.length - 1];
+        if (lastMsg.text && lastMsg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA')) {
+          if (!ultraConversations[conv.id]) {
+            ultraConversations[conv.id] = true;
+            const otherMember = conv.members && conv.members.find(m => m.id !== currentUserId);
+            if (otherMember) {
+              ultraConversations['user_' + otherMember.id] = true;
+            }
+            changed = true;
+            console.log('[myMoodle ULTRA] Handshake detected in conversation list for conversation', conv.id);
+          }
+        }
+      }
+    }
+    if (changed) {
+      saveUltraConversations();
+    }
+  };
 
   // Helper to check Moodle message page
   const isMessagePage = () => {
@@ -248,6 +373,8 @@
     const listContainer = document.querySelector('.oneui-conv-list');
     if (!listContainer) return;
 
+    scanConversationsForHandshake(conversations);
+
     let filtered = conversations || [];
 
     // Filter by tab
@@ -481,15 +608,30 @@
     }
   };
 
-  const parseRichEmbeds = (text) => {
-    if (!text || !text.includes('#um-embed=')) return text;
+  const extractEmbedCards = (text) => {
+    if (!text || !text.includes('#um-embed=')) {
+      return { text, cardsHtml: '' };
+    }
     
     try {
+      // Strip bullet points preceding embed links (compatibility with messages already in database)
+      let cleanTextStr = text
+        .replace(/•\s*(?=<a[^>]*href="[^"]*#um-embed=)/g, '')
+        .replace(/&bull;\s*(?=<a[^>]*href="[^"]*#um-embed=)/g, '')
+        .replace(/•\s*(?=<span[^>]*>\s*<a[^>]*href="[^"]*#um-embed=)/g, '')
+        .replace(/&bull;\s*(?=<span[^>]*>\s*<a[^>]*href="[^"]*#um-embed=)/g, '')
+        .replace(/<br>\s*•\s*/g, '<br>')
+        .replace(/<br>\s*&bull;\s*/g, '<br>');
+
       const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
+      const doc = parser.parseFromString(cleanTextStr, 'text/html');
       const links = doc.querySelectorAll('a[href*="#um-embed="]');
       
-      if (links.length === 0) return text;
+      if (links.length === 0) {
+        return { text, cardsHtml: '' };
+      }
+      
+      let cardsHtmlList = [];
       
       links.forEach(link => {
         try {
@@ -573,19 +715,17 @@
               display: flex;
               align-items: center;
               gap: 12px;
-              background-color: var(--ultra-surface-hover, rgba(0, 0, 0, 0.02));
-              border: 1px solid var(--ultra-border, rgba(0, 0, 0, 0.08));
               border-radius: 16px;
               padding: 12px;
-              margin: 8px 0;
+              margin: 4px 0;
               width: 280px;
               max-width: 100%;
               cursor: pointer;
               box-sizing: border-box;
               transition: transform 0.2s, box-shadow 0.2s;
               text-align: left;
-            " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none';this.style.boxShadow='none';" onclick="window.open('${cleanFileUrl}', '_blank')">
-              <div style="
+            " onmouseover="this.style.transform='translateY(-1px)';" onmouseout="this.style.transform='none';" onclick="window.open('${cleanFileUrl}', '_blank')">
+              <div class="um-card-icon" style="
                 width: 42px;
                 height: 42px;
                 border-radius: 12px;
@@ -605,19 +745,17 @@
                 min-width: 0;
                 flex: 1;
               ">
-                <div style="
+                <div class="um-card-title" style="
                   font-weight: 700;
                   font-size: 13.5px;
-                  color: var(--ultra-text-main, #0f172a);
                   overflow: hidden;
                   text-overflow: ellipsis;
                   white-space: nowrap;
                   line-height: 1.3;
                 " title="${data.name}">${data.name}</div>
-                <div style="
+                <div class="um-card-subtitle" style="
                   font-size: 11px;
                   font-weight: 600;
-                  color: var(--ultra-text-sub, #64748b);
                   overflow: hidden;
                   text-overflow: ellipsis;
                   white-space: nowrap;
@@ -627,18 +765,27 @@
             </div>
           `;
           
-          const wrapperSpan = doc.createElement('span');
-          wrapperSpan.innerHTML = cardHtml;
-          link.parentNode.replaceChild(wrapperSpan, link);
+          cardsHtmlList.push(cardHtml);
+          link.parentNode.removeChild(link);
         } catch (innerErr) {
           console.warn('[myMoodle ULTRA] Error parsing link details:', innerErr);
         }
       });
       
-      return doc.body.innerHTML;
+      let cleanText = doc.body.innerHTML;
+      cleanText = cleanText
+        .replace(/<div>\s*<\/div>/g, '')
+        .replace(/<p>\s*<\/p>/g, '')
+        .replace(/(\s*<br>\s*)+$/g, '')
+        .trim();
+
+      return {
+        text: cleanText,
+        cardsHtml: `<div class="um-chat-cards-container" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">` + cardsHtmlList.join('') + `</div>`
+      };
     } catch (err) {
-      console.warn('[myMoodle ULTRA] DOMParser failed:', err);
-      return text;
+      console.warn('[myMoodle ULTRA] extractEmbedCards failed:', err);
+      return { text, cardsHtml: '' };
     }
   };
 
@@ -649,9 +796,31 @@
     history.innerHTML = '';
     let lastDateStr = '';
 
+    // Calculate last seen timestamp
+    let lastSeenTimestamp = 0;
     messages.forEach(msg => {
+      const isFromOther = msg.useridfrom !== currentUserId;
+      if (isFromOther && msg.text) {
+        if (msg.text.includes("Ce message a été envoyé via mymoodle ultra. Ainsi, vous n'avez pas acces a la fonctionalitée utilisé par votre collègue - ULTRA-bbzbegcgdehzh")) {
+          const match = msg.text.match(/ULTRA-bbzbegcgdehzh-(\d+)/);
+          if (match) {
+            const ts = parseInt(match[1], 10);
+            if (ts > lastSeenTimestamp) {
+              lastSeenTimestamp = ts;
+            }
+          }
+        }
+      }
+    });
+
+    const isUltra = activeConversationId && ultraConversations[activeConversationId];
+
+    messages.forEach(msg => {
+      if (isControlMessage(msg.text)) return;
+
       const isSelf = msg.useridfrom === currentUserId;
-      const text = parseRichEmbeds(msg.text);
+      const cleanedText = cleanMessageText(msg.text);
+      const { text, cardsHtml } = extractEmbedCards(cleanedText);
       
       const date = new Date(msg.timecreated * 1000);
       const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -665,25 +834,52 @@
       }
 
       const wrapper = document.createElement('div');
-      wrapper.className = `oneui-message-wrapper ${isSelf ? 'self' : 'other'}`;
+      wrapper.className = `oneui-message-wrapper ${isSelf ? 'self' : 'other'} ${isUltra ? 'ultra' : ''}`;
       
       const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
       // Detect if message is a pure GIF/image URL (Tenor CDN)
       const gifPattern = /^https?:\/\/(media\.tenor\.com|media1?\.giphy\.com|i\.giphy\.com)[^\s]+(\.gif|\/gif)[^\s]*$/i;
       const plainUrl = text.replace(/<[^>]+>/g, '').trim();
-      let bubbleContent;
+      let bubbleContent = '';
       if (gifPattern.test(plainUrl)) {
         bubbleContent = `<img src="${plainUrl}" class="oneui-message-gif" alt="GIF" loading="lazy">`;
       } else {
         bubbleContent = `<div class="oneui-message-text">${text}</div>`;
       }
 
+      const hasText = text.replace(/&nbsp;/g, '').replace(/<br\s*\/?>/gi, '').trim().length > 0;
+
+      let statusHTML = '';
+      if (isSelf && isUltra) {
+        if (msg.timecreated <= lastSeenTimestamp) {
+          statusHTML = `
+            <span class="oneui-message-status seen" title="Vu" style="margin-left: 4px; display: inline-flex; align-items: center; color: #1a73e8; vertical-align: middle;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0; vertical-align: middle;">
+                <path d="M2 12l5.25 5 11.25-11"/>
+                <path d="M8 12l5.25 5 11.25-11" style="transform: translateX(4px);"/>
+              </svg>
+            </span>
+          `;
+        } else {
+          statusHTML = `
+            <span class="oneui-message-status sent" title="Envoyé" style="margin-left: 4px; display: inline-flex; align-items: center; color: #8e8e93; vertical-align: middle;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0; vertical-align: middle;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+          `;
+        }
+      }
+
       wrapper.innerHTML = `
-        <div class="oneui-message-bubble${gifPattern.test(plainUrl) ? ' oneui-bubble-gif' : ''}">
-          ${bubbleContent}
-        </div>
-        <div class="oneui-message-time">${timeStr}</div>
+        ${cardsHtml}
+        ${hasText ? `
+          <div class="oneui-message-bubble${gifPattern.test(plainUrl) ? ' oneui-bubble-gif' : ''}">
+            ${bubbleContent}
+          </div>
+        ` : ''}
+        <div class="oneui-message-time" style="display: inline-flex; align-items: center; gap: 4px;">${timeStr}${statusHTML}</div>
       `;
 
       history.appendChild(wrapper);
@@ -710,7 +906,18 @@
       if (!history) return;
 
       const messages = result.messages || [];
+
+      if (activeConversationId) {
+        await detectAndProcessHandshake(messages, activeConversationId, activeOtherUserId);
+      }
+
       if (messages.length !== lastMessageCount || history.querySelector('.oneui-loading-messages')) {
+        if (lastMessageCount > 0 && messages.length > lastMessageCount) {
+          const lastMsg = messages[messages.length - 1];
+          if (lastMsg && lastMsg.useridfrom !== currentUserId && ultraConversations[activeConversationId]) {
+            sendReadReceipt(activeConversationId);
+          }
+        }
         renderMessages(messages);
         lastMessageCount = messages.length;
       }
@@ -817,12 +1024,17 @@
 
       // Mark as read in Moodle
       try {
+        const conv = allConversations.find(c => c.id === convId);
+        const wasUnread = conv && (conv.unreadcount > 0);
+        if (wasUnread && ultraConversations[convId]) {
+          sendReadReceipt(convId);
+        }
+
         await callMoodleAjax('core_message_mark_all_conversation_messages_as_read', {
           userid: currentUserId,
           conversationid: convId
         });
         // Decrement unread local counts
-        const conv = allConversations.find(c => c.id === convId);
         if (conv) {
           conv.unreadcount = 0;
           updateSubtitle(document.querySelector('.oneui-message-header'), allConversations);
@@ -871,12 +1083,15 @@
     }
 
     try {
+      const isUltra = (activeConversationId && ultraConversations[activeConversationId]) || (activeOtherUserId && ultraConversations['user_' + activeOtherUserId]);
+      const textWithHandshake = text + (isUltra ? '' : ' <span style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>');
+
       if (activeConversationId) {
         await callMoodleAjax('core_message_send_messages_to_conversation', {
           conversationid: activeConversationId,
           messages: [
             {
-              text: text,
+              text: textWithHandshake,
               textformat: 1 // HTML
             }
           ]
@@ -891,7 +1106,7 @@
           messages: [
             {
               touserid: activeOtherUserId,
-              text: text,
+              text: textWithHandshake,
               textformat: 1 // HTML
             }
           ]
@@ -2161,6 +2376,8 @@
           }
 
           if (currentUserId) {
+            await loadUltraConversations();
+
             try {
               const result = await callMoodleAjax('core_message_get_conversations', {
                 userid: currentUserId,

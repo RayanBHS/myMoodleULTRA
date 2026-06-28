@@ -634,21 +634,21 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 /* iMessage Chat Header → Floating pill (avatar gauche, noms droite) */
 .oneui-chat-header {
   position: absolute !important;
-  top: 20px !important;
+  top: 15px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 100 !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 21px !important;
-  padding: 15px 36px 15px 16px !important;
+  gap: 12px !important;
+  padding: 10px 24px 10px 12px !important;
   border-radius: 999px !important;
   border: 1px solid var(--ultra-border) !important;
   background: rgba(255, 255, 255, 0.82) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
   white-space: nowrap !important;
   animation: oneui-header-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   pointer-events: none !important;
@@ -656,7 +656,7 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 .ultramoodle-dark .oneui-chat-header {
   background: rgba(28, 28, 30, 0.88) !important;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
 }
 
 @keyframes oneui-header-pop {
@@ -668,22 +668,22 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 /* Floating back button — sits outside the header card, top-left of chat view */
 .oneui-back-btn {
   position: absolute !important;
-  top: 20px !important;
-  left: 20px !important;
+  top: 15px !important;
+  left: 15px !important;
   z-index: 101 !important;
   background: rgba(255, 255, 255, 0.82) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 50% !important;
-  width: 40px !important;
-  height: 40px !important;
+  width: 36px !important;
+  height: 36px !important;
   display: none !important; /* shown only on mobile via media query */
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   color: #007aff !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
   padding: 0 !important;
 }
 .ultramoodle-dark .oneui-back-btn {
@@ -692,8 +692,8 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 /* Avatar pill — cercle à gauche */
 .oneui-chat-header-avatar {
-  width: 78px !important;
-  height: 78px !important;
+  width: 44px !important;
+  height: 44px !important;
   border-radius: 50% !important;
   overflow: hidden !important;
   display: flex !important;
@@ -704,10 +704,10 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 .oneui-chat-header-avatar img,
 .oneui-chat-header-avatar .oneui-conv-avatar-initials {
-  width: 78px !important;
-  height: 78px !important;
+  width: 44px !important;
+  height: 44px !important;
   border-radius: 50% !important;
-  font-size: 30px !important;
+  font-size: 16px !important;
   font-weight: 600 !important;
   display: flex !important;
   align-items: center !important;
@@ -724,7 +724,7 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 /* Prénom — grand et gras */
 .oneui-chat-header-name {
-  font-size: 27px !important;
+  font-size: 16px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
   line-height: 1.2 !important;
@@ -732,7 +732,7 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 /* Nom de famille — plus petit, discret */
 .oneui-chat-header-lastname {
-  font-size: 19px !important;
+  font-size: 12px !important;
   font-weight: 500 !important;
   color: var(--ultra-text-sub) !important;
   line-height: 1.2 !important;
@@ -748,7 +748,7 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 .oneui-chat-history {
   flex: 1 !important;
   overflow-y: auto !important;
-  padding: 160px 30px 36px 30px !important;
+  padding: 95px 20px 24px 20px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 12px !important;
@@ -763,11 +763,11 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 /* Day divider header: simple centered gray uppercase text */
 .oneui-chat-day-header {
   align-self: center !important;
-  font-size: 15px !important;
+  font-size: 11px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   color: #8e8e93 !important;
-  margin: 28px 0 14px 0 !important;
+  margin: 16px 0 8px 0 !important;
   background: none !important;
   border: none !important;
   padding: 0 !important;
@@ -793,25 +793,31 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 /* Message Bubble elements */
 .oneui-message-bubble {
-  padding: 15px 24px !important;
-  font-size: 21px !important;
+  padding: 10px 18px !important;
+  font-size: 14.5px !important;
   line-height: 1.4 !important;
   word-break: break-word !important;
-  border-radius: 26px !important;
+  border-radius: 18px !important;
 }
 
 /* Vibrant iMessage bubble styling (Green SMS style) */
 .oneui-message-wrapper.self .oneui-message-bubble {
   background-color: #24b646 !important;
   color: #ffffff !important;
-  border-radius: 26px 26px 5px 26px !important;
+  border-radius: 18px 18px 5px 18px !important;
   box-shadow: 0 1px 2px rgba(36, 182, 70, 0.1) !important;
+}
+
+/* ULTRA iMessage blue bubble styling */
+.oneui-message-wrapper.self.ultra .oneui-message-bubble {
+  background-color: #007aff !important;
+  box-shadow: 0 1px 2px rgba(0, 122, 255, 0.15) !important;
 }
 
 .oneui-message-wrapper.other .oneui-message-bubble {
   color: var(--ultra-text-main) !important;
   border: none !important;
-  border-radius: 26px 26px 26px 5px !important;
+  border-radius: 18px 18px 18px 5px !important;
 }
 .ultramoodle-light .oneui-message-wrapper.other .oneui-message-bubble {
   background-color: #e9e9eb !important; /* Light iMessage Gray bubble */
@@ -830,9 +836,26 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
   text-decoration: underline !important;
 }
 
+/* Custom embed file card styles (Rendered outside bubbles) */
+.ultramoodle-message-embed-card {
+  background-color: var(--ultra-surface) !important;
+  border: 1px solid var(--ultra-border) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+.ultramoodle-message-embed-card:hover {
+  background-color: var(--ultra-surface-hover) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+.um-card-title {
+  color: var(--ultra-text-main) !important;
+}
+.um-card-subtitle {
+  color: var(--ultra-text-sub) !important;
+}
+
 /* Message Timestamp */
 .oneui-message-time {
-  font-size: 14px !important;
+  font-size: 11px !important;
   color: #8e8e93 !important;
   margin-top: 4px !important;
   padding: 0 6px !important;
@@ -1012,10 +1035,10 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
 
 /* --- Bottom Input Footer Area --- */
 .oneui-chat-footer {
-  padding: 18px 30px 36px 30px !important;
+  padding: 12px 20px 20px 20px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 18px !important;
+  gap: 12px !important;
 }
 
 .ultramoodle-light .oneui-chat-footer {
@@ -1034,9 +1057,9 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
   border-radius: 50% !important;
   transition: opacity 0.15s !important;
 }
@@ -1050,9 +1073,9 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
   flex: 1 !important;
   display: flex !important;
   align-items: center !important;
-  gap: 15px !important;
-  border-radius: 30px !important;
-  padding: 4px 9px 4px 21px !important;
+  gap: 12px !important;
+  border-radius: 20px !important;
+  padding: 2px 6px 2px 16px !important;
   transition: border-color 0.15s !important;
 }
 
@@ -1071,12 +1094,12 @@ body.path-message #region-main > *:not(.oneui-messaging-app) {
   border: none !important;
   background: transparent !important;
   color: var(--ultra-text-main) !important;
-  font-size: 20px !important;
+  font-size: 14.5px !important;
   line-height: 1.4 !important;
   max-height: 120px !important;
   resize: none !important;
   outline: none !important;
-  padding: 9px 0 !important;
+  padding: 6px 0 !important;
   font-family: inherit !important;
 }
 

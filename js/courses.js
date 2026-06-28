@@ -2362,10 +2362,24 @@ document.addEventListener('click', (e) => {
         }
       }
       
+      // Detect type from Moodle icon
+      let detectedType = 'file';
+      const activityItem = linkEl.closest('.activity-item, .activity, li.section .activityinstance, li.activity');
+      if (activityItem) {
+        const iconImg = activityItem.querySelector('.activityicon, img[src*="/f/"]');
+        if (iconImg) {
+          const src = iconImg.src.toLowerCase();
+          if (src.includes('pdf')) detectedType = 'pdf';
+          else if (src.includes('word') || src.includes('document')) detectedType = 'word';
+          else if (src.includes('powerpoint') || src.includes('presentation')) detectedType = 'powerpoint';
+          else if (src.includes('spreadsheet') || src.includes('excel')) detectedType = 'excel';
+        }
+      }
+      
       // Clean Moodle keywords suffix
       const cleanName = fileName.replace(/\s*(?:Fichier|Présentation|Document|Word|PowerPoint|PDF|Excel)\s*$/gi, '').trim();
       
-      showShareModal(cleanName, fileUrl);
+      showShareModal(cleanName, fileUrl, detectedType);
     }
   }
 }, true);
@@ -2471,9 +2485,18 @@ const fetchRecentMessageContacts = async () => {
   }
 };
 
-const showShareModal = (fileName, fileUrl) => {
+const showShareModal = (fileName, fileUrl, initialType = 'file') => {
   const existing = document.getElementById('ultramoodle-share-modal');
   if (existing) existing.remove();
+
+  // Close Moodle's native message drawer if open to prevent overlap
+  const messageDrawer = document.querySelector('[data-region="message-drawer"]');
+  if (messageDrawer && messageDrawer.classList.contains('show')) {
+    const toggleBtn = document.querySelector('[data-route="view-conversation-bias"]') || 
+                      document.getElementById('message-drawer-toggle') ||
+                      document.querySelector('[data-region="message-drawer-toggle"]');
+    if (toggleBtn) toggleBtn.click();
+  }
 
   const backdrop = document.createElement('div');
   backdrop.id = 'ultramoodle-share-modal';
@@ -2511,7 +2534,7 @@ const showShareModal = (fileName, fileUrl) => {
   const dynamicBody = backdrop.querySelector('#ultramoodle-share-dynamic-body');
 
   let attachedFiles = [
-    { name: fileName, url: fileUrl, isMoodle: true, fileObject: null }
+    { name: fileName, url: fileUrl, type: initialType, isMoodle: true, fileObject: null }
   ];
 
   const getAllFilesOnPage = () => {
@@ -2563,34 +2586,11 @@ const showShareModal = (fileName, fileUrl) => {
         </div>
         
         <div style="display: flex; flex-direction: column; gap: 12px; margin-top: auto;">
-          <button id="ultramoodle-picker-local-btn" style="width: 100%; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
-            Sélectionner un fichier de mon PC
-          </button>
           <button id="ultramoodle-picker-back-btn" style="width: 100%; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer;">
             Retour
           </button>
         </div>
-        <input type="file" id="ultramoodle-local-picker" multiple style="display: none;">
       `;
-      
-      const localBtn = dynamicBody.querySelector('#ultramoodle-picker-local-btn');
-      const localPicker = dynamicBody.querySelector('#ultramoodle-local-picker');
-      if (localBtn && localPicker) {
-        localBtn.addEventListener('click', () => localPicker.click());
-        localPicker.addEventListener('change', (e) => {
-          if (e.target.files.length > 0) {
-            for (let file of e.target.files) {
-              attachedFiles.push({
-                name: file.name,
-                url: URL.createObjectURL(file),
-                isMoodle: false,
-                fileObject: file
-              });
-            }
-            renderDefaultView();
-          }
-        });
-      }
       
       const backBtn = dynamicBody.querySelector('#ultramoodle-picker-back-btn');
       if (backBtn) backBtn.addEventListener('click', renderDefaultView);
@@ -2632,17 +2632,13 @@ const showShareModal = (fileName, fileUrl) => {
       </div>
 
       <div style="display: flex; gap: 12px; margin-top: auto; padding-bottom: 4px;">
-        <button id="ultramoodle-picker-local-link" style="flex: 1; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
-          Fichier local...
+        <button id="ultramoodle-picker-back-btn" style="flex: 1; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
+          Retour
         </button>
         <button id="ultramoodle-picker-add-selected" style="flex: 2; background-color: var(--ultra-accent); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
           Ajouter (0)
         </button>
-        <button id="ultramoodle-picker-back-btn" style="flex: 1; background-color: var(--ultra-surface-hover); color: var(--ultra-text-main); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
-          Retour
-        </button>
       </div>
-      <input type="file" id="ultramoodle-local-picker" multiple style="display: none;">
     `;
 
     const listContainer = dynamicBody.querySelector('#ultramoodle-picker-files-list');
@@ -2711,31 +2707,13 @@ const showShareModal = (fileName, fileUrl) => {
       renderList(e.target.value.trim());
     });
 
-    const localLinkBtn = dynamicBody.querySelector('#ultramoodle-picker-local-link');
-    const localPicker = dynamicBody.querySelector('#ultramoodle-local-picker');
-    if (localLinkBtn && localPicker) {
-      localLinkBtn.addEventListener('click', () => localPicker.click());
-      localPicker.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          for (let file of e.target.files) {
-            attachedFiles.push({
-              name: file.name,
-              url: URL.createObjectURL(file),
-              isMoodle: false,
-              fileObject: file
-            });
-          }
-          renderDefaultView();
-        }
-      });
-    }
-
     addSelectedBtn.addEventListener('click', () => {
       allPageFiles.forEach(file => {
         if (selectedUrls.has(file.url)) {
           attachedFiles.push({
             name: file.name,
             url: file.url,
+            type: file.type || 'file',
             isMoodle: true,
             fileObject: null
           });
@@ -3230,16 +3208,15 @@ const showShareModal = (fileName, fileUrl) => {
     }
     
     let messageText = '';
-    if (customMessage) {
-      messageText = escapeHtml(customMessage).replace(/\n/g, '<br>') + '<br><br>';
-    }
-    
-    if (linksHtml.length > 1) {
-      messageText += `Partage de fichiers :<br>` + linksHtml.map(l => `• ${l}`).join('<br>');
-    } else if (linksHtml.length === 1) {
-      messageText += `Partage de fichier : ${linksHtml[0]}`;
-    } else {
-      messageText += `Aucun fichier partagé`;
+    if (linksHtml.length > 0) {
+      const linksContainer = `<div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;">` + linksHtml.join('') + `</div>`;
+      if (customMessage) {
+        messageText = linksContainer + escapeHtml(customMessage).replace(/\n/g, '<br>');
+      } else {
+        messageText = linksContainer;
+      }
+    } else if (customMessage) {
+      messageText = escapeHtml(customMessage).replace(/\n/g, '<br>');
     }
     
     return messageText;
@@ -3247,38 +3224,6 @@ const showShareModal = (fileName, fileUrl) => {
 
   const renderWriteMessageView = (contact) => {
     if (headerTitle) headerTitle.textContent = `Partager avec ${contact.name.split(' ')[0]}`;
-
-    let filesHtml = '';
-    if (attachedFiles.length === 1) {
-      filesHtml = `
-        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(99, 102, 241, 0.12); color: var(--ultra-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-            </svg>
-          </div>
-          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
-            <div style="font-weight: 700; font-size: 12.5px; color: var(--ultra-text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles[0].name}</div>
-            <div style="font-size: 10.5px; color: var(--ultra-text-sub); opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Pièce jointe</div>
-          </div>
-        </div>
-      `;
-    } else {
-      filesHtml = `
-        <div style="background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(99, 102, 241, 0.12); color: var(--ultra-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </div>
-          <div style="display: flex; flex-direction: column; min-width: 0; flex: 1;">
-            <div style="font-weight: 700; font-size: 12.5px; color: var(--ultra-text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles.length} fichiers sélectionnés</div>
-            <div style="font-size: 10.5px; color: var(--ultra-text-sub); opacity: 0.75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${attachedFiles.map(f => f.name).join(', ')}</div>
-          </div>
-        </div>
-      `;
-    }
 
     dynamicBody.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
@@ -3298,8 +3243,6 @@ const showShareModal = (fileName, fileUrl) => {
           transition: border-color 0.2s, box-shadow 0.2s;
         " onfocus="this.style.borderColor='var(--ultra-accent)';this.style.boxShadow='0 0 0 3px rgba(var(--ultra-accent-rgb, 100, 100, 255), 0.15)';" onblur="this.style.borderColor='var(--ultra-border)';this.style.boxShadow='none';"></textarea>
       </div>
-
-      ${filesHtml}
 
       <div style="display: flex; gap: 12px; margin-top: 4px; margin-bottom: 8px;">
         <button id="ultramoodle-share-back-btn" style="flex: 1; background-color: var(--ultra-surface-hover); border: 1px solid var(--ultra-border); border-radius: 12px; padding: 12px; font-weight: 600; color: var(--ultra-text-main); cursor: pointer; transition: background-color 0.2s;">
