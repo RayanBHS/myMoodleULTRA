@@ -1,48 +1,26 @@
-/* myMoodle ULTRA - General & Layout Overrides */
 
-/* Hide Moodle's native title headers on Dashboard to keep it clean */
-body.path-my #page-header h1,
-body.path-site #page-header h1,
-body#page-site-index #page-header h1 {
+:root[data-mymoodle-enabled="true"] body.path-my #page-header h1, :root[data-mymoodle-enabled="true"] body.path-site #page-header h1, :root[data-mymoodle-enabled="true"] body#page-site-index #page-header h1 {
+
   display: none !important;
-}
 
-/* Filter Hide Rules (Used by dynamic filtering with high specificity to override custom layouts) */
-.ultramoodle-course-hidden,
-#page .ultramoodle-course-hidden,
-#page .card.ultramoodle-course-hidden,
-#page .coc-course-box.ultramoodle-course-hidden,
-#page .ultramoodle-view-list .card.ultramoodle-course-hidden,
-#page .ultramoodle-view-list .coc-course-box.ultramoodle-course-hidden,
-[data-block="myoverview"] [data-region="course-content"] .card.ultramoodle-course-hidden,
-.block_myoverview [data-region="course-content"] .card.ultramoodle-course-hidden,
-[data-region="course-overview"] [data-region="course-content"] .card.ultramoodle-course-hidden,
-[data-block="myoverview"] .dashboard-card-deck .card.ultramoodle-course-hidden,
-.block_myoverview .dashboard-card-deck .card.ultramoodle-course-hidden,
-[data-region="course-overview"] .dashboard-card-deck .card.ultramoodle-course-hidden,
-[data-block="myoverview"] .coc-course-box.ultramoodle-course-hidden,
-.block_myoverview .coc-course-box.ultramoodle-course-hidden,
-[data-region="course-overview"] .coc-course-box.ultramoodle-course-hidden {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] #page .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] #page .coc-course-box.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-view-list .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-view-list .coc-course-box.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-block="myoverview"] [data-region="course-content"] .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] .block_myoverview [data-region="course-content"] .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-region="course-overview"] [data-region="course-content"] .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-block="myoverview"] .dashboard-card-deck .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] .block_myoverview .dashboard-card-deck .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-region="course-overview"] .dashboard-card-deck .card.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-block="myoverview"] .coc-course-box.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] .block_myoverview .coc-course-box.ultramoodle-course-hidden, :root[data-mymoodle-enabled="true"] [data-region="course-overview"] .coc-course-box.ultramoodle-course-hidden {
+
   display: none !important;
-}
 
-.ultramoodle-container-hidden,
-#page .ultramoodle-container-hidden,
-#page .ultramoodle-view-list .dashboard-card-deck.ultramoodle-container-hidden,
-#page .ultramoodle-view-list .card-deck.ultramoodle-container-hidden {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-container-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-container-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-view-list .dashboard-card-deck.ultramoodle-container-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-view-list .card-deck.ultramoodle-container-hidden {
+
   display: none !important;
-}
 
-/* Hide right blocks except timeline when searching */
-.ultramoodle-block-search-hidden,
-#page .ultramoodle-block-search-hidden,
-.ultramoodle-event-hidden,
-#page .ultramoodle-event-hidden {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-block-search-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-block-search-hidden, :root[data-mymoodle-enabled="true"] .ultramoodle-event-hidden, :root[data-mymoodle-enabled="true"] #page .ultramoodle-event-hidden {
+
   display: none !important;
-}
 
-/* Beautiful custom empty state design for courses and timeline */
-.ultramoodle-empty-state {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-empty-state {
+
   display: none;
   flex-direction: column !important;
   align-items: center !important;
@@ -55,38 +33,41 @@ body#page-site-index #page-header h1 {
   min-width: 100% !important; /* Force full width stretch */
   grid-column: 1 / -1 !important; /* Span full width of grid layout containers */
   box-sizing: border-box !important;
-}
 
-.ultramoodle-empty-state.visible {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-empty-state.visible {
+
   display: flex !important;
-}
 
-.ultramoodle-empty-state svg {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-empty-state svg {
+
   width: 48px !important;
   height: 48px !important;
   stroke: var(--ultra-text-sub) !important;
   opacity: 0.6 !important;
   margin-bottom: 16px !important;
-}
 
-.ultramoodle-empty-state h4 {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-empty-state h4 {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 1.05rem !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
   margin: 0 0 6px 0 !important;
-}
 
-.ultramoodle-empty-state p {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-empty-state p {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 0.85rem !important;
   color: var(--ultra-text-sub) !important;
   margin: 0 !important;
   max-width: 260px !important;
   line-height: 1.45 !important;
-}
 
-@keyframes ultramoodle-fade-in {
+}@keyframes ultramoodle-fade-in{
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -96,85 +77,29 @@ body#page-site-index #page-header h1 {
     transform: translateY(0);
   }
 }
+:root[data-mymoodle-enabled="true"] body.path-my #page, :root[data-mymoodle-enabled="true"] body.path-site #page, :root[data-mymoodle-enabled="true"] body#page-site-index #page, :root[data-mymoodle-enabled="true"] body.path-my #page-wrapper, :root[data-mymoodle-enabled="true"] body.path-site #page-wrapper, :root[data-mymoodle-enabled="true"] body#page-site-index #page-wrapper, :root[data-mymoodle-enabled="true"] body.path-my #page-content, :root[data-mymoodle-enabled="true"] body.path-site #page-content, :root[data-mymoodle-enabled="true"] body#page-site-index #page-content, :root[data-mymoodle-enabled="true"] body.path-my #region-main-box, :root[data-mymoodle-enabled="true"] body.path-site #region-main-box, :root[data-mymoodle-enabled="true"] body#page-site-index #region-main-box, :root[data-mymoodle-enabled="true"] body.path-my #region-main, :root[data-mymoodle-enabled="true"] body.path-site #region-main, :root[data-mymoodle-enabled="true"] body#page-site-index #region-main, :root[data-mymoodle-enabled="true"] body.path-my .region-main-content, :root[data-mymoodle-enabled="true"] body.path-site .region-main-content, :root[data-mymoodle-enabled="true"] body#page-site-index .region-main-content, :root[data-mymoodle-enabled="true"] body.path-my .region_main_settings_menu_proxy, :root[data-mymoodle-enabled="true"] body.path-site .region_main_settings_menu_proxy, :root[data-mymoodle-enabled="true"] body#page-site-index .region_main_settings_menu_proxy, :root[data-mymoodle-enabled="true"] body.path-my [data-region="blocks-column"], :root[data-mymoodle-enabled="true"] body.path-site [data-region="blocks-column"], :root[data-mymoodle-enabled="true"] body#page-site-index [data-region="blocks-column"], :root[data-mymoodle-enabled="true"] body.path-my .container, :root[data-mymoodle-enabled="true"] body.path-site .container, :root[data-mymoodle-enabled="true"] body#page-site-index .container, :root[data-mymoodle-enabled="true"] body.path-my .container-fluid, :root[data-mymoodle-enabled="true"] body.path-site .container-fluid, :root[data-mymoodle-enabled="true"] body#page-site-index .container-fluid, :root[data-mymoodle-enabled="true"] body.path-my .course-content, :root[data-mymoodle-enabled="true"] body.path-site .course-content, :root[data-mymoodle-enabled="true"] body#page-site-index .course-content, :root[data-mymoodle-enabled="true"] body.path-my div[role="main"], :root[data-mymoodle-enabled="true"] body.path-site div[role="main"], :root[data-mymoodle-enabled="true"] body#page-site-index div[role="main"], :root[data-mymoodle-enabled="true"] body.path-my #learnrpage, :root[data-mymoodle-enabled="true"] body.path-site #learnrpage, :root[data-mymoodle-enabled="true"] body#page-site-index #learnrpage, :root[data-mymoodle-enabled="true"] body.path-my .contentwrapper, :root[data-mymoodle-enabled="true"] body.path-site .contentwrapper, :root[data-mymoodle-enabled="true"] body#page-site-index .contentwrapper {
 
-/* Strip background and borders from the #page container on dashboard and site home to make hero borderless */
-body.path-my #page,
-body.path-site #page,
-body#page-site-index #page,
-body.path-my #page-wrapper,
-body.path-site #page-wrapper,
-body#page-site-index #page-wrapper,
-body.path-my #page-content,
-body.path-site #page-content,
-body#page-site-index #page-content,
-body.path-my #region-main-box,
-body.path-site #region-main-box,
-body#page-site-index #region-main-box,
-body.path-my #region-main,
-body.path-site #region-main,
-body#page-site-index #region-main,
-body.path-my .region-main-content,
-body.path-site .region-main-content,
-body#page-site-index .region-main-content,
-body.path-my .region_main_settings_menu_proxy,
-body.path-site .region_main_settings_menu_proxy,
-body#page-site-index .region_main_settings_menu_proxy,
-body.path-my [data-region="blocks-column"],
-body.path-site [data-region="blocks-column"],
-body#page-site-index [data-region="blocks-column"],
-body.path-my .container,
-body.path-site .container,
-body#page-site-index .container,
-body.path-my .container-fluid,
-body.path-site .container-fluid,
-body#page-site-index .container-fluid,
-body.path-my .course-content,
-body.path-site .course-content,
-body#page-site-index .course-content,
-body.path-my div[role="main"],
-body.path-site div[role="main"],
-body#page-site-index div[role="main"],
-body.path-my #learnrpage,
-body.path-site #learnrpage,
-body#page-site-index #learnrpage,
-body.path-my .contentwrapper,
-body.path-site .contentwrapper,
-body#page-site-index .contentwrapper {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
-}
 
-body.path-my #region-main > .card,
-body.path-site #region-main > .card,
-body#page-site-index #region-main > .card,
-body.path-my #region-main > .card > .card-body,
-body.path-site #region-main > .card > .card-body,
-body#page-site-index #region-main > .card > .card-body,
-body.path-my .region-main-content > .card,
-body.path-site .region-main-content > .card,
-body#page-site-index .region-main-content > .card,
-body.path-my .region-main-content > .card > .card-body,
-body.path-site .region-main-content > .card > .card-body,
-body#page-site-index .region-main-content > .card > .card-body {
+}
+:root[data-mymoodle-enabled="true"] body.path-my #region-main > .card, :root[data-mymoodle-enabled="true"] body.path-site #region-main > .card, :root[data-mymoodle-enabled="true"] body#page-site-index #region-main > .card, :root[data-mymoodle-enabled="true"] body.path-my #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] body.path-site #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] body#page-site-index #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] body.path-my .region-main-content > .card, :root[data-mymoodle-enabled="true"] body.path-site .region-main-content > .card, :root[data-mymoodle-enabled="true"] body#page-site-index .region-main-content > .card, :root[data-mymoodle-enabled="true"] body.path-my .region-main-content > .card > .card-body, :root[data-mymoodle-enabled="true"] body.path-site .region-main-content > .card > .card-body, :root[data-mymoodle-enabled="true"] body#page-site-index .region-main-content > .card > .card-body {
+
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
-}
 
-body {
+}
+:root[data-mymoodle-enabled="true"] body {
+
   background-color: var(--ultra-bg) !important;
-}
 
-/* Wrap each category/block in its own white popup instead of a global wrapper */
-body.path-my .block,
-body.path-site .block,
-body#page-site-index .block,
-body.path-my section[data-block],
-body.path-site section[data-block],
-body#page-site-index section[data-block] {
+}
+:root[data-mymoodle-enabled="true"] body.path-my .block, :root[data-mymoodle-enabled="true"] body.path-site .block, :root[data-mymoodle-enabled="true"] body#page-site-index .block, :root[data-mymoodle-enabled="true"] body.path-my section[data-block], :root[data-mymoodle-enabled="true"] body.path-site section[data-block], :root[data-mymoodle-enabled="true"] body#page-site-index section[data-block] {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 48px !important; /* Pronounced rounded corners to match the header pill shape */
@@ -182,85 +107,38 @@ body#page-site-index section[data-block] {
   box-shadow: var(--ultra-card-shadow) !important;
   margin-bottom: 24px !important;
   box-sizing: border-box !important;
-}
 
-@media (max-width: 768px) {
-  body.path-my .block,
-  body.path-site .block,
-  body#page-site-index .block,
-  body.path-my section[data-block],
-  body.path-site section[data-block],
-  body#page-site-index section[data-block] {
+}@media (max-width: 768px){
+
+:root[data-mymoodle-enabled="true"] body.path-my .block, :root[data-mymoodle-enabled="true"] body.path-site .block, :root[data-mymoodle-enabled="true"] body#page-site-index .block, :root[data-mymoodle-enabled="true"] body.path-my section[data-block], :root[data-mymoodle-enabled="true"] body.path-site section[data-block], :root[data-mymoodle-enabled="true"] body#page-site-index section[data-block] {
+
     border-radius: 24px !important; /* Slightly less round on small devices to fit mobile aesthetic */
-  }
+  
 }
 
-/* Ensure course cards don't have double spacing if they are inside a block */
-body.path-my .block [data-region="course-overview"],
-body.path-site .block [data-region="course-overview"],
-body#page-site-index .block [data-region="course-overview"] {
+}
+:root[data-mymoodle-enabled="true"] body.path-my .block [data-region="course-overview"], :root[data-mymoodle-enabled="true"] body.path-site .block [data-region="course-overview"], :root[data-mymoodle-enabled="true"] body#page-site-index .block [data-region="course-overview"] {
+
   padding: 0 !important;
-}
 
-/* Remove double padding if the block uses Moodle's native .card-body */
-body.path-my .block .card-body,
-body.path-site .block .card-body,
-body#page-site-index .block .card-body {
+}
+:root[data-mymoodle-enabled="true"] body.path-my .block .card-body, :root[data-mymoodle-enabled="true"] body.path-site .block .card-body, :root[data-mymoodle-enabled="true"] body#page-site-index .block .card-body {
+
   padding: 0 !important;
-}
 
-/* Hide native Moodle block headers on Dashboard to prevent layout shift when NOT editing */
-body.path-my:not(.editing) .block [data-region="header"],
-body.path-site:not(.editing) .block [data-region="header"],
-body#page-site-index:not(.editing) .block [data-region="header"],
-body.path-my:not(.editing) section[data-block] [data-region="header"],
-body.path-site:not(.editing) section[data-block] [data-region="header"],
-body#page-site-index:not(.editing) section[data-block] [data-region="header"],
-body.path-my:not(.editing) .block .card-body > h2,
-body.path-site:not(.editing) .block .card-body > h2,
-body#page-site-index:not(.editing) .block .card-body > h2,
-body.path-my:not(.editing) .block .card-body > h3,
-body.path-site:not(.editing) .block .card-body > h3,
-body#page-site-index:not(.editing) .block .card-body > h3,
-body.path-my:not(.editing) .block .card-body > h4,
-body.path-site:not(.editing) .block .card-body > h4,
-body#page-site-index:not(.editing) .block .card-body > h4,
-body.path-my:not(.editing) .block .card-body > h5,
-body.path-site:not(.editing) .block .card-body > h5,
-body#page-site-index:not(.editing) .block .card-body > h5,
-body.path-my:not(.editing) .block .card-body > .card-title,
-body.path-site:not(.editing) .block .card-body > .card-title,
-body#page-site-index:not(.editing) .block .card-body > .card-title,
-body.path-my:not(.editing) .block > h2,
-body.path-site:not(.editing) .block > h2,
-body#page-site-index:not(.editing) .block > h2,
-body.path-my:not(.editing) .block > h3,
-body.path-site:not(.editing) .block > h3,
-body#page-site-index:not(.editing) .block > h3,
-body.path-my:not(.editing) .block > h4,
-body.path-site:not(.editing) .block > h4,
-body#page-site-index:not(.editing) .block > h4,
-body.path-my:not(.editing) .block > h5,
-body.path-site:not(.editing) .block > h5,
-body#page-site-index:not(.editing) .block > h5,
-body.path-my:not(.editing) .block > .card-title,
-body.path-site:not(.editing) .block > .card-title,
-body#page-site-index:not(.editing) .block > .card-title,
-body.path-my:not(.editing) .block .block-controls,
-body.path-site:not(.editing) .block .block-controls,
-body#page-site-index:not(.editing) .block .block-controls {
+}
+:root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block [data-region="header"], :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block [data-region="header"], :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block [data-region="header"], :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) section[data-block] [data-region="header"], :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) section[data-block] [data-region="header"], :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) section[data-block] [data-region="header"], :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .card-body > h2, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .card-body > h2, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .card-body > h2, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .card-body > h3, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .card-body > h3, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .card-body > h3, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .card-body > h4, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .card-body > h4, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .card-body > h4, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .card-body > h5, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .card-body > h5, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .card-body > h5, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .card-body > .card-title, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .card-body > .card-title, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .card-body > .card-title, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block > h2, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block > h2, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block > h2, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block > h3, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block > h3, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block > h3, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block > h4, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block > h4, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block > h4, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block > h5, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block > h5, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block > h5, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block > .card-title, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block > .card-title, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block > .card-title, :root[data-mymoodle-enabled="true"] body.path-my:not(.editing) .block .block-controls, :root[data-mymoodle-enabled="true"] body.path-site:not(.editing) .block .block-controls, :root[data-mymoodle-enabled="true"] body#page-site-index:not(.editing) .block .block-controls {
+
   display: none !important;
-}
 
-/* --- Premium Editing Mode Layout & Drag Handles --- */
-body.editing .block,
-body.editing section[data-block] {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block, :root[data-mymoodle-enabled="true"] body.editing section[data-block] {
+
   position: relative !important;
-}
 
-/* Shift block controls to sit inside the custom blue header, vertically centered and aligned next to the filter button */
-body.editing .block:has(.ultramoodle-block-header) .block-controls,
-body.editing section[data-block]:has(.ultramoodle-block-header) .block-controls {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls, :root[data-mymoodle-enabled="true"] body.editing section[data-block]:has(.ultramoodle-block-header) .block-controls {
+
   display: flex !important;
   position: absolute !important;
   top: 12px !important; /* Shifted up to align perfectly in the vertical center of the capsule */
@@ -273,42 +151,20 @@ body.editing section[data-block]:has(.ultramoodle-block-header) .block-controls 
   gap: 6px !important;
   padding: 0 !important;
   margin: 0 !important; /* Reset native margins */
-}
 
-/* If there is no filter button in the custom header, align controls on the far right */
-body.editing .block:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls,
-body.editing section[data-block]:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls, :root[data-mymoodle-enabled="true"] body.editing section[data-block]:has(.ultramoodle-block-header):not(:has(.ultramoodle-filter-toggle-btn)) .block-controls {
+
   right: 56px !important;
-}
 
-/* Hide screen-reader and native helper text inside drag handles to prevent layout distortion and allow perfect centering */
-body.editing .moodle-core-dragdrop-draghandle span,
-body.editing .drag-handle span,
-body.editing .move span,
-body.editing [data-key="move"] span,
-body.editing [data-action="move"] span,
-body.editing [class*="dragdrop-draghandle"] span,
-body.editing .editing_move span,
-body.editing .dragicon span,
-body.editing .moodle-core-dragdrop-draghandle .accesshide,
-body.editing .drag-handle .accesshide,
-body.editing .move .accesshide,
-body.editing [data-key="move"] .accesshide,
-body.editing [data-action="move"] .accesshide,
-body.editing [class*="dragdrop-draghandle"] .accesshide,
-body.editing .editing_move .accesshide,
-body.editing .dragicon .accesshide {
+}
+:root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle span, :root[data-mymoodle-enabled="true"] body.editing .drag-handle span, :root[data-mymoodle-enabled="true"] body.editing .move span, :root[data-mymoodle-enabled="true"] body.editing [data-key="move"] span, :root[data-mymoodle-enabled="true"] body.editing [data-action="move"] span, :root[data-mymoodle-enabled="true"] body.editing [class*="dragdrop-draghandle"] span, :root[data-mymoodle-enabled="true"] body.editing .editing_move span, :root[data-mymoodle-enabled="true"] body.editing .dragicon span, :root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle .accesshide, :root[data-mymoodle-enabled="true"] body.editing .drag-handle .accesshide, :root[data-mymoodle-enabled="true"] body.editing .move .accesshide, :root[data-mymoodle-enabled="true"] body.editing [data-key="move"] .accesshide, :root[data-mymoodle-enabled="true"] body.editing [data-action="move"] .accesshide, :root[data-mymoodle-enabled="true"] body.editing [class*="dragdrop-draghandle"] .accesshide, :root[data-mymoodle-enabled="true"] body.editing .editing_move .accesshide, :root[data-mymoodle-enabled="true"] body.editing .dragicon .accesshide {
+
   display: none !important;
-}
 
-/* Make buttons inside custom header block controls transparent white to match filter button */
-body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .move,
-body.editing .block:has(.ultramoodle-block-header) .block-controls [data-key="move"],
-body.editing .block:has(.ultramoodle-block-header) .block-controls [class*="dragdrop-draghandle"],
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .move, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls [data-key="move"], :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls [class*="dragdrop-draghandle"], :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle {
+
   background-color: transparent !important;
   border: none !important;
   color: #ffffff !important;
@@ -323,35 +179,30 @@ body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu 
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important; /* Clip any overflowing text nodes */
-}
 
-body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle:hover,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle:hover,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .move:hover,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle:hover,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle:hover {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .drag-handle:hover, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .moodle-core-dragdrop-draghandle:hover, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .move:hover, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .action-menu a.dropdown-toggle:hover {
+
   background-color: rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
   transform: scale(1.05) !important;
-}
 
-/* Force images/icons inside custom header controls to be white */
-body.editing .block:has(.ultramoodle-block-header) .block-controls img,
-body.editing .block:has(.ultramoodle-block-header) .block-controls i,
-body.editing .block:has(.ultramoodle-block-header) .block-controls svg {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls img, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls i, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls svg {
+
   width: 14px !important; /* Reduced from 18px to look proportionally clean inside 30px hover rings */
   height: 14px !important;
   color: #ffffff !important;
   filter: brightness(0) invert(1) !important;
-}
 
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle::after {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-toggle::after {
+
   display: none !important; /* Hide down caret */
-}
 
-/* Standard floating block controls for blocks without custom headers */
-body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls,
-body.editing section[data-block]:not(:has(.ultramoodle-block-header)) .block-controls {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls, :root[data-mymoodle-enabled="true"] body.editing section[data-block]:not(:has(.ultramoodle-block-header)) .block-controls {
+
   display: flex !important;
   position: absolute !important;
   top: 12px !important;
@@ -366,17 +217,10 @@ body.editing section[data-block]:not(:has(.ultramoodle-block-header)) .block-con
   gap: 6px !important;
   height: auto !important;
   width: auto !important;
-}
 
-/* General styling for drag handles (sections, activities, and standard blocks) */
-body.editing .moodle-core-dragdrop-draghandle,
-body.editing .drag-handle,
-body.editing .move,
-body.editing [data-key="move"],
-body.editing [data-action="move"],
-body.editing [class*="dragdrop-draghandle"],
-body.editing .editing_move,
-body.editing .dragicon {
+}
+:root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle, :root[data-mymoodle-enabled="true"] body.editing .drag-handle, :root[data-mymoodle-enabled="true"] body.editing .move, :root[data-mymoodle-enabled="true"] body.editing [data-key="move"], :root[data-mymoodle-enabled="true"] body.editing [data-action="move"], :root[data-mymoodle-enabled="true"] body.editing [class*="dragdrop-draghandle"], :root[data-mymoodle-enabled="true"] body.editing .editing_move, :root[data-mymoodle-enabled="true"] body.editing .dragicon {
+
   display: inline-flex !important;
   cursor: move !important;
   align-items: center !important;
@@ -393,13 +237,10 @@ body.editing .dragicon {
   padding: 0 !important;
   text-decoration: none !important;
   overflow: hidden !important; /* Prevent text stretch */
-}
 
-/* Accessibility reordering arrow buttons styling */
-body.editing .moveup,
-body.editing .movedown,
-body.editing [data-action="moveup"],
-body.editing [data-action="movedown"] {
+}
+:root[data-mymoodle-enabled="true"] body.editing .moveup, :root[data-mymoodle-enabled="true"] body.editing .movedown, :root[data-mymoodle-enabled="true"] body.editing [data-action="moveup"], :root[data-mymoodle-enabled="true"] body.editing [data-action="movedown"] {
+
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -413,76 +254,42 @@ body.editing [data-action="movedown"] {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
   margin: 0 4px !important;
   padding: 0 !important;
-}
 
-body.editing .moodle-core-dragdrop-draghandle:hover,
-body.editing .drag-handle:hover,
-body.editing .move:hover,
-body.editing [data-action="move"]:hover,
-body.editing .editing_move:hover,
-body.editing .dragicon:hover,
-body.editing .moveup:hover,
-body.editing .movedown:hover {
+}
+:root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle:hover, :root[data-mymoodle-enabled="true"] body.editing .drag-handle:hover, :root[data-mymoodle-enabled="true"] body.editing .move:hover, :root[data-mymoodle-enabled="true"] body.editing [data-action="move"]:hover, :root[data-mymoodle-enabled="true"] body.editing .editing_move:hover, :root[data-mymoodle-enabled="true"] body.editing .dragicon:hover, :root[data-mymoodle-enabled="true"] body.editing .moveup:hover, :root[data-mymoodle-enabled="true"] body.editing .movedown:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-text-sub) !important;
   transform: scale(1.05) !important;
   color: var(--ultra-text-main) !important;
-}
 
-body.editing .moodle-core-dragdrop-draghandle img,
-body.editing .drag-handle img,
-body.editing .move img,
-body.editing [data-action="move"] img,
-body.editing .editing_move img,
-body.editing .dragicon img,
-body.editing .moodle-core-dragdrop-draghandle i,
-body.editing .drag-handle i,
-body.editing .move i,
-body.editing [data-action="move"] i,
-body.editing .editing_move i,
-body.editing .dragicon i,
-body.editing .moveup i,
-body.editing .movedown i,
-body.editing .moodle-core-dragdrop-draghandle svg,
-body.editing .drag-handle svg {
+}
+:root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle img, :root[data-mymoodle-enabled="true"] body.editing .drag-handle img, :root[data-mymoodle-enabled="true"] body.editing .move img, :root[data-mymoodle-enabled="true"] body.editing [data-action="move"] img, :root[data-mymoodle-enabled="true"] body.editing .editing_move img, :root[data-mymoodle-enabled="true"] body.editing .dragicon img, :root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle i, :root[data-mymoodle-enabled="true"] body.editing .drag-handle i, :root[data-mymoodle-enabled="true"] body.editing .move i, :root[data-mymoodle-enabled="true"] body.editing [data-action="move"] i, :root[data-mymoodle-enabled="true"] body.editing .editing_move i, :root[data-mymoodle-enabled="true"] body.editing .dragicon i, :root[data-mymoodle-enabled="true"] body.editing .moveup i, :root[data-mymoodle-enabled="true"] body.editing .movedown i, :root[data-mymoodle-enabled="true"] body.editing .moodle-core-dragdrop-draghandle svg, :root[data-mymoodle-enabled="true"] body.editing .drag-handle svg {
+
   width: 14px !important;
   height: 14px !important;
   margin: 0 !important;
   padding: 0 !important;
   color: var(--ultra-text-main) !important;
   filter: brightness(var(--ultra-icon-brightness, 1)) !important;
-}
 
-/* Adjustments for Course Index sidebar items */
-body.editing .course-index .drag-handle,
-body.editing .course-index-item .drag-handle,
-body.editing .course-index [data-action="move"],
-body.editing .course-index-item [data-action="move"] {
+}
+:root[data-mymoodle-enabled="true"] body.editing .course-index .drag-handle, :root[data-mymoodle-enabled="true"] body.editing .course-index-item .drag-handle, :root[data-mymoodle-enabled="true"] body.editing .course-index [data-action="move"], :root[data-mymoodle-enabled="true"] body.editing .course-index-item [data-action="move"] {
+
   width: 24px !important;
   height: 24px !important;
   margin-right: 4px !important;
   border-radius: 6px !important;
-}
 
-body.editing .course-index .drag-handle img,
-body.editing .course-index-item .drag-handle img,
-body.editing .course-index [data-action="move"] img,
-body.editing .course-index-item [data-action="move"] img {
+}
+:root[data-mymoodle-enabled="true"] body.editing .course-index .drag-handle img, :root[data-mymoodle-enabled="true"] body.editing .course-index-item .drag-handle img, :root[data-mymoodle-enabled="true"] body.editing .course-index [data-action="move"] img, :root[data-mymoodle-enabled="true"] body.editing .course-index-item [data-action="move"] img {
+
   width: 12px !important;
   height: 12px !important;
-}
 
-/* General styling for cogs/dropdown menus on sections and activities (outside custom headers) */
-body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle,
-body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle,
-body.editing .activity-actions .dropdown-toggle,
-body.editing .activity-actions .action-menu a.dropdown-toggle,
-body.editing .section-actions .dropdown-toggle,
-body.editing .section-actions .action-menu a.dropdown-toggle,
-body.editing .activity-item .dropdown-toggle,
-body.editing .activity-item .action-menu a.dropdown-toggle,
-body.editing .section-item .dropdown-toggle,
-body.editing .section-item .action-menu a.dropdown-toggle {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .activity-actions .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .activity-actions .action-menu a.dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .section-actions .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .section-actions .action-menu a.dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .activity-item .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .activity-item .action-menu a.dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .section-item .dropdown-toggle, :root[data-mymoodle-enabled="true"] body.editing .section-item .action-menu a.dropdown-toggle {
+
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -496,33 +303,23 @@ body.editing .section-item .action-menu a.dropdown-toggle {
   transition: background-color 0.2s, border-color 0.2s !important;
   margin: 0 4px !important;
   padding: 0 !important;
-}
 
-body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle:hover,
-body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle:hover,
-body.editing .activity-actions .dropdown-toggle:hover,
-body.editing .activity-actions .action-menu a.dropdown-toggle:hover,
-body.editing .section-actions .dropdown-toggle:hover,
-body.editing .section-actions .action-menu a.dropdown-toggle:hover,
-body.editing .activity-item .dropdown-toggle:hover,
-body.editing .activity-item .action-menu a.dropdown-toggle:hover,
-body.editing .section-item .dropdown-toggle:hover,
-body.editing .section-item .action-menu a.dropdown-toggle:hover {
+}
+:root[data-mymoodle-enabled="true"] body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .block:not(:has(.ultramoodle-block-header)) .block-controls .action-menu a.dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .activity-actions .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .activity-actions .action-menu a.dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .section-actions .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .section-actions .action-menu a.dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .activity-item .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .activity-item .action-menu a.dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .section-item .dropdown-toggle:hover, :root[data-mymoodle-enabled="true"] body.editing .section-item .action-menu a.dropdown-toggle:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-border) !important;
-}
 
-/* Custom premium style for "Add an activity or resource" button */
-body.editing .section-modchooser,
-body.editing .activity-add {
+}
+:root[data-mymoodle-enabled="true"] body.editing .section-modchooser, :root[data-mymoodle-enabled="true"] body.editing .activity-add {
+
   margin: 16px auto !important;
   display: flex !important;
   justify-content: center !important;
-}
 
-body.editing .section-modchooser-link,
-body.editing button.section-modchooser-link,
-body.editing .activity-add-btn {
+}
+:root[data-mymoodle-enabled="true"] body.editing .section-modchooser-link, :root[data-mymoodle-enabled="true"] body.editing button.section-modchooser-link, :root[data-mymoodle-enabled="true"] body.editing .activity-add-btn {
+
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -539,134 +336,97 @@ body.editing .activity-add-btn {
   transition: all 0.2s ease !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
   text-decoration: none !important;
-}
 
-body.editing .section-modchooser-link:hover,
-body.editing button.section-modchooser-link:hover,
-body.editing .activity-add-btn:hover {
+}
+:root[data-mymoodle-enabled="true"] body.editing .section-modchooser-link:hover, :root[data-mymoodle-enabled="true"] body.editing button.section-modchooser-link:hover, :root[data-mymoodle-enabled="true"] body.editing .activity-add-btn:hover {
+
   background-color: #143361 !important; /* Efrei Deep Blue on hover */
   border-color: #143361 !important;
   color: #ffffff !important;
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(20, 51, 97, 0.2) !important;
   text-decoration: none !important;
-}
 
-body.editing .section-modchooser-link .plusicon,
-body.editing .section-modchooser-link i {
+}
+:root[data-mymoodle-enabled="true"] body.editing .section-modchooser-link .plusicon, :root[data-mymoodle-enabled="true"] body.editing .section-modchooser-link i {
+
   font-size: 14px !important;
   margin: 0 !important;
-}
 
-/* Hide Footer toggle class if enabled in settings */
-.ultramoodle-hide-footer #page-footer,
-.ultramoodle-hide-footer footer,
-.ultramoodle-hide-footer .footer {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-hide-footer #page-footer, :root[data-mymoodle-enabled="true"] .ultramoodle-hide-footer footer, :root[data-mymoodle-enabled="true"] .ultramoodle-hide-footer .footer {
+
   display: none !important;
-}
 
-/* Hide native/custom floating scroll buttons to avoid redundancy with the centered pill button */
-.scroll-down,
-.scroll-down-btn,
-.scroll-to-bottom,
-.scroll-bottom,
-.goto-bottom,
-.go-to-bottom,
-.scroll-down-arrow,
-.scroll-to-bottom-btn,
-#scroll-down,
-#scroll-to-bottom,
-#scroll-bottom,
-#goto-bottom,
-#go-to-bottom,
-.back-to-top,
-#back-to-top,
-.scroll-to-top,
-#scroll-to-top,
-.gototop,
-#gototop,
-.tool-back-to-top,
-.scroll-top,
-#scroll-top {
+}
+:root[data-mymoodle-enabled="true"] .scroll-down, :root[data-mymoodle-enabled="true"] .scroll-down-btn, :root[data-mymoodle-enabled="true"] .scroll-to-bottom, :root[data-mymoodle-enabled="true"] .scroll-bottom, :root[data-mymoodle-enabled="true"] .goto-bottom, :root[data-mymoodle-enabled="true"] .go-to-bottom, :root[data-mymoodle-enabled="true"] .scroll-down-arrow, :root[data-mymoodle-enabled="true"] .scroll-to-bottom-btn, :root[data-mymoodle-enabled="true"] #scroll-down, :root[data-mymoodle-enabled="true"] #scroll-to-bottom, :root[data-mymoodle-enabled="true"] #scroll-bottom, :root[data-mymoodle-enabled="true"] #goto-bottom, :root[data-mymoodle-enabled="true"] #go-to-bottom, :root[data-mymoodle-enabled="true"] .back-to-top, :root[data-mymoodle-enabled="true"] #back-to-top, :root[data-mymoodle-enabled="true"] .scroll-to-top, :root[data-mymoodle-enabled="true"] #scroll-to-top, :root[data-mymoodle-enabled="true"] .gototop, :root[data-mymoodle-enabled="true"] #gototop, :root[data-mymoodle-enabled="true"] .tool-back-to-top, :root[data-mymoodle-enabled="true"] .scroll-top, :root[data-mymoodle-enabled="true"] #scroll-top {
+
   display: none !important;
-}
 
-/* --- Premium Modals & Dialogues (Moodle/Bootstrap/YUI) --- */
-.modal,
-.modal-dialog,
-.modal-content,
-.moodle-dialogue,
-.moodle-dialogue-wrap,
-.moodle-dialogue-content {
+}
+:root[data-mymoodle-enabled="true"] .modal, :root[data-mymoodle-enabled="true"] .modal-dialog, :root[data-mymoodle-enabled="true"] .modal-content, :root[data-mymoodle-enabled="true"] .moodle-dialogue, :root[data-mymoodle-enabled="true"] .moodle-dialogue-wrap, :root[data-mymoodle-enabled="true"] .moodle-dialogue-content {
+
   outline: none !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
-}
 
-.modal:focus,
-.modal-dialog:focus,
-.modal-content:focus,
-.moodle-dialogue:focus,
-.moodle-dialogue-wrap:focus,
-.moodle-dialogue-content:focus {
+}
+:root[data-mymoodle-enabled="true"] .modal:focus, :root[data-mymoodle-enabled="true"] .modal-dialog:focus, :root[data-mymoodle-enabled="true"] .modal-content:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue-wrap:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue-content:focus {
+
   outline: none !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
-}
 
-.modal-content,
-.moodle-dialogue-wrap,
-.moodle-dialogue-content {
+}
+:root[data-mymoodle-enabled="true"] .modal-content, :root[data-mymoodle-enabled="true"] .moodle-dialogue-wrap, :root[data-mymoodle-enabled="true"] .moodle-dialogue-content {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 24px !important;
   color: var(--ultra-text-main) !important;
   overflow: hidden !important;
-}
 
-:root.ultramoodle-dark .modal-content,
-:root.ultramoodle-dark .moodle-dialogue-wrap,
-:root.ultramoodle-dark .moodle-dialogue-content {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-content, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-wrap, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-content {
+
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
-}
 
-.modal-header,
-.moodle-dialogue-hd {
+}
+:root[data-mymoodle-enabled="true"] .modal-header, :root[data-mymoodle-enabled="true"] .moodle-dialogue-hd {
+
   background-color: var(--ultra-surface) !important;
   border-bottom: 1px solid var(--ultra-border) !important;
   padding: 16px 24px !important;
   color: var(--ultra-text-main) !important;
-}
 
-.modal-title,
-.moodle-dialogue-hd h3 {
+}
+:root[data-mymoodle-enabled="true"] .modal-title, :root[data-mymoodle-enabled="true"] .moodle-dialogue-hd h3 {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 18px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
-}
 
-.modal-body,
-.moodle-dialogue-bd {
+}
+:root[data-mymoodle-enabled="true"] .modal-body, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd {
+
   padding: 24px !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 14px !important;
   color: var(--ultra-text-main) !important;
   line-height: 1.5 !important;
-}
 
-.modal-footer,
-.moodle-dialogue-ft {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft {
+
   background-color: var(--ultra-surface-hover) !important;
   border-top: 1px solid var(--ultra-border) !important;
   padding: 16px 24px !important;
   display: flex !important;
   justify-content: flex-end !important;
   gap: 12px !important;
-}
 
-/* Close buttons styling */
-.modal-header .close,
-.moodle-dialogue-hd .closebutton,
-.moodle-dialogue-hd .close {
+}
+:root[data-mymoodle-enabled="true"] .modal-header .close, :root[data-mymoodle-enabled="true"] .moodle-dialogue-hd .closebutton, :root[data-mymoodle-enabled="true"] .moodle-dialogue-hd .close {
+
   background-color: var(--ultra-surface-hover) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 12px !important;
@@ -682,21 +442,16 @@ body.editing .section-modchooser-link i {
   cursor: pointer !important;
   font-size: 18px !important;
   transition: background-color 0.2s, border-color 0.2s !important;
-}
 
-.modal-header .close:hover,
-.moodle-dialogue-hd .closebutton:hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-header .close:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-hd .closebutton:hover {
+
   background-color: var(--ultra-border) !important;
   border-color: var(--ultra-text-sub) !important;
-}
 
-/* --- Premium Modal Footer Buttons --- */
-.modal-footer .btn,
-.moodle-dialogue-ft .btn,
-.modal-footer input[type="button"],
-.moodle-dialogue-ft input[type="button"],
-.modal-footer input[type="submit"],
-.moodle-dialogue-ft input[type="submit"] {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn, :root[data-mymoodle-enabled="true"] .modal-footer input[type="button"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft input[type="button"], :root[data-mymoodle-enabled="true"] .modal-footer input[type="submit"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft input[type="submit"] {
+
   border-radius: 9999px !important; /* Full pill shape */
   padding: 8px 24px !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
@@ -712,76 +467,56 @@ body.editing .section-modchooser-link i {
   text-decoration: none !important;
   height: auto !important;
   margin: 0 !important;
-}
 
-/* Secondary Button (Cancel / Secondary) */
-.modal-footer .btn-secondary,
-.moodle-dialogue-ft .btn-secondary,
-.modal-footer [data-action="cancel"],
-.moodle-dialogue-ft [data-action="cancel"],
-.modal-footer input[type="button"] {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-secondary, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-secondary, :root[data-mymoodle-enabled="true"] .modal-footer [data-action="cancel"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft [data-action="cancel"], :root[data-mymoodle-enabled="true"] .modal-footer input[type="button"] {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   color: var(--ultra-text-main) !important;
-}
 
-.modal-footer .btn-secondary:hover,
-.moodle-dialogue-ft .btn-secondary:hover,
-.modal-footer [data-action="cancel"]:hover,
-.moodle-dialogue-ft [data-action="cancel"]:hover,
-.modal-footer input[type="button"]:hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-secondary:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-secondary:hover, :root[data-mymoodle-enabled="true"] .modal-footer [data-action="cancel"]:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft [data-action="cancel"]:hover, :root[data-mymoodle-enabled="true"] .modal-footer input[type="button"]:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-text-sub) !important;
-}
 
-/* Primary Button (Confirm / Primary) */
-.modal-footer .btn-primary,
-.moodle-dialogue-ft .btn-primary,
-.modal-footer [data-action="accept"],
-.moodle-dialogue-ft [data-action="accept"],
-.modal-footer input[type="submit"] {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-primary, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-primary, :root[data-mymoodle-enabled="true"] .modal-footer [data-action="accept"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft [data-action="accept"], :root[data-mymoodle-enabled="true"] .modal-footer input[type="submit"] {
+
   background-color: #143361 !important; /* Efrei Deep Blue */
   border: 1px solid #143361 !important;
   color: #ffffff !important;
-}
 
-.modal-footer .btn-primary:hover,
-.moodle-dialogue-ft .btn-primary:hover,
-.modal-footer [data-action="accept"]:hover,
-.moodle-dialogue-ft [data-action="accept"]:hover,
-.modal-footer input[type="submit"]:hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-primary:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-primary:hover, :root[data-mymoodle-enabled="true"] .modal-footer [data-action="accept"]:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft [data-action="accept"]:hover, :root[data-mymoodle-enabled="true"] .modal-footer input[type="submit"]:hover {
+
   background-color: #1a427c !important; /* Slightly lighter Efrei Blue on hover */
   border-color: #1a427c !important;
   box-shadow: 0 4px 12px rgba(20, 51, 97, 0.25) !important;
-}
 
-/* Danger Button (e.g. Delete/Remove Block) */
-.modal-footer .btn-danger,
-.moodle-dialogue-ft .btn-danger,
-.modal-footer .btn-outline-danger {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-danger, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-danger, :root[data-mymoodle-enabled="true"] .modal-footer .btn-outline-danger {
+
   background-color: #ef4444 !important; /* Premium red */
   border: 1px solid #ef4444 !important;
   color: #ffffff !important;
-}
 
-.modal-footer .btn-danger:hover,
-.moodle-dialogue-ft .btn-danger:hover,
-.modal-footer .btn-outline-danger:hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-footer .btn-danger:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-ft .btn-danger:hover, :root[data-mymoodle-enabled="true"] .modal-footer .btn-outline-danger:hover {
+
   background-color: #dc2626 !important;
   border-color: #dc2626 !important;
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
-}
 
-/* Standard Moodle exception/notification modal styling overrides */
-.moodle-exception-title {
+}
+:root[data-mymoodle-enabled="true"] .moodle-exception-title {
+
   color: #ef4444 !important; /* Red color for exceptions/errors title */
-}
 
-/* --- Premium Dropdown Menus (Action Menu / Settings Menu) --- */
-.dropdown-menu,
-.action-menu .dropdown-menu,
-.block-controls .dropdown-menu,
-.moodle-actionmenu[data-owner] .menu {
+}
+:root[data-mymoodle-enabled="true"] .dropdown-menu, :root[data-mymoodle-enabled="true"] .action-menu .dropdown-menu, :root[data-mymoodle-enabled="true"] .block-controls .dropdown-menu, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 16px !important; /* Premium rounded corners */
@@ -789,19 +524,15 @@ body.editing .section-modchooser-link i {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
   min-width: 220px !important;
   margin-top: 8px !important;
-}
 
-:root.ultramoodle-dark .dropdown-menu,
-:root.ultramoodle-dark .action-menu .dropdown-menu,
-:root.ultramoodle-dark .block-controls .dropdown-menu {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu, :root[data-mymoodle-enabled="true"].ultramoodle-dark .action-menu .dropdown-menu, :root[data-mymoodle-enabled="true"].ultramoodle-dark .block-controls .dropdown-menu {
+
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
-}
 
-/* Style dropdown item links */
-.dropdown-menu a,
-.dropdown-menu .dropdown-item,
-.moodle-actionmenu[data-owner] .menu a,
-.moodle-actionmenu[data-owner] .menu .menu-action {
+}
+:root[data-mymoodle-enabled="true"] .dropdown-menu a, :root[data-mymoodle-enabled="true"] .dropdown-menu .dropdown-item, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu a, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu .menu-action {
+
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
@@ -813,36 +544,16 @@ body.editing .section-modchooser-link i {
   border-radius: 10px !important; /* Soft corners for list item hover highlight */
   transition: background-color 0.2s, color 0.2s !important;
   text-decoration: none !important;
-}
 
-.dropdown-menu a:hover,
-.dropdown-menu .dropdown-item:hover,
-.dropdown-menu a:active,
-.dropdown-menu .dropdown-item:active,
-.moodle-actionmenu[data-owner] .menu a:hover,
-.moodle-actionmenu[data-owner] .menu .menu-action:hover {
+}
+:root[data-mymoodle-enabled="true"] .dropdown-menu a:hover, :root[data-mymoodle-enabled="true"] .dropdown-menu .dropdown-item:hover, :root[data-mymoodle-enabled="true"] .dropdown-menu a:active, :root[data-mymoodle-enabled="true"] .dropdown-menu .dropdown-item:active, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu a:hover, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu .menu-action:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   color: var(--ultra-text-main) !important;
-}
 
-/* Dropdown menu icons alignment and reset with high specificity to override block controls white-icon filters */
-body .dropdown-menu a img,
-body .dropdown-menu .dropdown-item img,
-body .dropdown-menu a i,
-body .dropdown-menu .dropdown-item i,
-body .dropdown-menu a svg,
-body .dropdown-menu .dropdown-item svg,
-body.editing .block-controls .dropdown-menu img,
-body.editing .block-controls .dropdown-menu i,
-body.editing .block-controls .dropdown-menu svg,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i,
-body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg,
-.moodle-actionmenu[data-owner] .menu a i,
-.moodle-actionmenu[data-owner] .menu a img {
+}
+:root[data-mymoodle-enabled="true"] body .dropdown-menu a img, :root[data-mymoodle-enabled="true"] body .dropdown-menu .dropdown-item img, :root[data-mymoodle-enabled="true"] body .dropdown-menu a i, :root[data-mymoodle-enabled="true"] body .dropdown-menu .dropdown-item i, :root[data-mymoodle-enabled="true"] body .dropdown-menu a svg, :root[data-mymoodle-enabled="true"] body .dropdown-menu .dropdown-item svg, :root[data-mymoodle-enabled="true"] body.editing .block-controls .dropdown-menu img, :root[data-mymoodle-enabled="true"] body.editing .block-controls .dropdown-menu i, :root[data-mymoodle-enabled="true"] body.editing .block-controls .dropdown-menu svg, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i, :root[data-mymoodle-enabled="true"] body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu a i, :root[data-mymoodle-enabled="true"] .moodle-actionmenu[data-owner] .menu a img {
+
   width: 14px !important;
   height: 14px !important;
   color: var(--ultra-text-sub) !important;
@@ -851,45 +562,16 @@ body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-men
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-}
 
-/* Dark mode specific override to invert dropdown icons to light colors */
-:root.ultramoodle-dark .dropdown-menu a img,
-:root.ultramoodle-dark .dropdown-menu .dropdown-item img,
-:root.ultramoodle-dark .dropdown-menu a i,
-:root.ultramoodle-dark .dropdown-menu .dropdown-item i,
-:root.ultramoodle-dark .dropdown-menu a svg,
-:root.ultramoodle-dark .dropdown-menu .dropdown-item svg,
-:root.ultramoodle-dark body.editing .block-controls .dropdown-menu img,
-:root.ultramoodle-dark body.editing .block-controls .dropdown-menu i,
-:root.ultramoodle-dark body.editing .block-controls .dropdown-menu svg,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i,
-:root.ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg,
-:root.ultramoodle-dark .moodle-actionmenu[data-owner] .menu a i,
-:root.ultramoodle-dark .moodle-actionmenu[data-owner] .menu a img {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu a img, :root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu .dropdown-item img, :root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu a i, :root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu .dropdown-item i, :root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu a svg, :root[data-mymoodle-enabled="true"].ultramoodle-dark .dropdown-menu .dropdown-item svg, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block-controls .dropdown-menu img, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block-controls .dropdown-menu i, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block-controls .dropdown-menu svg, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a img, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a i, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu a svg, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item img, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item i, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-menu .dropdown-item svg, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-actionmenu[data-owner] .menu a i, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-actionmenu[data-owner] .menu a img {
+
   filter: brightness(0) invert(1) !important; /* Force white icons in dark mode */
   color: #ffffff !important;
-}
 
-/* --- Premium Forms, Inputs & Selects inside Modals/Dialogues --- */
-.modal-body select,
-.modal-body input[type="text"],
-.modal-body input[type="password"],
-.modal-body input[type="email"],
-.modal-body input[type="number"],
-.modal-body textarea,
-.moodle-dialogue-bd select,
-.moodle-dialogue-bd input[type="text"],
-.moodle-dialogue-bd input[type="password"],
-.moodle-dialogue-bd input[type="email"],
-.moodle-dialogue-bd input[type="number"],
-.moodle-dialogue-bd textarea,
-.form-autocomplete-selection select,
-.form-autocomplete-suggestions {
+}
+:root[data-mymoodle-enabled="true"] .modal-body select, :root[data-mymoodle-enabled="true"] .modal-body input[type="text"], :root[data-mymoodle-enabled="true"] .modal-body input[type="password"], :root[data-mymoodle-enabled="true"] .modal-body input[type="email"], :root[data-mymoodle-enabled="true"] .modal-body input[type="number"], :root[data-mymoodle-enabled="true"] .modal-body textarea, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd select, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input[type="text"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input[type="password"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input[type="email"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input[type="number"], :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd textarea, :root[data-mymoodle-enabled="true"] .form-autocomplete-selection select, :root[data-mymoodle-enabled="true"] .form-autocomplete-suggestions {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 10px !important; /* Premium rounded input box */
@@ -904,37 +586,21 @@ body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-men
   width: 100% !important; /* Ensure uniform size */
   max-width: 450px !important; /* Cap width to align elegantly in grid columns */
   box-sizing: border-box !important;
-}
 
-/* Hover and Focus states for inputs */
-.modal-body select:hover,
-.modal-body input:hover,
-.modal-body textarea:hover,
-.moodle-dialogue-bd select:hover,
-.moodle-dialogue-bd input:hover,
-.moodle-dialogue-bd textarea:hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-body select:hover, :root[data-mymoodle-enabled="true"] .modal-body input:hover, :root[data-mymoodle-enabled="true"] .modal-body textarea:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd select:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd textarea:hover {
+
   border-color: var(--ultra-text-sub) !important;
-}
 
-.modal-body select:focus,
-.modal-body input:focus,
-.modal-body textarea:focus,
-.moodle-dialogue-bd select:focus,
-.moodle-dialogue-bd input:focus,
-.moodle-dialogue-bd textarea:focus {
+}
+:root[data-mymoodle-enabled="true"] .modal-body select:focus, :root[data-mymoodle-enabled="true"] .modal-body input:focus, :root[data-mymoodle-enabled="true"] .modal-body textarea:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd select:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd input:focus, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd textarea:focus {
+
   border-color: #143361 !important; /* Efrei Deep Blue border */
   box-shadow: 0 0 0 3px rgba(20, 51, 97, 0.15) !important; /* Soft premium focus glow */
-}
 
-/* Form section headers (legend/collapsible title) styling */
-.modal-body legend,
-.modal-body .legend,
-.modal-body h3,
-.modal-body h4,
-.moodle-dialogue-bd legend,
-.moodle-dialogue-bd .legend,
-.moodle-dialogue-bd h3,
-.moodle-dialogue-bd h4 {
+}
+:root[data-mymoodle-enabled="true"] .modal-body legend, :root[data-mymoodle-enabled="true"] .modal-body .legend, :root[data-mymoodle-enabled="true"] .modal-body h3, :root[data-mymoodle-enabled="true"] .modal-body h4, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd legend, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .legend, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd h3, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd h4 {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-weight: 700 !important;
   font-size: 16px !important;
@@ -942,28 +608,20 @@ body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-men
   border-bottom: none !important;
   padding: 8px 0 !important;
   margin-bottom: 12px !important;
-}
 
-/* Style labels inside forms (larger, bold titles) */
-.modal-body label,
-.moodle-dialogue-bd label,
-.modal-body .col-form-label,
-.moodle-dialogue-bd .col-form-label,
-.modal-body .form-control-label,
-.moodle-dialogue-bd .form-control-label {
+}
+:root[data-mymoodle-enabled="true"] .modal-body label, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd label, :root[data-mymoodle-enabled="true"] .modal-body .col-form-label, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .col-form-label, :root[data-mymoodle-enabled="true"] .modal-body .form-control-label, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .form-control-label {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-weight: 600 !important; /* Semi-bold look */
   font-size: 15px !important; /* Increased size to look like clear field titles */
   color: var(--ultra-text-main) !important;
   display: inline-block !important;
   margin-bottom: 4px !important;
-}
 
-/* Style help icons inside modal forms to hide native images and show styled "?" text */
-.modal-body .helpicon,
-.moodle-dialogue-bd .helpicon,
-.modal-body a[data-trigger="focus"]:has(.fa-question-circle),
-.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) {
+}
+:root[data-mymoodle-enabled="true"] .modal-body .helpicon, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .helpicon, :root[data-mymoodle-enabled="true"] .modal-body a[data-trigger="focus"]:has(.fa-question-circle), :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) {
+
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -983,132 +641,79 @@ body.editing .block:has(.ultramoodle-block-header) .block-controls .dropdown-men
   vertical-align: middle !important;
   padding: 0 !important;
   box-sizing: border-box !important;
-}
 
-/* Hide native child elements (images or fontawesome icons) inside custom question button */
-.modal-body .helpicon *,
-.moodle-dialogue-bd .helpicon *,
-.modal-body a[data-trigger="focus"]:has(.fa-question-circle) *,
-.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) * {
+}
+:root[data-mymoodle-enabled="true"] .modal-body .helpicon *, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .helpicon *, :root[data-mymoodle-enabled="true"] .modal-body a[data-trigger="focus"]:has(.fa-question-circle) *, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle) * {
+
   display: none !important;
-}
 
-/* Insert clean CSS question mark text */
-.modal-body .helpicon::before,
-.moodle-dialogue-bd .helpicon::before,
-.modal-body a[data-trigger="focus"]:has(.fa-question-circle)::before,
-.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle)::before {
+}
+:root[data-mymoodle-enabled="true"] .modal-body .helpicon::before, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .helpicon::before, :root[data-mymoodle-enabled="true"] .modal-body a[data-trigger="focus"]:has(.fa-question-circle)::before, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle)::before {
+
   content: "?" !important;
   display: inline-flex !important;
-}
 
-.modal-body .helpicon:hover,
-.moodle-dialogue-bd .helpicon:hover,
-.modal-body a[data-trigger="focus"]:has(.fa-question-circle):hover,
-.moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle):hover {
+}
+:root[data-mymoodle-enabled="true"] .modal-body .helpicon:hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd .helpicon:hover, :root[data-mymoodle-enabled="true"] .modal-body a[data-trigger="focus"]:has(.fa-question-circle):hover, :root[data-mymoodle-enabled="true"] .moodle-dialogue-bd a[data-trigger="focus"]:has(.fa-question-circle):hover {
+
   background-color: #143361 !important;
   color: #ffffff !important;
   border-color: #143361 !important;
-}
 
-/* Dark mode overrides for form inputs */
-:root.ultramoodle-dark .modal-body select,
-:root.ultramoodle-dark .modal-body input[type="text"],
-:root.ultramoodle-dark .modal-body input[type="password"],
-:root.ultramoodle-dark .modal-body input[type="email"],
-:root.ultramoodle-dark .modal-body input[type="number"],
-:root.ultramoodle-dark .modal-body textarea,
-:root.ultramoodle-dark .moodle-dialogue-bd select,
-:root.ultramoodle-dark .moodle-dialogue-bd input[type="text"],
-:root.ultramoodle-dark .moodle-dialogue-bd input[type="password"],
-:root.ultramoodle-dark .moodle-dialogue-bd input[type="email"],
-:root.ultramoodle-dark .moodle-dialogue-bd input[type="number"],
-:root.ultramoodle-dark .moodle-dialogue-bd textarea {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body select, :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body input[type="text"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body input[type="password"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body input[type="email"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body input[type="number"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body textarea, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd select, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd input[type="text"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd input[type="password"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd input[type="email"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd input[type="number"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd textarea {
+
   background-color: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-border) !important;
-}
 
-:root.ultramoodle-dark .modal-body .helpicon,
-:root.ultramoodle-dark .moodle-dialogue-bd .helpicon,
-:root.ultramoodle-dark .modal-body a[data-trigger="focus"],
-:root.ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"] {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body .helpicon, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd .helpicon, :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body a[data-trigger="focus"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"] {
+
   background-color: rgba(255, 255, 255, 0.15) !important;
   border-color: rgba(255, 255, 255, 0.25) !important;
   color: #ffffff !important;
-}
 
-:root.ultramoodle-dark .modal-body .helpicon:hover,
-:root.ultramoodle-dark .moodle-dialogue-bd .helpicon:hover,
-:root.ultramoodle-dark .modal-body a[data-trigger="focus"]:hover,
-:root.ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"]:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body .helpicon:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd .helpicon:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .modal-body a[data-trigger="focus"]:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .moodle-dialogue-bd a[data-trigger="focus"]:hover {
+
   background-color: #ffffff !important;
   color: #143361 !important;
   border-color: #ffffff !important;
-}
 
-/* --- Custom Premium File Resource Icons --- */
-img[src*="/f/pdf"] {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/pdf"] {
+
   content: var(--ultra-pdf-icon) !important;
-}
 
-img[src*="/f/document"],
-img[src*="/f/docx"],
-img[src*="/f/doc"],
-img[src*="/f/word"] {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/document"], :root[data-mymoodle-enabled="true"] img[src*="/f/docx"], :root[data-mymoodle-enabled="true"] img[src*="/f/doc"], :root[data-mymoodle-enabled="true"] img[src*="/f/word"] {
+
   content: var(--ultra-word-icon) !important;
-}
 
-img[src*="/f/presentation"],
-img[src*="/f/powerpoint"],
-img[src*="/f/pptx"],
-img[src*="/f/ppt"] {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/presentation"], :root[data-mymoodle-enabled="true"] img[src*="/f/powerpoint"], :root[data-mymoodle-enabled="true"] img[src*="/f/pptx"], :root[data-mymoodle-enabled="true"] img[src*="/f/ppt"] {
+
   content: var(--ultra-powerpoint-icon) !important;
-}
 
-img[src*="/f/spreadsheet"],
-img[src*="/f/excel"],
-img[src*="/f/xlsx"],
-img[src*="/f/xls"] {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/spreadsheet"], :root[data-mymoodle-enabled="true"] img[src*="/f/excel"], :root[data-mymoodle-enabled="true"] img[src*="/f/xlsx"], :root[data-mymoodle-enabled="true"] img[src*="/f/xls"] {
+
   content: var(--ultra-excel-icon) !important;
-}
 
-img[src*="/f/text"],
-img[src*="/f/txt"] {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/text"], :root[data-mymoodle-enabled="true"] img[src*="/f/txt"] {
+
   content: var(--ultra-text-icon) !important;
-}
 
-/* Ensure these icons render cleanly with original aspect ratios and fit nicely */
-img[src*="/f/pdf"],
-img[src*="/f/document"],
-img[src*="/f/docx"],
-img[src*="/f/doc"],
-img[src*="/f/word"],
-img[src*="/f/presentation"],
-img[src*="/f/powerpoint"],
-img[src*="/f/pptx"],
-img[src*="/f/ppt"],
-img[src*="/f/spreadsheet"],
-img[src*="/f/excel"],
-img[src*="/f/xlsx"],
-img[src*="/f/xls"],
-img[src*="/f/text"],
-img[src*="/f/txt"],
-.ultramoodle-custom-icon {
+}
+:root[data-mymoodle-enabled="true"] img[src*="/f/pdf"], :root[data-mymoodle-enabled="true"] img[src*="/f/document"], :root[data-mymoodle-enabled="true"] img[src*="/f/docx"], :root[data-mymoodle-enabled="true"] img[src*="/f/doc"], :root[data-mymoodle-enabled="true"] img[src*="/f/word"], :root[data-mymoodle-enabled="true"] img[src*="/f/presentation"], :root[data-mymoodle-enabled="true"] img[src*="/f/powerpoint"], :root[data-mymoodle-enabled="true"] img[src*="/f/pptx"], :root[data-mymoodle-enabled="true"] img[src*="/f/ppt"], :root[data-mymoodle-enabled="true"] img[src*="/f/spreadsheet"], :root[data-mymoodle-enabled="true"] img[src*="/f/excel"], :root[data-mymoodle-enabled="true"] img[src*="/f/xlsx"], :root[data-mymoodle-enabled="true"] img[src*="/f/xls"], :root[data-mymoodle-enabled="true"] img[src*="/f/text"], :root[data-mymoodle-enabled="true"] img[src*="/f/txt"], :root[data-mymoodle-enabled="true"] .ultramoodle-custom-icon {
+
   object-fit: contain !important;
   filter: none !important; /* Reset Moodle native image filters (e.g. invert) */
-}
 
-/* Premium background/border styling for custom icon containers on course pages */
-body#page-course-view #region-main .activityiconcontainer.resource.ultramoodle-custom-icon-container,
-body#page-course-view #region-main .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
-body #page-content .activityiconcontainer.resource.ultramoodle-custom-icon-container,
-body #page-content .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
-body .activityiconcontainer.resource.ultramoodle-custom-icon-container,
-body .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
-.activityiconcontainer.resource.ultramoodle-custom-icon-container,
-.activityiconcontainer.quiz.ultramoodle-custom-icon-container,
-.activityiconcontainer.ultramoodle-custom-icon-container,
-.activityiconcontainer:has(.ultramoodle-custom-icon) {
+}
+:root[data-mymoodle-enabled="true"] body#page-course-view #region-main .activityiconcontainer.resource.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] body#page-course-view #region-main .activityiconcontainer.quiz.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] body #page-content .activityiconcontainer.resource.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] body #page-content .activityiconcontainer.quiz.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] body .activityiconcontainer.resource.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] body .activityiconcontainer.quiz.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] .activityiconcontainer.resource.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] .activityiconcontainer.quiz.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] .activityiconcontainer.ultramoodle-custom-icon-container, :root[data-mymoodle-enabled="true"] .activityiconcontainer:has(.ultramoodle-custom-icon) {
+
   background: #143361 !important;
   background-image: none !important; /* Wipe out any native background gradients */
   border: 1px solid #143361 !important;
@@ -1118,14 +723,10 @@ body .activityiconcontainer.quiz.ultramoodle-custom-icon-container,
   justify-content: center !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
   padding: 0 !important;
-}
 
-/* Force premium custom icons to have a consistent uniform size, overriding any native sizing constraints */
-body#page-course-view #region-main .activityiconcontainer .ultramoodle-custom-icon,
-body #page-content .activityiconcontainer .ultramoodle-custom-icon,
-body .activityiconcontainer .ultramoodle-custom-icon,
-.activityiconcontainer.ultramoodle-custom-icon-container .ultramoodle-custom-icon,
-.activityiconcontainer:has(.ultramoodle-custom-icon) .ultramoodle-custom-icon {
+}
+:root[data-mymoodle-enabled="true"] body#page-course-view #region-main .activityiconcontainer .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] body #page-content .activityiconcontainer .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] body .activityiconcontainer .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] .activityiconcontainer.ultramoodle-custom-icon-container .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] .activityiconcontainer:has(.ultramoodle-custom-icon) .ultramoodle-custom-icon {
+
   width: 28px !important;
   height: 28px !important;
   max-width: 28px !important;
@@ -1134,13 +735,10 @@ body .activityiconcontainer .ultramoodle-custom-icon,
   min-height: 28px !important;
   object-fit: contain !important;
   filter: none !important; /* Reset Moodle native image filters (e.g. invert) */
-}
 
-/* Specific compensation for the QCM/Quiz icon due to large built-in white/transparent padding inside qcmIcone.png */
-body#page-course-view #region-main .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
-body #page-content .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
-body .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
-.activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon {
+}
+:root[data-mymoodle-enabled="true"] body#page-course-view #region-main .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] body #page-content .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] body .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon, :root[data-mymoodle-enabled="true"] .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon {
+
   width: 32px !important;
   height: 32px !important;
   max-width: 32px !important;
@@ -1148,54 +746,18 @@ body .activityiconcontainer.ultramoodle-icon-qcm .ultramoodle-custom-icon,
   min-width: 32px !important;
   min-height: 32px !important;
   transform: scale(1.2) !important; /* Scales up the graphic contents to match other document icons */
+
 }
+:root[data-mymoodle-enabled="true"] body.path-user-profile #page, :root[data-mymoodle-enabled="true"] body.path-user-profile #page-wrapper, :root[data-mymoodle-enabled="true"] body.path-user-profile #page-content, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main-box, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main, :root[data-mymoodle-enabled="true"] body.path-user-profile .region-main-content, :root[data-mymoodle-enabled="true"] body.path-user-profile .container, :root[data-mymoodle-enabled="true"] body.path-user-profile .container-fluid, :root[data-mymoodle-enabled="true"] body.path-user-profile div[role="main"], :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main > .card, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] body#page-user-profile #page, :root[data-mymoodle-enabled="true"] body#page-user-profile #page-wrapper, :root[data-mymoodle-enabled="true"] body#page-user-profile #page-content, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main-box, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main, :root[data-mymoodle-enabled="true"] body#page-user-profile .region-main-content, :root[data-mymoodle-enabled="true"] body#page-user-profile .container, :root[data-mymoodle-enabled="true"] body#page-user-profile .container-fluid, :root[data-mymoodle-enabled="true"] body#page-user-profile div[role="main"], :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main > .card, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main > .card > .card-body {
 
-/* ==========================================================================
-   --- User Profile Page Customizations (path-user-profile) ---
-   ========================================================================== */
-
-/* Make body background show on the profile page by stripping outer card styles */
-body.path-user-profile #page,
-body.path-user-profile #page-wrapper,
-body.path-user-profile #page-content,
-body.path-user-profile #region-main-box,
-body.path-user-profile #region-main,
-body.path-user-profile .region-main-content,
-body.path-user-profile .container,
-body.path-user-profile .container-fluid,
-body.path-user-profile div[role="main"],
-body.path-user-profile #region-main > .card,
-body.path-user-profile #region-main > .card > .card-body,
-body#page-user-profile #page,
-body#page-user-profile #page-wrapper,
-body#page-user-profile #page-content,
-body#page-user-profile #region-main-box,
-body#page-user-profile #region-main,
-body#page-user-profile .region-main-content,
-body#page-user-profile .container,
-body#page-user-profile .container-fluid,
-body#page-user-profile div[role="main"],
-body#page-user-profile #region-main > .card,
-body#page-user-profile #region-main > .card > .card-body {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
-}
 
-/* Style profile categories and user header as premium cards */
-body.path-user-profile .profile_category,
-body.path-user-profile section.profile_category,
-body.path-user-profile .userprofile .card,
-body.path-user-profile .user-profile .card,
-body.path-user-profile .userprofile section,
-body.path-user-profile #region-main .row .card,
-body#page-user-profile .profile_category,
-body#page-user-profile section.profile_category,
-body#page-user-profile .userprofile .card,
-body#page-user-profile .user-profile .card,
-body#page-user-profile .userprofile section,
-body#page-user-profile #region-main .row .card {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category, :root[data-mymoodle-enabled="true"] body.path-user-profile section.profile_category, :root[data-mymoodle-enabled="true"] body.path-user-profile .userprofile .card, :root[data-mymoodle-enabled="true"] body.path-user-profile .user-profile .card, :root[data-mymoodle-enabled="true"] body.path-user-profile .userprofile section, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category, :root[data-mymoodle-enabled="true"] body#page-user-profile section.profile_category, :root[data-mymoodle-enabled="true"] body#page-user-profile .userprofile .card, :root[data-mymoodle-enabled="true"] body#page-user-profile .user-profile .card, :root[data-mymoodle-enabled="true"] body#page-user-profile .userprofile section, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 24px !important;
@@ -1204,43 +766,16 @@ body#page-user-profile #region-main .row .card {
   margin-bottom: 24px !important;
   box-sizing: border-box !important;
   transition: transform 0.2s, box-shadow 0.2s !important;
-}
 
-body.path-user-profile .profile_category:hover,
-body.path-user-profile .userprofile .card:hover,
-body.path-user-profile .user-profile .card:hover,
-body.path-user-profile .userprofile section:hover,
-body.path-user-profile #region-main .row .card:hover,
-body#page-user-profile .profile_category:hover,
-body#page-user-profile .userprofile .card:hover,
-body#page-user-profile .user-profile .card:hover,
-body#page-user-profile .userprofile section:hover,
-body#page-user-profile #region-main .row .card:hover {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile .userprofile .card:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile .user-profile .card:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile .userprofile section:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile .userprofile .card:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile .user-profile .card:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile .userprofile section:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card:hover {
+
   transform: translateY(-2px) !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
-}
 
-/* Typography adjustments inside profile cards */
-body.path-user-profile .profile_category h2,
-body.path-user-profile .profile_category h3,
-body.path-user-profile .profile_category h4,
-body.path-user-profile .profile_category h5,
-body.path-user-profile .profile_category .card-title,
-body#page-user-profile .profile_category h2,
-body#page-user-profile .profile_category h3,
-body#page-user-profile .profile_category h4,
-body#page-user-profile .profile_category h5,
-body#page-user-profile .profile_category .card-title,
-body.path-user-profile #region-main .row .card h2,
-body.path-user-profile #region-main .row .card h3,
-body.path-user-profile #region-main .row .card h4,
-body.path-user-profile #region-main .row .card h5,
-body.path-user-profile #region-main .row .card .card-title,
-body#page-user-profile #region-main .row .card h2,
-body#page-user-profile #region-main .row .card h3,
-body#page-user-profile #region-main .row .card h4,
-body#page-user-profile #region-main .row .card h5,
-body#page-user-profile #region-main .row .card .card-title {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category h2, :root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category h3, :root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category h4, :root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category h5, :root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category .card-title, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category h2, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category h3, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category h4, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category h5, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category .card-title, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card h2, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card h3, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card h4, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card h5, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card .card-title, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card h2, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card h3, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card h4, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card h5, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card .card-title {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
@@ -1250,11 +785,10 @@ body#page-user-profile #region-main .row .card .card-title {
   padding-bottom: 10px !important;
   font-size: 1.1rem !important;
   letter-spacing: -0.01em !important;
-}
 
-/* Definition lists layout and visual cleanup */
-body.path-user-profile dl dt,
-body#page-user-profile dl dt {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile dl dt, :root[data-mymoodle-enabled="true"] body#page-user-profile dl dt {
+
   font-size: 11px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -1262,66 +796,52 @@ body#page-user-profile dl dt {
   margin-top: 14px !important;
   margin-bottom: 4px !important;
   letter-spacing: 0.05em !important;
-}
 
-body.path-user-profile dl dd,
-body#page-user-profile dl dd {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile dl dd, :root[data-mymoodle-enabled="true"] body#page-user-profile dl dd {
+
   font-size: 14px !important;
   color: var(--ultra-text-main) !important;
   margin-bottom: 14px !important;
   line-height: 1.5 !important;
-}
 
-/* List group link aesthetics */
-body.path-user-profile .profile_category ul,
-body#page-user-profile .profile_category ul,
-body.path-user-profile #region-main .row .card ul,
-body#page-user-profile #region-main .row .card ul {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category ul, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category ul, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card ul, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card ul {
+
   list-style: none !important;
   padding-left: 0 !important;
   margin: 0 !important;
-}
 
-body.path-user-profile .profile_category li,
-body#page-user-profile .profile_category li,
-body.path-user-profile #region-main .row .card li,
-body#page-user-profile #region-main .row .card li {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category li, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category li, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card li, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card li {
+
   padding: 10px 0 !important;
   border-bottom: 1px dashed var(--ultra-border) !important;
-}
 
-body.path-user-profile .profile_category li:last-child,
-body#page-user-profile .profile_category li:last-child,
-body.path-user-profile #region-main .row .card li:last-child,
-body#page-user-profile #region-main .row .card li:last-child {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category li:last-child, :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category li:last-child, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card li:last-child, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card li:last-child {
+
   border-bottom: none !important;
-}
 
-/* Smooth adaptive link colors matching dark/light design system */
-:root.ultramoodle-light body.path-user-profile #region-main a,
-:root.ultramoodle-light body#page-user-profile #region-main a {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light body.path-user-profile #region-main a, :root[data-mymoodle-enabled="true"].ultramoodle-light body#page-user-profile #region-main a {
+
   color: #2563eb !important; /* Modern readable blue */
-}
-:root.ultramoodle-dark body.path-user-profile #region-main a,
-:root.ultramoodle-dark body#page-user-profile #region-main a {
-  color: #60a5fa !important; /* Bright blue for dark mode */
-}
 
-body.path-user-profile .profile_category a[href*="edit"],
-body#page-user-profile .profile_category a[href*="edit"],
-body.path-user-profile #region-main .row .card a[href*="edit"],
-body#page-user-profile #region-main .row .card a[href*="edit"] {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark body.path-user-profile #region-main a, :root[data-mymoodle-enabled="true"].ultramoodle-dark body#page-user-profile #region-main a {
+
+  color: #60a5fa !important; /* Bright blue for dark mode */
+
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .profile_category a[href*="edit"], :root[data-mymoodle-enabled="true"] body#page-user-profile .profile_category a[href*="edit"], :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .row .card a[href*="edit"], :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .row .card a[href*="edit"] {
+
   font-weight: 600 !important;
   text-decoration: underline !important;
-}
 
-/* Primary actions buttons custom layout (e.g. mobile app QR code trigger) */
-:root.ultramoodle-light body.path-user-profile #region-main .btn-primary,
-:root.ultramoodle-light body.path-user-profile #region-main .btn,
-:root.ultramoodle-light body.path-user-profile #region-main button,
-:root.ultramoodle-light body#page-user-profile #region-main .btn-primary,
-:root.ultramoodle-light body#page-user-profile #region-main .btn,
-:root.ultramoodle-light body#page-user-profile #region-main button {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light body.path-user-profile #region-main .btn-primary, :root[data-mymoodle-enabled="true"].ultramoodle-light body.path-user-profile #region-main .btn, :root[data-mymoodle-enabled="true"].ultramoodle-light body.path-user-profile #region-main button, :root[data-mymoodle-enabled="true"].ultramoodle-light body#page-user-profile #region-main .btn-primary, :root[data-mymoodle-enabled="true"].ultramoodle-light body#page-user-profile #region-main .btn, :root[data-mymoodle-enabled="true"].ultramoodle-light body#page-user-profile #region-main button {
+
   background-color: #143361 !important; /* Deep Efrei Blue */
   color: #ffffff !important;
   border: none !important;
@@ -1336,14 +856,10 @@ body#page-user-profile #region-main .row .card a[href*="edit"] {
   box-shadow: 0 4px 12px rgba(20, 51, 97, 0.15) !important;
   transition: opacity 0.2s, transform 0.1s !important;
   cursor: pointer !important;
-}
 
-:root.ultramoodle-dark body.path-user-profile #region-main .btn-primary,
-:root.ultramoodle-dark body.path-user-profile #region-main .btn,
-:root.ultramoodle-dark body.path-user-profile #region-main button,
-:root.ultramoodle-dark body#page-user-profile #region-main .btn-primary,
-:root.ultramoodle-dark body#page-user-profile #region-main .btn,
-:root.ultramoodle-dark body#page-user-profile #region-main button {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark body.path-user-profile #region-main .btn-primary, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.path-user-profile #region-main .btn, :root[data-mymoodle-enabled="true"].ultramoodle-dark body.path-user-profile #region-main button, :root[data-mymoodle-enabled="true"].ultramoodle-dark body#page-user-profile #region-main .btn-primary, :root[data-mymoodle-enabled="true"].ultramoodle-dark body#page-user-profile #region-main .btn, :root[data-mymoodle-enabled="true"].ultramoodle-dark body#page-user-profile #region-main button {
+
   background-color: #3b82f6 !important; /* Accent Blue */
   color: #ffffff !important;
   border: none !important;
@@ -1358,37 +874,29 @@ body#page-user-profile #region-main .row .card a[href*="edit"] {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
   transition: opacity 0.2s, transform 0.1s !important;
   cursor: pointer !important;
-}
 
-body.path-user-profile #region-main .btn-primary:hover,
-body.path-user-profile #region-main .btn:hover,
-body.path-user-profile #region-main button:hover,
-body#page-user-profile #region-main .btn-primary:hover,
-body#page-user-profile #region-main .btn:hover,
-body#page-user-profile #region-main button:hover {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .btn-primary:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main .btn:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile #region-main button:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .btn-primary:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main .btn:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main button:hover {
+
   opacity: 0.9 !important;
   transform: translateY(-1px) !important;
   text-decoration: none !important;
-}
 
-/* Make profile pictures circular and clean */
-body.path-user-profile .userpicture,
-body#page-user-profile .userpicture {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .userpicture, :root[data-mymoodle-enabled="true"] body#page-user-profile .userpicture {
+
   border-radius: 50% !important;
   border: 3px solid var(--ultra-border) !important;
   box-shadow: var(--ultra-card-shadow) !important;
-}
 
-/* Hide Moodle's native profile header context to avoid duplication with our custom banner */
-body.path-user-profile .page-context-header,
-body#page-user-profile .page-context-header,
-body.path-user-profile #page-header h1,
-body#page-user-profile #page-header h1 {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile .page-context-header, :root[data-mymoodle-enabled="true"] body#page-user-profile .page-context-header, :root[data-mymoodle-enabled="true"] body.path-user-profile #page-header h1, :root[data-mymoodle-enabled="true"] body#page-user-profile #page-header h1 {
+
   display: none !important;
-}
 
-/* Premium Profile Page Banner Layout */
-.ultramoodle-profile-banner {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 32px !important;
@@ -1401,10 +909,10 @@ body#page-user-profile #page-header h1 {
   position: relative !important;
   overflow: hidden !important;
   background-image: linear-gradient(135deg, rgba(20, 51, 97, 0.05) 0%, rgba(59, 130, 246, 0.03) 100%) !important;
-}
 
-/* Graphic circle accent in background */
-.ultramoodle-profile-banner::before {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner::before {
+
   content: '' !important;
   position: absolute !important;
   top: -50% !important;
@@ -1414,14 +922,16 @@ body#page-user-profile #page-header h1 {
   border-radius: 50% !important;
   background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%) !important;
   pointer-events: none !important;
-}
 
-.ultramoodle-profile-banner-avatar-container {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-avatar-container {
+
   flex-shrink: 0 !important;
   z-index: 1 !important;
-}
 
-.ultramoodle-profile-banner-avatar {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-avatar {
+
   width: 100px !important;
   height: 100px !important;
   border-radius: 50% !important;
@@ -1429,9 +939,10 @@ body#page-user-profile #page-header h1 {
   border: 4px solid var(--ultra-border) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
   background-color: #e2e8f0 !important;
-}
 
-.ultramoodle-profile-banner-avatar-initials {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-avatar-initials {
+
   width: 100px !important;
   height: 100px !important;
   border-radius: 50% !important;
@@ -1445,49 +956,50 @@ body#page-user-profile #page-header h1 {
   border: 4px solid #d0e1fd !important;
   box-shadow: 0 8px 20px rgba(20, 51, 97, 0.1) !important;
   text-transform: uppercase !important;
-}
 
-.ultramoodle-profile-banner-info {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-info {
+
   flex-grow: 1 !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
   z-index: 1 !important;
-}
 
-.ultramoodle-profile-banner-name {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-name {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 28px !important;
   font-weight: 800 !important;
   color: var(--ultra-text-main) !important;
   margin: 0 !important;
   letter-spacing: -0.02em !important;
-}
 
-.ultramoodle-profile-banner-email {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-email {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 15px !important;
   color: var(--ultra-text-sub) !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
-}
 
-.ultramoodle-profile-banner-email svg {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-email svg {
+
   opacity: 0.7 !important;
   stroke: var(--ultra-text-sub) !important;
-}
 
-.ultramoodle-profile-banner-actions {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-actions {
+
   z-index: 1 !important;
-}
 
-/* Banner custom edit profile button style - highly specific to override native theme orange styles */
-body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
-body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
-body.path-user-profile a.ultramoodle-profile-banner-edit-btn,
-body#page-user-profile a.ultramoodle-profile-banner-edit-btn,
-.ultramoodle-profile-banner-edit-btn {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] body.path-user-profile a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] body#page-user-profile a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-edit-btn {
+
   background-color: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
   border: 1px solid var(--ultra-border) !important;
@@ -1504,101 +1016,74 @@ body#page-user-profile a.ultramoodle-profile-banner-edit-btn,
   transition: background-color 0.2s, transform 0.1s, border-color 0.2s !important;
   cursor: pointer !important;
   text-decoration: none !important;
-}
 
-body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover,
-body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover,
-body.path-user-profile a.ultramoodle-profile-banner-edit-btn:hover,
-body#page-user-profile a.ultramoodle-profile-banner-edit-btn:hover,
-.ultramoodle-profile-banner-edit-btn:hover {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn:hover, :root[data-mymoodle-enabled="true"] body.path-user-profile a.ultramoodle-profile-banner-edit-btn:hover, :root[data-mymoodle-enabled="true"] body#page-user-profile a.ultramoodle-profile-banner-edit-btn:hover, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-edit-btn:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-text-sub) !important;
   color: var(--ultra-text-main) !important;
   transform: translateY(-1px) !important;
   text-decoration: none !important;
-}
 
-body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg,
-body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg,
-.ultramoodle-profile-banner-edit-btn svg {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn svg, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-edit-btn svg {
+
   stroke: var(--ultra-text-main) !important;
-}
 
-/* Responsive Mobile Layout for Profile Banner */
-@media (max-width: 768px) {
-  .ultramoodle-profile-banner {
+}/* Responsive Mobile Layout for Profile Banner */
+@media (max-width: 768px){
+
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner {
+
     flex-direction: column !important;
     text-align: center !important;
     padding: 30px 20px !important;
     gap: 20px !important;
-  }
   
-  .ultramoodle-profile-banner-info {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-info {
+
     align-items: center !important;
-  }
   
-  body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
-  body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn,
-  .ultramoodle-profile-banner-edit-btn {
+}
+:root[data-mymoodle-enabled="true"] body.path-user-profile #region-main a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] body#page-user-profile #region-main a.ultramoodle-profile-banner-edit-btn, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-banner-edit-btn {
+
     width: 100% !important;
-  }
+  
 }
 
-/* Custom Drawer Toggle button overrides to remove orange */
-:root.ultramoodle-light [data-region="drawer-toggle"],
-:root.ultramoodle-light .drawer-toggle,
-:root.ultramoodle-light [data-action="toggle-drawer"],
-:root.ultramoodle-light .btn-secondary[data-action="toggle-drawer"] {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light [data-region="drawer-toggle"], :root[data-mymoodle-enabled="true"].ultramoodle-light .drawer-toggle, :root[data-mymoodle-enabled="true"].ultramoodle-light [data-action="toggle-drawer"], :root[data-mymoodle-enabled="true"].ultramoodle-light .btn-secondary[data-action="toggle-drawer"] {
+
   background-color: #143361 !important;
   color: #ffffff !important;
   border-color: #143361 !important;
-}
 
-:root.ultramoodle-light [data-region="drawer-toggle"]:hover,
-:root.ultramoodle-light .drawer-toggle:hover,
-:root.ultramoodle-light [data-action="toggle-drawer"]:hover,
-:root.ultramoodle-light .btn-secondary[data-action="toggle-drawer"]:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light [data-region="drawer-toggle"]:hover, :root[data-mymoodle-enabled="true"].ultramoodle-light .drawer-toggle:hover, :root[data-mymoodle-enabled="true"].ultramoodle-light [data-action="toggle-drawer"]:hover, :root[data-mymoodle-enabled="true"].ultramoodle-light .btn-secondary[data-action="toggle-drawer"]:hover {
+
   background-color: #1a427c !important;
   border-color: #1a427c !important;
   color: #ffffff !important;
-}
 
-:root.ultramoodle-dark [data-region="drawer-toggle"],
-:root.ultramoodle-dark .drawer-toggle,
-:root.ultramoodle-dark [data-action="toggle-drawer"],
-:root.ultramoodle-dark .btn-secondary[data-action="toggle-drawer"] {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark [data-region="drawer-toggle"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .drawer-toggle, :root[data-mymoodle-enabled="true"].ultramoodle-dark [data-action="toggle-drawer"], :root[data-mymoodle-enabled="true"].ultramoodle-dark .btn-secondary[data-action="toggle-drawer"] {
+
   background-color: #3b82f6 !important;
   color: #ffffff !important;
   border-color: #3b82f6 !important;
-}
 
-:root.ultramoodle-dark [data-region="drawer-toggle"]:hover,
-:root.ultramoodle-dark .drawer-toggle:hover,
-:root.ultramoodle-dark [data-action="toggle-drawer"]:hover,
-:root.ultramoodle-dark .btn-secondary[data-action="toggle-drawer"]:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark [data-region="drawer-toggle"]:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .drawer-toggle:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark [data-action="toggle-drawer"]:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .btn-secondary[data-action="toggle-drawer"]:hover {
+
   background-color: #2563eb !important;
   border-color: #2563eb !important;
   color: #ffffff !important;
+
 }
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main > .card, :root[data-mymoodle-enabled="true"] #page-course-view #region-main > .card, :root[data-mymoodle-enabled="true"] .path-course-view .region-main-content > .card, :root[data-mymoodle-enabled="true"] #page-course-view .region-main-content > .card, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) .region-main-content > .card, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) #page-content > .card, :root[data-mymoodle-enabled="true"] .path-course-view #learnrpage, :root[data-mymoodle-enabled="true"] #page-course-view #learnrpage, :root[data-mymoodle-enabled="true"] .path-course-view .contentwrapper, :root[data-mymoodle-enabled="true"] #page-course-view .contentwrapper, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) #learnrpage, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) .contentwrapper {
 
-/* ==========================================================================
-   --- Course Page & Standard Moodle Content Cards Overrides ---
-   ========================================================================== */
-
-/* Main content wrapper cards (Turn them dark in dark mode, light in light mode) */
-.path-course-view #region-main > .card,
-#page-course-view #region-main > .card,
-.path-course-view .region-main-content > .card,
-#page-course-view .region-main-content > .card,
-body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card,
-body:not(.path-my):not(.path-site):not(#page-site-index) .region-main-content > .card,
-body:not(.path-my):not(.path-site):not(#page-site-index) #page-content > .card,
-.path-course-view #learnrpage,
-#page-course-view #learnrpage,
-.path-course-view .contentwrapper,
-#page-course-view .contentwrapper,
-body:not(.path-my):not(.path-site):not(#page-site-index) #learnrpage,
-body:not(.path-my):not(.path-site):not(#page-site-index) .contentwrapper {
   background: var(--ultra-surface) !important;
   background-color: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
@@ -1606,150 +1091,110 @@ body:not(.path-my):not(.path-site):not(#page-site-index) .contentwrapper {
   border-radius: 28px !important;
   box-shadow: var(--ultra-card-shadow) !important;
   padding: 32px !important;
-}
 
-/* Force inner card bodies to be transparent to avoid white backgrounds */
-.path-course-view #region-main > .card > .card-body,
-#page-course-view #region-main > .card > .card-body,
-body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card > .card-body {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] #page-course-view #region-main > .card > .card-body, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site):not(#page-site-index) #region-main > .card > .card-body {
+
   background-color: transparent !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-}
 
-/* Specific EFREI/Moodle theme container overrides (like learnrpage inner contents) */
-#learnrpage.contentwrapper,
-.contentwrapper {
+}
+:root[data-mymoodle-enabled="true"] #learnrpage.contentwrapper, :root[data-mymoodle-enabled="true"] .contentwrapper {
+
   color: var(--ultra-text-main) !important;
-}
 
-/* --- Breadcrumb Styling --- */
-.path-course-view .breadcrumb,
-#page-course-view .breadcrumb,
-body:not(.path-my) .breadcrumb {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .breadcrumb, :root[data-mymoodle-enabled="true"] #page-course-view .breadcrumb, :root[data-mymoodle-enabled="true"] body:not(.path-my) .breadcrumb {
+
   background-color: transparent !important;
   background: transparent !important;
   padding: 0 0 16px 0 !important;
   margin-bottom: 16px !important;
-}
 
-.path-course-view .breadcrumb-item a,
-#page-course-view .breadcrumb-item a,
-body:not(.path-my) .breadcrumb-item a {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .breadcrumb-item a, :root[data-mymoodle-enabled="true"] #page-course-view .breadcrumb-item a, :root[data-mymoodle-enabled="true"] body:not(.path-my) .breadcrumb-item a {
+
   color: var(--ultra-text-sub) !important;
-}
 
-.path-course-view .breadcrumb-item.active,
-#page-course-view .breadcrumb-item.active,
-body:not(.path-my) .breadcrumb-item.active {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .breadcrumb-item.active, :root[data-mymoodle-enabled="true"] #page-course-view .breadcrumb-item.active, :root[data-mymoodle-enabled="true"] body:not(.path-my) .breadcrumb-item.active {
+
   color: var(--ultra-text-main) !important;
-}
 
-.path-course-view .breadcrumb-item + .breadcrumb-item::before,
-#page-course-view .breadcrumb-item + .breadcrumb-item::before,
-body:not(.path-my) .breadcrumb-item + .breadcrumb-item::before {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .breadcrumb-item + .breadcrumb-item::before, :root[data-mymoodle-enabled="true"] #page-course-view .breadcrumb-item + .breadcrumb-item::before, :root[data-mymoodle-enabled="true"] body:not(.path-my) .breadcrumb-item + .breadcrumb-item::before {
+
   color: var(--ultra-text-sub) !important;
-}
 
-/* --- Navigation Tabs Styling --- */
-.path-course-view .nav-tabs,
-#page-course-view .nav-tabs,
-body:not(.path-my) .nav-tabs {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .nav-tabs, :root[data-mymoodle-enabled="true"] #page-course-view .nav-tabs, :root[data-mymoodle-enabled="true"] body:not(.path-my) .nav-tabs {
+
   border-bottom: 1px solid var(--ultra-border) !important;
   margin-bottom: 24px !important;
-}
 
-.path-course-view .nav-tabs .nav-link,
-#page-course-view .nav-tabs .nav-link,
-body:not(.path-my) .nav-tabs .nav-link {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .nav-tabs .nav-link, :root[data-mymoodle-enabled="true"] #page-course-view .nav-tabs .nav-link, :root[data-mymoodle-enabled="true"] body:not(.path-my) .nav-tabs .nav-link {
+
   color: var(--ultra-text-sub) !important;
   border: none !important;
   background: transparent !important;
   padding: 10px 16px !important;
   font-weight: 500 !important;
-}
 
-.path-course-view .nav-tabs .nav-link:hover,
-#page-course-view .nav-tabs .nav-link:hover,
-body:not(.path-my) .nav-tabs .nav-link:hover {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .nav-tabs .nav-link:hover, :root[data-mymoodle-enabled="true"] #page-course-view .nav-tabs .nav-link:hover, :root[data-mymoodle-enabled="true"] body:not(.path-my) .nav-tabs .nav-link:hover {
+
   color: var(--ultra-text-main) !important;
-}
 
-.path-course-view .nav-tabs .nav-link.active,
-#page-course-view .nav-tabs .nav-link.active,
-body:not(.path-my) .nav-tabs .nav-link.active {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .nav-tabs .nav-link.active, :root[data-mymoodle-enabled="true"] #page-course-view .nav-tabs .nav-link.active, :root[data-mymoodle-enabled="true"] body:not(.path-my) .nav-tabs .nav-link.active {
+
   color: var(--ultra-text-main) !important;
   border-bottom: 2px solid var(--ultra-accent) !important;
   background: transparent !important;
-}
 
-/* Secondary navigation wrappers & recursive child elements (force transparency on tabs header globally) */
-.secondary-navigation,
-.secondarynavigation,
-.moremenu,
-.secondary-navigation *,
-.secondarynavigation *,
-.moremenu * {
+}
+:root[data-mymoodle-enabled="true"] .secondary-navigation, :root[data-mymoodle-enabled="true"] .secondarynavigation, :root[data-mymoodle-enabled="true"] .moremenu, :root[data-mymoodle-enabled="true"] .secondary-navigation *, :root[data-mymoodle-enabled="true"] .secondarynavigation *, :root[data-mymoodle-enabled="true"] .moremenu * {
+
   background: transparent !important;
   background-color: transparent !important;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   box-shadow: none !important;
-}
 
-/* --- Typography and Header Overrides --- */
-.path-course-view h1, .path-course-view h2, .path-course-view h3, .path-course-view h4, .path-course-view h5, .path-course-view h6,
-#page-course-view h1, #page-course-view #page-header h1, #page-course-view h2, #page-course-view h3, #page-course-view h4, #page-course-view h5, #page-course-view h6,
-body:not(.path-my) h1, body:not(.path-my) h2, body:not(.path-my) h3, body:not(.path-my) h4, body:not(.path-my) h5, body:not(.path-my) h6,
-.path-course-view .sectionname,
-#page-course-view .sectionname,
-.path-course-view .section-title,
-#page-course-view .section-title {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view h1, :root[data-mymoodle-enabled="true"] .path-course-view h2, :root[data-mymoodle-enabled="true"] .path-course-view h3, :root[data-mymoodle-enabled="true"] .path-course-view h4, :root[data-mymoodle-enabled="true"] .path-course-view h5, :root[data-mymoodle-enabled="true"] .path-course-view h6, :root[data-mymoodle-enabled="true"] #page-course-view h1, :root[data-mymoodle-enabled="true"] #page-course-view #page-header h1, :root[data-mymoodle-enabled="true"] #page-course-view h2, :root[data-mymoodle-enabled="true"] #page-course-view h3, :root[data-mymoodle-enabled="true"] #page-course-view h4, :root[data-mymoodle-enabled="true"] #page-course-view h5, :root[data-mymoodle-enabled="true"] #page-course-view h6, :root[data-mymoodle-enabled="true"] body:not(.path-my) h1, :root[data-mymoodle-enabled="true"] body:not(.path-my) h2, :root[data-mymoodle-enabled="true"] body:not(.path-my) h3, :root[data-mymoodle-enabled="true"] body:not(.path-my) h4, :root[data-mymoodle-enabled="true"] body:not(.path-my) h5, :root[data-mymoodle-enabled="true"] body:not(.path-my) h6, :root[data-mymoodle-enabled="true"] .path-course-view .sectionname, :root[data-mymoodle-enabled="true"] #page-course-view .sectionname, :root[data-mymoodle-enabled="true"] .path-course-view .section-title, :root[data-mymoodle-enabled="true"] #page-course-view .section-title {
+
   color: var(--ultra-text-main) !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-}
 
-/* --- Links, activity text and description overrides --- */
-.path-course-view #region-main a,
-#page-course-view #region-main a,
-body:not(.path-my):not(.path-site) #region-main a {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main a, :root[data-mymoodle-enabled="true"] #page-course-view #region-main a, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site) #region-main a {
+
   color: var(--ultra-text-main) !important;
-}
 
-.path-course-view #region-main a:hover,
-#page-course-view #region-main a:hover,
-body:not(.path-my):not(.path-site) #region-main a:hover {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main a:hover, :root[data-mymoodle-enabled="true"] #page-course-view #region-main a:hover, :root[data-mymoodle-enabled="true"] body:not(.path-my):not(.path-site) #region-main a:hover {
+
   color: var(--ultra-accent) !important;
   text-decoration: none !important;
-}
 
-.path-course-view #region-main .instancename,
-#page-course-view #region-main .instancename,
-.path-course-view #region-main .activityname,
-#page-course-view #region-main .activityname {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main .instancename, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .instancename, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .activityname, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .activityname {
+
   color: var(--ultra-text-main) !important;
-}
 
-.path-course-view #region-main .resourcelinkdetails,
-#page-course-view #region-main .resourcelinkdetails,
-.path-course-view #region-main .text-muted,
-#page-course-view #region-main .text-muted,
-.path-course-view #region-main .contentafterlink,
-#page-course-view #region-main .contentafterlink {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main .resourcelinkdetails, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .resourcelinkdetails, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .text-muted, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .text-muted, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .contentafterlink, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .contentafterlink {
+
   color: var(--ultra-text-sub) !important;
-}
 
-/* --- Borders and dividers between activities/sections --- */
-.path-course-view #region-main .section,
-#page-course-view #region-main .section,
-.path-course-view #region-main .activity,
-#page-course-view #region-main .activity,
-.path-course-view #region-main .course-content li.section,
-#page-course-view #region-main .course-content li.section,
-.path-course-view #region-main .course-content li.activity,
-#page-course-view #region-main .course-content li.activity {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main .section, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .section, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .activity, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .activity, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .course-content li.section, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .course-content li.section, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .course-content li.activity, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .course-content li.activity {
+
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
@@ -1757,56 +1202,30 @@ body:not(.path-my):not(.path-site) #region-main a:hover {
   border-color: var(--ultra-border) !important;
   background-color: transparent !important;
   background: transparent !important;
-}
 
-/* Remove any duplicate borders on inner activity item wrappers (causes double lines) */
-.path-course-view #region-main .activity-item,
-#page-course-view #region-main .activity-item,
-.path-course-view #region-main .activityinstance,
-#page-course-view #region-main .activityinstance,
-.path-course-view #region-main .activity-wrapper,
-#page-course-view #region-main .activity-wrapper {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view #region-main .activity-item, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .activity-item, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .activityinstance, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .activityinstance, :root[data-mymoodle-enabled="true"] .path-course-view #region-main .activity-wrapper, :root[data-mymoodle-enabled="true"] #page-course-view #region-main .activity-wrapper {
+
   border: none !important;
   box-shadow: none !important;
-}
 
-/* Collapse/Expand links styling */
-.path-course-view .collapsible-actions .collapseexpand,
-#page-course-view .collapsible-actions .collapseexpand {
+}
+:root[data-mymoodle-enabled="true"] .path-course-view .collapsible-actions .collapseexpand, :root[data-mymoodle-enabled="true"] #page-course-view .collapsible-actions .collapseexpand {
+
   color: var(--ultra-accent) !important;
   font-weight: 500 !important;
+
 }
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .contentafterlink, :root[data-mymoodle-enabled="true"].ultramoodle-dark .activity-description, :root[data-mymoodle-enabled="true"].ultramoodle-dark .description, :root[data-mymoodle-enabled="true"].ultramoodle-dark .mod-indent-outer {
 
-/* --- Alerts, Callouts & Activity Descriptions Dark Mode Overrides (to prevent flashbangs) --- */
-
-/* 1. Reset wrapper containers to be completely transparent so they don't show white backgrounds/borders around content */
-:root.ultramoodle-dark .contentafterlink,
-:root.ultramoodle-dark .activity-description,
-:root.ultramoodle-dark .description,
-:root.ultramoodle-dark .mod-indent-outer {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
-}
 
-/* 2. Turn standard callouts and inner blocks into dark gray boxes */
-:root.ultramoodle-dark .alert,
-:root.ultramoodle-dark .alert-info,
-:root.ultramoodle-dark .alert-warning,
-:root.ultramoodle-dark .alert-success,
-:root.ultramoodle-dark .alert-danger,
-:root.ultramoodle-dark .bg-light,
-:root.ultramoodle-dark .bg-faded,
-:root.ultramoodle-dark .well,
-:root.ultramoodle-dark .card.bg-light,
-:root.ultramoodle-dark .card.bg-faded,
-:root.ultramoodle-dark .mod_introbox,
-:root.ultramoodle-dark .generalbox,
-:root.ultramoodle-dark .messagebox,
-:root.ultramoodle-dark .info,
-:root.ultramoodle-dark div.box.py-3,
-:root.ultramoodle-dark .no-overflow {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .alert, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-info, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-warning, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-success, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-danger, :root[data-mymoodle-enabled="true"].ultramoodle-dark .bg-light, :root[data-mymoodle-enabled="true"].ultramoodle-dark .bg-faded, :root[data-mymoodle-enabled="true"].ultramoodle-dark .well, :root[data-mymoodle-enabled="true"].ultramoodle-dark .card.bg-light, :root[data-mymoodle-enabled="true"].ultramoodle-dark .card.bg-faded, :root[data-mymoodle-enabled="true"].ultramoodle-dark .mod_introbox, :root[data-mymoodle-enabled="true"].ultramoodle-dark .generalbox, :root[data-mymoodle-enabled="true"].ultramoodle-dark .messagebox, :root[data-mymoodle-enabled="true"].ultramoodle-dark .info, :root[data-mymoodle-enabled="true"].ultramoodle-dark div.box.py-3, :root[data-mymoodle-enabled="true"].ultramoodle-dark .no-overflow {
+
   background-color: var(--ultra-surface-hover) !important;
   background: var(--ultra-surface-hover) !important;
   border-top: 1px solid var(--ultra-border) !important;
@@ -1815,197 +1234,133 @@ body:not(.path-my):not(.path-site) #region-main a:hover {
   border-left-width: 4px !important;
   border-left-style: solid !important;
   color: var(--ultra-text-main) !important;
-}
 
-/* 3a. Recursive transparency on children of activity descriptions to eliminate backgrounds */
-:root.ultramoodle-dark .contentafterlink *,
-:root.ultramoodle-dark .activity-description *,
-:root.ultramoodle-dark .no-overflow *,
-:root.ultramoodle-dark .description * {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .contentafterlink *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .activity-description *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .no-overflow *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .description * {
+
   background-color: transparent !important;
   background: transparent !important;
-}
 
-/* 3b. Strip borders/outlines from layout elements (tables, cells, generic divs) while preserving callout borders */
-:root.ultramoodle-dark .contentafterlink *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
-:root.ultramoodle-dark .activity-description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
-:root.ultramoodle-dark .no-overflow *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info),
-:root.ultramoodle-dark .description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info) {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .contentafterlink *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info), :root[data-mymoodle-enabled="true"].ultramoodle-dark .activity-description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info), :root[data-mymoodle-enabled="true"].ultramoodle-dark .no-overflow *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info), :root[data-mymoodle-enabled="true"].ultramoodle-dark .description *:not(.alert):not([class*="alert-"]):not(.well):not(.card):not(.info) {
+
   border: none !important;
   border-color: transparent !important;
   box-shadow: none !important;
   outline: none !important;
-}
 
-/* 4. Force all text inside these components to be white so they have perfect contrast on the new dark background */
-:root.ultramoodle-dark .alert *,
-:root.ultramoodle-dark .alert-info *,
-:root.ultramoodle-dark .alert-warning *,
-:root.ultramoodle-dark .alert-success *,
-:root.ultramoodle-dark .alert-danger *,
-:root.ultramoodle-dark .bg-light *,
-:root.ultramoodle-dark .bg-faded *,
-:root.ultramoodle-dark .well *,
-:root.ultramoodle-dark .card.bg-light *,
-:root.ultramoodle-dark .card.bg-faded *,
-:root.ultramoodle-dark .mod_introbox *,
-:root.ultramoodle-dark .generalbox *,
-:root.ultramoodle-dark .messagebox *,
-:root.ultramoodle-dark .info *,
-:root.ultramoodle-dark div.box.py-3 *,
-:root.ultramoodle-dark .no-overflow *,
-:root.ultramoodle-dark .activity-description *,
-:root.ultramoodle-dark .contentafterlink *,
-:root.ultramoodle-dark .no-overflow * {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .alert *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-info *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-warning *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-success *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .alert-danger *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .bg-light *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .bg-faded *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .well *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .card.bg-light *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .card.bg-faded *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .mod_introbox *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .generalbox *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .messagebox *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .info *, :root[data-mymoodle-enabled="true"].ultramoodle-dark div.box.py-3 *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .no-overflow *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .activity-description *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .contentafterlink *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .no-overflow * {
+
   color: var(--ultra-text-main) !important;
-}
 
-/* --- Table & Gradebook Dark Mode Overrides (to prevent flashbangs) --- */
-:root.ultramoodle-dark table,
-:root.ultramoodle-dark .table,
-:root.ultramoodle-dark table.gradetable,
-:root.ultramoodle-dark table.user-grade {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark table, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.gradetable, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.user-grade {
+
   background-color: var(--ultra-surface) !important;
   background: var(--ultra-surface) !important;
   border-color: var(--ultra-border) !important;
-}
 
-:root.ultramoodle-dark table th,
-:root.ultramoodle-dark table td,
-:root.ultramoodle-dark table tr,
-:root.ultramoodle-dark .table th,
-:root.ultramoodle-dark .table td,
-:root.ultramoodle-dark .table tr,
-:root.ultramoodle-dark .gradetable th,
-:root.ultramoodle-dark .gradetable td,
-:root.ultramoodle-dark .user-grade th,
-:root.ultramoodle-dark .user-grade td {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark table th, :root[data-mymoodle-enabled="true"].ultramoodle-dark table td, :root[data-mymoodle-enabled="true"].ultramoodle-dark table tr, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table th, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table td, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table tr, :root[data-mymoodle-enabled="true"].ultramoodle-dark .gradetable th, :root[data-mymoodle-enabled="true"].ultramoodle-dark .gradetable td, :root[data-mymoodle-enabled="true"].ultramoodle-dark .user-grade th, :root[data-mymoodle-enabled="true"].ultramoodle-dark .user-grade td {
+
   background-color: var(--ultra-surface) !important;
   background: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
   border-color: var(--ultra-border) !important;
-}
 
-/* Striped rows override in dark mode for better legibility */
-:root.ultramoodle-dark .table-striped tbody tr:nth-of-type(odd),
-:root.ultramoodle-dark table.gradetable tbody tr:nth-of-type(odd),
-:root.ultramoodle-dark table.user-grade tbody tr:nth-of-type(odd) {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .table-striped tbody tr:nth-of-type(odd), :root[data-mymoodle-enabled="true"].ultramoodle-dark table.gradetable tbody tr:nth-of-type(odd), :root[data-mymoodle-enabled="true"].ultramoodle-dark table.user-grade tbody tr:nth-of-type(odd) {
+
   background-color: rgba(255, 255, 255, 0.02) !important;
   background: rgba(255, 255, 255, 0.02) !important;
-}
 
-/* Hover rows override in dark mode */
-:root.ultramoodle-dark .table-hover tbody tr:hover,
-:root.ultramoodle-dark table.gradetable tbody tr:hover,
-:root.ultramoodle-dark table.user-grade tbody tr:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .table-hover tbody tr:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.gradetable tbody tr:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.user-grade tbody tr:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   background: var(--ultra-surface-hover) !important;
-}
 
-/* Force all text elements inside tables to be white/readable */
-:root.ultramoodle-dark table *,
-:root.ultramoodle-dark .table *,
-:root.ultramoodle-dark table.gradetable *,
-:root.ultramoodle-dark table.user-grade * {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark table *, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table *, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.gradetable *, :root[data-mymoodle-enabled="true"].ultramoodle-dark table.user-grade * {
+
   color: var(--ultra-text-main) !important;
-}
 
-/* Identifiable and interactive links inside tables */
-:root.ultramoodle-dark table a,
-:root.ultramoodle-dark .table a {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark table a, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table a {
+
   color: var(--ultra-text-main) !important;
   text-decoration: underline !important;
-}
 
-:root.ultramoodle-dark table a:hover,
-:root.ultramoodle-dark .table a:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark table a:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .table a:hover {
+
   color: var(--ultra-accent) !important;
   text-decoration: none !important;
-}
 
-/* Ensure containers are transparent */
-:root.ultramoodle-dark .table-responsive,
-:root.ultramoodle-dark .gradetreebox,
-:root.ultramoodle-dark .grade-report {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .table-responsive, :root[data-mymoodle-enabled="true"].ultramoodle-dark .gradetreebox, :root[data-mymoodle-enabled="true"].ultramoodle-dark .grade-report {
+
   background-color: transparent !important;
   background: transparent !important;
   border: none !important;
-}
 
-/* --- Pagination & Initials Bar (Letter Filters) Dark Mode Overrides --- */
-:root.ultramoodle-dark .pagination,
-:root.ultramoodle-dark .page-item,
-:root.ultramoodle-dark .page-link,
-:root.ultramoodle-dark .initialbar .page-link,
-:root.ultramoodle-dark .initialbar .page-item {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .pagination, :root[data-mymoodle-enabled="true"].ultramoodle-dark .page-item, :root[data-mymoodle-enabled="true"].ultramoodle-dark .page-link, :root[data-mymoodle-enabled="true"].ultramoodle-dark .initialbar .page-link, :root[data-mymoodle-enabled="true"].ultramoodle-dark .initialbar .page-item {
+
   background-color: var(--ultra-surface) !important;
   background: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
   border-color: var(--ultra-border) !important;
-}
 
-:root.ultramoodle-dark .page-item.active .page-link,
-:root.ultramoodle-dark .page-link.active,
-:root.ultramoodle-dark .initialbar .page-item.active .page-link {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .page-item.active .page-link, :root[data-mymoodle-enabled="true"].ultramoodle-dark .page-link.active, :root[data-mymoodle-enabled="true"].ultramoodle-dark .initialbar .page-item.active .page-link {
+
   background-color: var(--ultra-accent) !important;
   background: var(--ultra-accent) !important;
   color: #ffffff !important;
   border-color: var(--ultra-accent) !important;
-}
 
-:root.ultramoodle-dark .page-item.disabled .page-link {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .page-item.disabled .page-link {
+
   background-color: var(--ultra-surface) !important;
   background: var(--ultra-surface) !important;
   color: var(--ultra-text-sub) !important;
   opacity: 0.5;
   border-color: var(--ultra-border) !important;
-}
 
-:root.ultramoodle-dark .page-link:hover,
-:root.ultramoodle-dark .initialbar .page-link:hover {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .page-link:hover, :root[data-mymoodle-enabled="true"].ultramoodle-dark .initialbar .page-link:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   background: var(--ultra-surface-hover) !important;
   color: var(--ultra-accent) !important;
-}
 
-/* --- Form Fields, Dropdowns, Inputs & Moodle Filter Manager Dark Mode Overrides --- */
-:root.ultramoodle-dark select,
-:root.ultramoodle-dark input,
-:root.ultramoodle-dark textarea,
-:root.ultramoodle-dark .form-control,
-:root.ultramoodle-dark .custom-select,
-:root.ultramoodle-dark .form-select,
-:root.ultramoodle-dark .filter-row,
-:root.ultramoodle-dark .filter-row-input,
-:root.ultramoodle-dark .filter-row-operator,
-:root.ultramoodle-dark .filter-row-value,
-:root.ultramoodle-dark [data-region="filter-manager"] .filter-row,
-:root.ultramoodle-dark .filter-wrapper {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark select, :root[data-mymoodle-enabled="true"].ultramoodle-dark input, :root[data-mymoodle-enabled="true"].ultramoodle-dark textarea, :root[data-mymoodle-enabled="true"].ultramoodle-dark .form-control, :root[data-mymoodle-enabled="true"].ultramoodle-dark .custom-select, :root[data-mymoodle-enabled="true"].ultramoodle-dark .form-select, :root[data-mymoodle-enabled="true"].ultramoodle-dark .filter-row, :root[data-mymoodle-enabled="true"].ultramoodle-dark .filter-row-input, :root[data-mymoodle-enabled="true"].ultramoodle-dark .filter-row-operator, :root[data-mymoodle-enabled="true"].ultramoodle-dark .filter-row-value, :root[data-mymoodle-enabled="true"].ultramoodle-dark [data-region="filter-manager"] .filter-row, :root[data-mymoodle-enabled="true"].ultramoodle-dark .filter-wrapper {
+
   background-color: var(--ultra-surface) !important;
   background: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
   border-color: var(--ultra-border) !important;
   border: 1px solid var(--ultra-border) !important;
-}
 
-/* Ensure focus states on forms look premium */
-:root.ultramoodle-dark select:focus,
-:root.ultramoodle-dark input:focus,
-:root.ultramoodle-dark textarea:focus,
-:root.ultramoodle-dark .form-control:focus,
-:root.ultramoodle-dark .custom-select:focus,
-:root.ultramoodle-dark .form-select:focus {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark select:focus, :root[data-mymoodle-enabled="true"].ultramoodle-dark input:focus, :root[data-mymoodle-enabled="true"].ultramoodle-dark textarea:focus, :root[data-mymoodle-enabled="true"].ultramoodle-dark .form-control:focus, :root[data-mymoodle-enabled="true"].ultramoodle-dark .custom-select:focus, :root[data-mymoodle-enabled="true"].ultramoodle-dark .form-select:focus {
+
   background-color: var(--ultra-surface-hover) !important;
   background: var(--ultra-surface-hover) !important;
   color: var(--ultra-text-main) !important;
   border-color: var(--ultra-accent) !important;
   box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25) !important;
-}
 
-/* Make sure select dropdown options are dark in dark mode */
-:root.ultramoodle-dark option {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark option {
+
   background-color: var(--ultra-surface) !important;
   color: var(--ultra-text-main) !important;
+
 }
 
 

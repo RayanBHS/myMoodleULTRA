@@ -1,8 +1,6 @@
-/* =============================================
-   MYMOODLE ULTRA — Page du Calendrier (Apple Calendar Style)
-   ============================================= */
 
-#mye-calendars-container {
+:root[data-mymoodle-enabled="true"] #mye-calendars-container {
+
   display: flex !important;
   position: fixed !important;
   top: 64px !important;
@@ -23,30 +21,20 @@
   font-family: var(--ultra-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
   color: var(--ultra-text-main) !important;
   box-sizing: border-box !important;
-}
 
-/* ── Hide native Moodle calendar sections and page wrappers completely ── */
-.path-calendar-view #maincontent,
-.path-calendar-view .calendarwrapper,
-.path-calendar-view .view-calendar-button,
-.path-calendar-view [data-region="calendar-upcoming"],
-.path-calendar-view #page-header,
-.path-calendar-view footer,
-.path-calendar-view #page-footer,
-.path-calendar-view .block-region,
-.path-calendar-view #block-region-side-pre,
-.path-calendar-view #block-region-side-post,
-.path-calendar-view .drawer,
-.path-calendar-view #nav-drawer {
+}
+:root[data-mymoodle-enabled="true"] .path-calendar-view #maincontent, :root[data-mymoodle-enabled="true"] .path-calendar-view .calendarwrapper, :root[data-mymoodle-enabled="true"] .path-calendar-view .view-calendar-button, :root[data-mymoodle-enabled="true"] .path-calendar-view [data-region="calendar-upcoming"], :root[data-mymoodle-enabled="true"] .path-calendar-view #page-header, :root[data-mymoodle-enabled="true"] .path-calendar-view footer, :root[data-mymoodle-enabled="true"] .path-calendar-view #page-footer, :root[data-mymoodle-enabled="true"] .path-calendar-view .block-region, :root[data-mymoodle-enabled="true"] .path-calendar-view #block-region-side-pre, :root[data-mymoodle-enabled="true"] .path-calendar-view #block-region-side-post, :root[data-mymoodle-enabled="true"] .path-calendar-view .drawer, :root[data-mymoodle-enabled="true"] .path-calendar-view #nav-drawer {
+
   display: none !important;
-}
 
-body.path-calendar-view {
+}
+:root[data-mymoodle-enabled="true"] body.path-calendar-view {
+
   overflow: hidden !important;
-}
 
-/* ── SIDEBAR GAUCHE ── */
-.mac-cal-sidebar {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-sidebar {
+
   width: 260px !important;
   min-width: 260px !important;
   background-color: var(--ultra-surface) !important; /* White card */
@@ -58,55 +46,62 @@ body.path-calendar-view {
   padding: 20px 0 !important;
   box-sizing: border-box !important;
   overflow-y: auto !important;
-}
 
-.mac-cal-sidebar-section {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-sidebar-section {
+
   padding: 0 16px !important;
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
-}
 
-.mac-cal-sidebar-title {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-sidebar-title {
+
   font-size: 11px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-sub) !important;
   text-transform: uppercase !important;
   margin-bottom: 12px !important;
   letter-spacing: 0.05em !important;
-}
 
-.mye-sidebar-card {
+}
+:root[data-mymoodle-enabled="true"] .mye-sidebar-card {
+
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
-}
 
-/* Mini Calendar */
-.mac-cal-minical {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-minical {
+
   margin-top: 10px !important;
   margin-bottom: 20px !important;
-}
 
-.mac-minical-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-header {
+
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
   margin-bottom: 10px !important;
-}
 
-.mac-minical-title {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-title {
+
   font-size: 13.5px !important;
   font-weight: 650 !important;
   color: var(--ultra-text-main) !important;
-}
 
-.mac-minical-nav {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-nav {
+
   display: flex !important;
   gap: 4px !important;
-}
 
-.mac-minical-nav button {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-nav button {
+
   background: none !important;
   border: none !important;
   color: var(--ultra-text-sub) !important;
@@ -115,28 +110,32 @@ body.path-calendar-view {
   padding: 0 6px !important;
   outline: none !important;
   transition: color 0.15s !important;
-}
 
-.mac-minical-nav button:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-nav button:hover {
+
   color: var(--ultra-text-main) !important;
-}
 
-.mac-minical-grid {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-grid {
+
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
   gap: 4px 2px !important;
   text-align: center !important;
-}
 
-.mac-minical-dow {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-dow {
+
   font-size: 9.5px !important;
   color: var(--ultra-text-sub) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   margin-bottom: 2px !important;
-}
 
-.mac-minical-day {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-day {
+
   font-size: 11px !important;
   color: var(--ultra-text-main) !important;
   width: 22px !important;
@@ -148,28 +147,32 @@ body.path-calendar-view {
   margin: 0 auto !important;
   box-sizing: border-box !important;
   font-weight: 500 !important;
-}
 
-.mac-minical-day.empty {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-day.empty {
+
   background: transparent !important;
-}
 
-.mac-minical-day.today {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-day.today {
+
   background-color: var(--ultra-accent) !important;
   color: #fff !important;
   font-weight: 700 !important;
-}
 
-.mac-minical-day.selected-week {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-day.selected-week {
+
   background-color: var(--ultra-border) !important;
-}
 
-.mac-minical-day.selected-week.today {
+}
+:root[data-mymoodle-enabled="true"] .mac-minical-day.selected-week.today {
+
   background-color: var(--ultra-accent) !important;
-}
 
-/* ── PANNEAU PRINCIPAL ── */
-.mac-cal-main {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-main {
+
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
@@ -179,9 +182,10 @@ body.path-calendar-view {
   border-radius: 16px !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03) !important;
   overflow: hidden !important;
-}
 
-.mac-cal-toolbar {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toolbar {
+
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -190,44 +194,50 @@ body.path-calendar-view {
   background-color: var(--ultra-surface) !important;
   height: 64px !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-toolbar-left {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toolbar-left {
+
   flex: 1.5 !important;
   display: flex !important;
   justify-content: flex-start !important;
   align-items: center !important;
-}
 
-.mac-cal-toolbar-right {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toolbar-right {
+
   flex: 1 !important;
   display: flex !important;
   justify-content: flex-end !important;
   align-items: center !important;
-}
 
-.mac-cal-title {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-title {
+
   font-size: 22px !important;
   font-weight: 750 !important;
   color: var(--ultra-text-main) !important;
   letter-spacing: -0.02em !important;
-}
 
-.mac-cal-title span.year {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-title span.year {
+
   font-weight: 300 !important;
   color: var(--ultra-text-sub) !important;
   margin-left: 4px !important;
-}
 
-.mac-cal-view-toggles {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-view-toggles {
+
   display: flex !important;
   background-color: var(--ultra-surface-hover) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 20px !important;
   padding: 2px !important;
-}
 
-.mac-cal-toggle-btn {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toggle-btn {
+
   background: none !important;
   border: none !important;
   padding: 6px 14px !important;
@@ -238,26 +248,30 @@ body.path-calendar-view {
   cursor: pointer !important;
   transition: background-color 0.15s ease, color 0.15s ease !important;
   outline: none !important;
-}
 
-.mac-cal-toggle-btn:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toggle-btn:hover {
+
   color: var(--ultra-text-main) !important;
-}
 
-.mac-cal-toggle-btn.active {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-toggle-btn.active {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   color: var(--ultra-text-main) !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
-}
 
-.mac-cal-nav {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-nav {
+
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
-}
 
-.mac-cal-icon-btn {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-icon-btn {
+
   background: none !important;
   border: none !important;
   color: var(--ultra-text-main) !important;
@@ -273,17 +287,20 @@ body.path-calendar-view {
   transition: background-color 0.15s ease, transform 0.1s !important;
   outline: none !important;
   padding: 0 !important;
-}
 
-.mac-cal-icon-btn:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-icon-btn:hover {
+
   background-color: var(--ultra-border) !important;
-}
 
-.mac-cal-icon-btn:active {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-icon-btn:active {
+
   transform: scale(0.95) !important;
-}
 
-.mac-cal-today-btn {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today-btn {
+
   background-color: var(--ultra-surface-hover) !important;
   border: 1px solid var(--ultra-border) !important;
   padding: 6px 14px !important;
@@ -294,45 +311,51 @@ body.path-calendar-view {
   color: var(--ultra-text-main) !important;
   transition: background-color 0.15s ease, transform 0.1s !important;
   outline: none !important;
-}
 
-.mac-cal-today-btn:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today-btn:hover {
+
   background-color: var(--ultra-border) !important;
-}
 
-.mac-cal-today-btn:active {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today-btn:active {
+
   transform: scale(0.95) !important;
-}
 
-.mac-cal-content {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-content {
+
   flex: 1 !important;
   overflow: hidden !important;
   position: relative !important;
-}
 
-/* ── CALENDRIER GRILLE (JOUR & SEMAINE) ── */
-.mac-apple-calendar {
+}
+:root[data-mymoodle-enabled="true"] .mac-apple-calendar {
+
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
-}
 
-.mac-cal-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-header {
+
   display: flex !important;
   border-bottom: 1px solid var(--ultra-border) !important;
   background-color: var(--ultra-surface-hover) !important;
   z-index: 10 !important;
   padding-right: 8px; /* For scrollbar alignment */
-}
 
-.mac-cal-time-col-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-time-col-header {
+
   width: 60px !important;
   min-width: 60px !important;
   flex-shrink: 0 !important;
   border-right: 1px solid var(--ultra-border) !important;
-}
 
-.mac-cal-day-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-header {
+
   flex: 1 !important;
   display: flex !important;
   flex-direction: row !important;
@@ -343,27 +366,32 @@ body.path-calendar-view {
   border-right: 1px solid var(--ultra-border) !important;
   transition: background-color 0.2s !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-day-header.mye-clickable-day {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-header.mye-clickable-day {
+
   cursor: pointer !important;
-}
 
-.mac-cal-day-header.mye-clickable-day:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-header.mye-clickable-day:hover {
+
   background-color: var(--ultra-border) !important;
-}
 
-.mac-cal-day-header:last-child {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-header:last-child {
+
   border-right: none !important;
-}
 
-.mac-cal-day-name {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-name {
+
   font-size: 13.5px !important;
   font-weight: 600 !important;
   color: var(--ultra-text-sub) !important;
-}
 
-.mac-cal-day-num {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-num {
+
   font-size: 13.5px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
@@ -373,31 +401,36 @@ body.path-calendar-view {
   align-items: center !important;
   justify-content: center !important;
   border-radius: 50% !important;
-}
 
-.mac-cal-today .mac-cal-day-name {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today .mac-cal-day-name {
+
   color: var(--ultra-accent) !important;
-}
 
-.mac-cal-today .mac-cal-day-num {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today .mac-cal-day-num {
+
   background-color: var(--ultra-accent) !important;
   color: #fff !important;
-}
 
-.mac-cal-scroll-area {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-scroll-area {
+
   flex: 1 !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   position: relative !important;
-}
 
-.mac-cal-body {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-body {
+
   display: flex !important;
   position: relative !important;
   min-height: 100% !important;
-}
 
-.mac-cal-time-col {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-time-col {
+
   width: 60px !important;
   min-width: 60px !important;
   flex-shrink: 0 !important;
@@ -405,98 +438,111 @@ body.path-calendar-view {
   background-color: var(--ultra-surface-hover) !important;
   position: relative !important;
   z-index: 2 !important;
-}
 
-.mac-cal-time-slot {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-time-slot {
+
   position: relative !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-time-slot span {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-time-slot span {
+
   position: absolute !important;
   top: -8px;
   right: 10px;
   font-size: 9.5px !important;
   color: var(--ultra-text-sub) !important;
   font-weight: 600 !important;
-}
 
-.mac-cal-grid {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-grid {
+
   flex: 1 !important;
   position: relative !important;
-}
 
-.mac-cal-grid-lines {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-grid-lines {
+
   position: absolute !important;
   top: 0; left: 0; right: 0; bottom: 0 !important;
   z-index: 0 !important;
   pointer-events: none !important;
-}
 
-.mac-cal-grid-line {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-grid-line {
+
   position: absolute !important;
   left: 0;
   right: 0;
   height: 1px;
   background-color: var(--ultra-border) !important;
   opacity: 0.6 !important;
-}
 
-.mac-cal-day-cols {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-cols {
+
   position: absolute !important;
   top: 0; left: 0; right: 0; bottom: 0 !important;
   display: flex !important;
   z-index: 1 !important;
-}
 
-.mac-cal-day-col {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-col {
+
   flex: 1 !important;
   position: relative !important;
   border-right: 1px solid var(--ultra-border) !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-day-col:last-child {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-day-col:last-child {
+
   border-right: none !important;
-}
 
-.mac-cal-today-col {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-today-col {
+
   background-color: rgba(255, 138, 0, 0.02) !important;
-}
 
-/* ── CARTE D'ÉVÉNEMENT (Apple Style D.A.) ── */
-.mac-cal-event {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event {
+
   position: absolute !important;
   border-radius: 8px !important;
   overflow: hidden !important;
   cursor: pointer !important;
   transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-event:hover {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event:hover {
+
   transform: scale(1.02) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
   z-index: 20 !important;
-}
 
-.mac-cal-event-inner {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event-inner {
+
   padding: 6px 8px !important;
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
   border-left: 4px solid !important;
   box-sizing: border-box !important;
-}
 
-.mac-cal-event-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event-header {
+
   display: flex !important;
   justify-content: space-between !important;
   align-items: flex-start !important;
   gap: 4px !important;
-}
 
-.mac-cal-event-title {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event-title {
+
   font-size: 11px !important;
   font-weight: 700 !important;
   line-height: 1.25 !important;
@@ -505,10 +551,10 @@ body.path-calendar-view {
   -webkit-box-orient: vertical !important;
   overflow: hidden !important;
   flex: 1 !important;
-}
 
-.mac-cal-event-time,
-.mac-cal-event-room {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-event-time, :root[data-mymoodle-enabled="true"] .mac-cal-event-room {
+
   font-size: 9.5px !important;
   font-weight: 500 !important;
   white-space: nowrap !important;
@@ -517,50 +563,86 @@ body.path-calendar-view {
   margin-top: 1px !important;
   display: flex !important;
   align-items: center !important;
+
 }
+:root[data-mymoodle-enabled="true"] .mac-course-cours .mac-cal-event-inner {
+ border-left-color: #007aff !important; background-color: rgba(0, 122, 255, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-cours .mac-cal-event-title {
+ color: #007aff !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-devoir .mac-cal-event-inner {
+ border-left-color: #ff9500 !important; background-color: rgba(255, 149, 0, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-devoir .mac-cal-event-title {
+ color: #ff9500 !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-quiz .mac-cal-event-inner {
+ border-left-color: #af52de !important; background-color: rgba(175, 82, 222, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-quiz .mac-cal-event-title {
+ color: #af52de !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-personnel .mac-cal-event-inner {
+ border-left-color: #34c759 !important; background-color: rgba(52, 199, 89, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-personnel .mac-cal-event-title {
+ color: #34c759 !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-site .mac-cal-event-inner {
+ border-left-color: #ff3b30 !important; background-color: rgba(255, 59, 48, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-site .mac-cal-event-title {
+ color: #ff3b30 !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-evenement .mac-cal-event-inner {
+ border-left-color: #8e8e93 !important; background-color: rgba(142, 142, 147, 0.12) !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-course-evenement .mac-cal-event-title {
+ color: #8e8e93 !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-cours .mac-cal-event-inner {
+ background-color: rgba(0, 122, 255, 0.22) !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-cours .mac-cal-event-title {
+ color: #5ac8fa !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-devoir .mac-cal-event-inner {
+ background-color: rgba(255, 149, 0, 0.22) !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-devoir .mac-cal-event-title {
+ color: #ffb340 !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-quiz .mac-cal-event-inner {
+ background-color: rgba(175, 82, 222, 0.22) !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-quiz .mac-cal-event-title {
+ color: #da8fff !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-personnel .mac-cal-event-inner {
+ background-color: rgba(52, 199, 89, 0.22) !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-personnel .mac-cal-event-title {
+ color: #4cd964 !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-site .mac-cal-event-inner {
+ background-color: rgba(255, 59, 48, 0.22) !important; 
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mac-course-site .mac-cal-event-title {
+ color: #ff6961 !important; 
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-current-time {
 
-/* Event Types Colors (Reproduction Apple Calendars Hex) */
-.mac-course-cours .mac-cal-event-inner { border-left-color: #007aff !important; background-color: rgba(0, 122, 255, 0.12) !important; }
-.mac-course-cours .mac-cal-event-title { color: #007aff !important; }
-
-.mac-course-devoir .mac-cal-event-inner { border-left-color: #ff9500 !important; background-color: rgba(255, 149, 0, 0.12) !important; }
-.mac-course-devoir .mac-cal-event-title { color: #ff9500 !important; }
-
-.mac-course-quiz .mac-cal-event-inner { border-left-color: #af52de !important; background-color: rgba(175, 82, 222, 0.12) !important; }
-.mac-course-quiz .mac-cal-event-title { color: #af52de !important; }
-
-.mac-course-personnel .mac-cal-event-inner { border-left-color: #34c759 !important; background-color: rgba(52, 199, 89, 0.12) !important; }
-.mac-course-personnel .mac-cal-event-title { color: #34c759 !important; }
-
-.mac-course-site .mac-cal-event-inner { border-left-color: #ff3b30 !important; background-color: rgba(255, 59, 48, 0.12) !important; }
-.mac-course-site .mac-cal-event-title { color: #ff3b30 !important; }
-
-.mac-course-evenement .mac-cal-event-inner { border-left-color: #8e8e93 !important; background-color: rgba(142, 142, 147, 0.12) !important; }
-.mac-course-evenement .mac-cal-event-title { color: #8e8e93 !important; }
-
-/* Dark mode adjustments for colors (increased visibility on dark cards) */
-.ultramoodle-dark .mac-course-cours .mac-cal-event-inner { background-color: rgba(0, 122, 255, 0.22) !important; }
-.ultramoodle-dark .mac-course-cours .mac-cal-event-title { color: #5ac8fa !important; }
-.ultramoodle-dark .mac-course-devoir .mac-cal-event-inner { background-color: rgba(255, 149, 0, 0.22) !important; }
-.ultramoodle-dark .mac-course-devoir .mac-cal-event-title { color: #ffb340 !important; }
-.ultramoodle-dark .mac-course-quiz .mac-cal-event-inner { background-color: rgba(175, 82, 222, 0.22) !important; }
-.ultramoodle-dark .mac-course-quiz .mac-cal-event-title { color: #da8fff !important; }
-.ultramoodle-dark .mac-course-personnel .mac-cal-event-inner { background-color: rgba(52, 199, 89, 0.22) !important; }
-.ultramoodle-dark .mac-course-personnel .mac-cal-event-title { color: #4cd964 !important; }
-.ultramoodle-dark .mac-course-site .mac-cal-event-inner { background-color: rgba(255, 59, 48, 0.22) !important; }
-.ultramoodle-dark .mac-course-site .mac-cal-event-title { color: #ff6961 !important; }
-
-/* Current Time Indicator Line */
-.mac-cal-current-time {
   position: absolute !important;
   left: -60px !important;
   right: 0 !important;
   height: 1px !important;
   z-index: 5 !important;
   pointer-events: none !important;
-}
 
-.mac-cal-current-time-dot {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-current-time-dot {
+
   position: absolute !important;
   left: 56px !important;
   top: -4px !important;
@@ -568,25 +650,27 @@ body.path-calendar-view {
   height: 9px !important;
   border-radius: 50% !important;
   background-color: var(--ultra-accent) !important;
-}
 
-.mac-cal-current-time-line {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-current-time-line {
+
   position: absolute !important;
   left: 60px !important;
   top: 0 !important;
   right: 0 !important;
   height: 1px !important;
   background-color: var(--ultra-accent) !important;
-}
 
-/* ── CALENDRIER APPLE MOIS (MONTH VIEW) ── */
-.mac-apple-calendar-month {
+}
+:root[data-mymoodle-enabled="true"] .mac-apple-calendar-month {
+
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
-}
 
-.mac-cal-month-header {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-header {
+
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
   text-align: right !important;
@@ -596,13 +680,15 @@ body.path-calendar-view {
   font-weight: 700 !important;
   color: var(--ultra-text-sub) !important;
   background-color: var(--ultra-surface) !important;
-}
 
-.mac-cal-month-header div {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-header div {
+
   padding-right: 8px !important;
-}
 
-.mac-cal-month-grid {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-grid {
+
   flex: 1 !important;
   display: grid !important;
   grid-template-columns: repeat(7, 1fr) !important;
@@ -611,26 +697,30 @@ body.path-calendar-view {
   gap: 1px !important;
   border-bottom: 1px solid var(--ultra-border) !important;
   overflow-y: auto !important;
-}
 
-.mac-cal-month-cell {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-cell {
+
   background-color: var(--ultra-surface) !important;
   display: flex !important;
   flex-direction: column !important;
   padding: 4px !important;
   overflow: hidden !important;
-}
 
-.mac-cal-month-cell-dim {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-cell-dim {
+
   background-color: var(--ultra-surface-hover) !important;
-}
 
-.mac-cal-month-cell-dim .mac-cal-month-date {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-cell-dim .mac-cal-month-date {
+
   color: var(--ultra-text-sub) !important;
   opacity: 0.5 !important;
-}
 
-.mac-cal-month-date {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-date {
+
   text-align: right !important;
   font-size: 12px !important;
   font-weight: 600 !important;
@@ -638,87 +728,99 @@ body.path-calendar-view {
   margin-bottom: 4px !important;
   padding-right: 4px !important;
   padding-top: 2px !important;
-}
 
-.mac-cal-month-date.today {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-date.today {
+
   color: var(--ultra-accent) !important;
   font-weight: 700 !important;
-}
 
-.mac-cal-month-events {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-events {
+
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
   overflow-y: auto !important;
   flex: 1 !important;
-}
 
-.mac-cal-month-events::-webkit-scrollbar {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-events::-webkit-scrollbar {
+
   width: 4px !important;
-}
 
-.mac-cal-month-events::-webkit-scrollbar-thumb {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-events::-webkit-scrollbar-thumb {
+
   background-color: var(--ultra-border) !important;
   border-radius: 4px !important;
-}
 
-.mac-cal-month-event {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-event {
+
   border-radius: 4px !important;
   overflow: hidden !important;
   font-size: 10px !important;
   line-height: 1.2 !important;
   cursor: pointer !important;
-}
 
-.mac-cal-month-event-inner {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-event-inner {
+
   padding: 2px 4px !important;
   border-left: 2px solid !important;
   display: flex !important;
   gap: 4px !important;
   align-items: baseline !important;
   white-space: nowrap !important;
-}
 
-.mac-cal-month-event-time {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-event-time {
+
   font-weight: 500 !important;
   flex-shrink: 0 !important;
-}
 
-.mac-cal-month-event-title {
+}
+:root[data-mymoodle-enabled="true"] .mac-cal-month-event-title {
+
   font-weight: 600 !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-}
 
-/* ── STATS & WORKLOAD GAUGE (LEFT SIDEBAR) ── */
-.mye-planning-stats {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-stats {
+
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   gap: 20px !important;
   padding: 10px 0 !important;
-}
 
-.mye-planning-gauge-wrapper {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-wrapper {
+
   position: relative !important;
   width: 150px !important;
   height: 150px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-}
 
-.mye-planning-gauge {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge {
+
   transform: rotate(-90deg) !important;
-}
 
-.mye-planning-gauge-bg {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-bg {
+
   fill: none !important;
   stroke: var(--ultra-border) !important;
   stroke-width: 10 !important;
-}
 
-.mye-planning-gauge-fill {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-fill {
+
   fill: none !important;
   stroke: var(--ultra-accent) !important;
   stroke-width: 10 !important;
@@ -726,34 +828,35 @@ body.path-calendar-view {
   stroke-dashoffset: 502.654 !important;
   stroke-linecap: round !important;
   transition: stroke-dashoffset 0.8s ease-out !important;
-}
 
-.mye-planning-gauge-text {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-text {
+
   position: absolute !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-}
 
-.mye-planning-gauge-text span {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-text span {
+
   font-size: 26px !important;
   font-weight: 750 !important;
   color: var(--ultra-text-main) !important;
   line-height: 1 !important;
-}
 
-.mye-planning-gauge-text small {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-gauge-text small {
+
   font-size: 11px !important;
   color: var(--ultra-text-sub) !important;
   font-weight: 600 !important;
   margin-top: 4px !important;
-}
 
-/* Empty, Loading, and Error States */
-.mye-planning-loading,
-.mye-planning-error,
-.mye-planning-empty {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-loading, :root[data-mymoodle-enabled="true"] .mye-planning-error, :root[data-mymoodle-enabled="true"] .mye-planning-empty {
+
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -763,36 +866,34 @@ body.path-calendar-view {
   background: var(--ultra-surface) !important;
   height: 100% !important;
   box-sizing: border-box !important;
-}
 
-.mye-planning-spinner {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-spinner {
+
   width: 40px !important;
   height: 40px !important;
   border: 4px solid var(--ultra-border) !important;
   border-top-color: var(--ultra-accent) !important;
   border-radius: 50% !important;
   animation: mye-planning-spin 0.8s linear infinite !important;
-}
 
-@keyframes mye-planning-spin {
+}@keyframes mye-planning-spin{
   to { transform: rotate(360deg) !important; }
 }
+:root[data-mymoodle-enabled="true"] .mye-planning-loading-text, :root[data-mymoodle-enabled="true"] .mye-planning-error-text, :root[data-mymoodle-enabled="true"] .mye-planning-empty-text {
 
-.mye-planning-loading-text,
-.mye-planning-error-text,
-.mye-planning-empty-text {
   font-size: 14.5px !important;
   color: var(--ultra-text-sub) !important;
   font-weight: 500 !important;
-}
 
-.mye-planning-error-icon,
-.mye-planning-empty-icon {
+}
+:root[data-mymoodle-enabled="true"] .mye-planning-error-icon, :root[data-mymoodle-enabled="true"] .mye-planning-empty-icon {
+
   font-size: 40px !important;
-}
 
-/* ── MODALS (APPLE GLASSMORPHISM D.A.) ── */
-.mye-modal-overlay {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-overlay {
+
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -807,9 +908,10 @@ body.path-calendar-view {
   z-index: 9999 !important;
   box-sizing: border-box !important;
   animation: ultramoodleFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-}
 
-.mye-modal {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal {
+
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), var(--ultra-card-shadow-hover) !important;
@@ -822,59 +924,65 @@ body.path-calendar-view {
   position: relative !important;
   animation: ultramoodleScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   overflow: hidden !important;
-}
 
-.mye-modal-header {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-header {
+
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   padding: 16px 20px !important;
   border-bottom: 1px solid var(--ultra-border) !important;
-}
 
-.mye-modal-header h3 {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-header h3 {
+
   font-size: 16px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
   margin: 0 !important;
   letter-spacing: -0.01em !important;
-}
 
-.mye-modal-body {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-body {
+
   padding: 20px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 16px !important;
   max-height: 60vh !important;
   overflow-y: auto !important;
-}
 
-.mye-modal-body h4 {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-body h4 {
+
   font-size: 12.5px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-sub) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   margin: 0 !important;
-}
 
-.mye-modal-footer {
+}
+:root[data-mymoodle-enabled="true"] .mye-modal-footer {
+
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
   gap: 10px !important;
   padding: 16px 20px !important;
   border-top: 1px solid var(--ultra-border) !important;
-}
 
-/* Modal details cards styles */
-.mye-event-info-grid {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-grid {
+
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   gap: 12px !important;
-}
 
-.mye-event-info-card-primary {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-primary {
+
   background-color: var(--ultra-accent) !important;
   border-radius: 16px !important;
   padding: 16px !important;
@@ -884,29 +992,33 @@ body.path-calendar-view {
   gap: 6px !important;
   color: #fff !important;
   box-shadow: 0 4px 12px rgba(255, 138, 0, 0.15) !important;
-}
 
-.mye-event-info-card-primary .card-label {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-primary .card-label {
+
   font-size: 9px !important;
   font-weight: 700 !important;
   color: rgba(255, 255, 255, 0.8) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
-}
 
-.mye-event-info-card-primary .card-value {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-primary .card-value {
+
   font-size: 13.5px !important;
   font-weight: 700 !important;
   text-align: center !important;
-}
 
-.mye-event-info-card-primary .card-subvalue {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-primary .card-subvalue {
+
   font-size: 11.5px !important;
   color: rgba(255, 255, 255, 0.9) !important;
   font-weight: 500 !important;
-}
 
-.mye-event-info-card-secondary {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-secondary {
+
   background-color: var(--ultra-surface-hover) !important;
   border: 1px solid var(--ultra-border) !important;
   border-radius: 12px !important;
@@ -914,39 +1026,43 @@ body.path-calendar-view {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-}
 
-.mye-event-info-card-secondary .card-icon {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-secondary .card-icon {
+
   font-size: 18px !important;
   width: 24px !important;
   text-align: center !important;
-}
 
-.mye-event-info-card-secondary .card-details {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-secondary .card-details {
+
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
-}
 
-.mye-event-info-card-secondary .card-details .label {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-secondary .card-details .label {
+
   font-size: 9px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-sub) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
-}
 
-.mye-event-info-card-secondary .card-details .value {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-info-card-secondary .card-details .value {
+
   font-size: 12.5px !important;
   font-weight: 600 !important;
   color: var(--ultra-text-main) !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-}
 
-/* Event Detail Action Buttons (Teams, Moodle, etc) */
-.mye-event-action-btn {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn {
+
   padding: 8px 16px !important;
   border-radius: 999px !important;
   font-weight: 600 !important;
@@ -959,54 +1075,67 @@ body.path-calendar-view {
   transition: all 0.15s ease !important;
   max-width: max-content !important;
   border: 1px solid transparent !important;
-}
 
-.mye-event-action-btn.btn-teams {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-teams {
+
   background: rgba(79, 70, 229, 0.08) !important;
   color: #6366f1 !important;
   border-color: rgba(79, 70, 229, 0.2) !important;
-}
-.mye-event-action-btn.btn-teams:hover {
-  background: rgba(79, 70, 229, 0.15) !important;
-}
 
-.mye-event-action-btn.btn-moodle {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-teams:hover {
+
+  background: rgba(79, 70, 229, 0.15) !important;
+
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-moodle {
+
   background: rgba(217, 119, 6, 0.08) !important;
   color: #f59e0b !important;
   border-color: rgba(217, 119, 6, 0.2) !important;
-}
-.mye-event-action-btn.btn-moodle:hover {
-  background: rgba(217, 119, 6, 0.15) !important;
-}
 
-.mye-event-action-btn.btn-zoom {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-moodle:hover {
+
+  background: rgba(217, 119, 6, 0.15) !important;
+
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-zoom {
+
   background: rgba(2, 132, 199, 0.08) !important;
   color: #0ea5e9 !important;
   border-color: rgba(2, 132, 199, 0.2) !important;
-}
-.mye-event-action-btn.btn-zoom:hover {
-  background: rgba(2, 132, 199, 0.15) !important;
-}
 
-.mye-event-action-btn.btn-link {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-zoom:hover {
+
+  background: rgba(2, 132, 199, 0.15) !important;
+
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-link {
+
   background: var(--ultra-surface-hover) !important;
   color: var(--ultra-text-main) !important;
   border-color: var(--ultra-border) !important;
-}
-.mye-event-action-btn.btn-link:hover {
-  background: var(--ultra-border) !important;
-}
 
-/* ── COUNTDOWN LIST & CARDS ── */
-.mye-countdown-list {
+}
+:root[data-mymoodle-enabled="true"] .mye-event-action-btn.btn-link:hover {
+
+  background: var(--ultra-border) !important;
+
+}
+:root[data-mymoodle-enabled="true"] .mye-countdown-list {
+
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
   width: 100% !important;
   margin-top: 10px !important;
-}
 
-.mye-countdown-item {
+}
+:root[data-mymoodle-enabled="true"] .mye-countdown-item {
+
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
@@ -1018,14 +1147,16 @@ body.path-calendar-view {
   font-weight: 600 !important;
   transition: background-color 0.2s, transform 0.15s !important;
   box-sizing: border-box !important;
-}
 
-.mye-countdown-item:hover {
+}
+:root[data-mymoodle-enabled="true"] .mye-countdown-item:hover {
+
   background: var(--ultra-surface-hover) !important;
   transform: translateY(-1px) !important;
-}
 
-.mye-cd-value {
+}
+:root[data-mymoodle-enabled="true"] .mye-cd-value {
+
   color: var(--ultra-text-main) !important;
   background: var(--ultra-surface-hover) !important;
   border: 1px solid var(--ultra-border) !important;
@@ -1034,22 +1165,24 @@ body.path-calendar-view {
   font-size: 11px !important;
   font-variant-numeric: tabular-nums !important;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
-}
 
-.ultramoodle-dark .mye-countdown-item {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mye-countdown-item {
+
   background: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-border) !important;
   color: var(--ultra-text-main) !important;
-}
 
-.ultramoodle-dark .mye-cd-value {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mye-cd-value {
+
   background: var(--ultra-surface) !important;
   border-color: var(--ultra-border) !important;
   color: var(--ultra-text-main) !important;
-}
 
-/* ── COLOR CUSTOMIZER CARDS ── */
-.mye-color-card {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-card {
+
   position: relative !important;
   overflow: hidden !important;
   display: flex !important;
@@ -1062,38 +1195,43 @@ body.path-calendar-view {
   cursor: pointer !important;
   transition: background 0.2s !important;
   box-sizing: border-box !important;
-}
 
-.mye-color-card-header {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-card-header {
+
   position: relative !important;
   z-index: 2 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   pointer-events: none !important;
-}
 
-.mye-color-card-icon {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-card-icon {
+
   width: 20px !important;
   height: 20px !important;
   border-radius: 6px !important;
   border: 2px solid !important;
-}
 
-.mye-color-card-title {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-card-title {
+
   font-size: 14px !important;
   font-weight: 600 !important;
   color: var(--ultra-text-main) !important;
-}
 
-.mye-color-card-actions {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-card-actions {
+
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   pointer-events: none !important;
-}
 
-.mye-color-hex {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-hex {
+
   pointer-events: auto !important;
   width: 65px !important;
   font-size: 13px !important;
@@ -1104,16 +1242,18 @@ body.path-calendar-view {
   color: var(--ultra-text-main) !important;
   text-align: center !important;
   background: var(--ultra-surface-hover) !important;
-}
 
-.mye-color-preview-box {
+}
+:root[data-mymoodle-enabled="true"] .mye-color-preview-box {
+
   width: 24px !important;
   height: 24px !important;
   border-radius: 4px !important;
   border: 1px solid rgba(0,0,0,0.1) !important;
-}
 
-.mye-reset-btn {
+}
+:root[data-mymoodle-enabled="true"] .mye-reset-btn {
+
   pointer-events: auto !important;
   background: none !important;
   border: none !important;
@@ -1121,20 +1261,22 @@ body.path-calendar-view {
   cursor: pointer !important;
   color: var(--ultra-text-sub) !important;
   padding: 0 4px !important;
-}
 
-.ultramoodle-dark .mye-color-card {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mye-color-card {
+
   background: var(--ultra-surface-hover) !important;
   border-color: var(--ultra-border) !important;
-}
 
-.ultramoodle-dark .mye-color-hex {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mye-color-hex {
+
   background: var(--ultra-surface) !important;
   border-color: var(--ultra-border) !important;
-}
 
-/* ── DROPDOWN FILTRE SELECTEUR ── */
-.mye-filter-dropdown-menu {
+}
+:root[data-mymoodle-enabled="true"] .mye-filter-dropdown-menu {
+
   display: none;
   flex-direction: column;
   background-color: var(--ultra-surface) !important;
@@ -1145,15 +1287,17 @@ body.path-calendar-view {
   z-index: 1000 !important;
   min-width: 170px !important;
   gap: 6px !important;
-}
 
-.ultramoodle-dark .mye-filter-dropdown-menu {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-dark .mye-filter-dropdown-menu {
+
   background-color: var(--ultra-surface) !important;
   border-color: var(--ultra-border) !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
-}
 
-.mye-filter-dropdown-menu .mac-cal-filter-item {
+}
+:root[data-mymoodle-enabled="true"] .mye-filter-dropdown-menu .mac-cal-filter-item {
+
   display: flex !important;
   align-items: center !important;
   font-size: 13px !important;
@@ -1163,13 +1307,15 @@ body.path-calendar-view {
   border-radius: 8px !important;
   transition: background-color 0.15s ease !important;
   user-select: none !important;
-}
 
-.mye-filter-dropdown-menu .mac-cal-filter-item:hover {
+}
+:root[data-mymoodle-enabled="true"] .mye-filter-dropdown-menu .mac-cal-filter-item:hover {
+
   background-color: var(--ultra-surface-hover) !important;
-}
 
-.mye-filter-dropdown-menu input[type="checkbox"] {
+}
+:root[data-mymoodle-enabled="true"] .mye-filter-dropdown-menu input[type="checkbox"] {
+
   margin-right: 10px !important;
   width: 15px !important;
   height: 15px !important;
@@ -1177,5 +1323,6 @@ body.path-calendar-view {
   border: 1px solid var(--ultra-border) !important;
   accent-color: var(--ultra-accent) !important;
   cursor: pointer !important;
+
 }
 

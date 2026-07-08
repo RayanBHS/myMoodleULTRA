@@ -28,7 +28,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "img/*"
+        "img/*",
+        "css/*"
       ],
       "matches": [
         "*://moodle.myefrei.fr/*"
@@ -87,6 +88,17 @@
         "css/viewer.css",
         "css/messages.css"
       ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "file:///*",
+        "http://localhost/*",
+        "http://localhost:*/*",
+        "http://127.0.0.1/*",
+        "http://127.0.0.1:*/*"
+      ],
+      "js": ["js/sync-portal.js"],
       "run_at": "document_start"
     }
   ]

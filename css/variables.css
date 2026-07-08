@@ -1,9 +1,8 @@
-/* myMoodle ULTRA - Design Tokens & CSS Variables */
-
-/* Import Inter Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-:root {
+
+:root[data-mymoodle-enabled="true"] {
+
   --ultra-bg: #000000;               /* Pure Black */
   --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
   --ultra-surface-hover: #1e2535;
@@ -16,9 +15,10 @@
   --ultra-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   --ultra-surface-page-content: var(--ultra-surface);
   --ultra-border-page-content: var(--ultra-border);
-}
 
-:root.ultramoodle-dark {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark {
+
   --ultra-bg: #000000;               /* Pure Black */
   --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
   --ultra-surface-hover: #1e2535;
@@ -31,9 +31,10 @@
   --ultra-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   --ultra-surface-page-content: var(--ultra-surface);
   --ultra-border-page-content: var(--ultra-border);
-}
 
-:root.ultramoodle-light {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light {
+
   --ultra-bg: #f0f0f0;               /* Soft Cold Light Background */
   --ultra-surface: #ffffff;          /* White Card */
   --ultra-surface-hover: #ebf0f5;
@@ -46,12 +47,10 @@
   --ultra-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
   --ultra-surface-page-content: #ffffff;
   --ultra-border-page-content: #dee2e6;
-}
 
-/* --- Clean Font Overrides for Custom Elements --- */
-.navbar,
-#usernavigation,
-#ultramoodle-hero,
-.ultramoodle-profile-pill {
+}
+:root[data-mymoodle-enabled="true"] .navbar, :root[data-mymoodle-enabled="true"] #usernavigation, :root[data-mymoodle-enabled="true"] #ultramoodle-hero, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+
 }

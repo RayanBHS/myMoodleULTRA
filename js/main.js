@@ -1,15 +1,17 @@
 // myMoodle ULTRA - Initialization and DOM Monitoring
-const injectCSSVariables = () => {
-  const root = document.documentElement;
-  if (root) {
-    root.style.setProperty('--ultra-pdf-icon', `url("${chrome.runtime.getURL('img/pdfIcone.png')}")`);
-    root.style.setProperty('--ultra-word-icon', `url("${chrome.runtime.getURL('img/wordIcone.png')}")`);
-    root.style.setProperty('--ultra-powerpoint-icon', `url("${chrome.runtime.getURL('img/powerpointIcone.png')}")`);
-    root.style.setProperty('--ultra-excel-icon', `url("${chrome.runtime.getURL('img/excelIcone.png')}")`);
-    root.style.setProperty('--ultra-text-icon', `url("${chrome.runtime.getURL('img/blocnoteIcone.png')}")`);
-  }
-};
-injectCSSVariables();
+(function() {
+  'use strict';
+
+  const injectCSSVariables = () => {
+    const root = document.documentElement;
+    if (root) {
+      root.style.setProperty('--ultra-pdf-icon', `url("${chrome.runtime.getURL('img/pdfIcone.png')}")`);
+      root.style.setProperty('--ultra-word-icon', `url("${chrome.runtime.getURL('img/wordIcone.png')}")`);
+      root.style.setProperty('--ultra-powerpoint-icon', `url("${chrome.runtime.getURL('img/powerpointIcone.png')}")`);
+      root.style.setProperty('--ultra-excel-icon', `url("${chrome.runtime.getURL('img/excelIcone.png')}")`);
+      root.style.setProperty('--ultra-text-icon', `url("${chrome.runtime.getURL('img/blocnoteIcone.png')}")`);
+    }
+  };
 
 const replaceFavicon = () => {
   try {
@@ -45,7 +47,47 @@ const isMessageActive = () => {
   return window.location.pathname.includes('/message/index.php') || (document.body && document.body.classList.contains('path-message')) || document.querySelector('[data-region="message-drawer"], .message-app') !== null;
 };
 
-const init = () => {
+  const cleanupDOM = () => {
+    try {
+      const elementsToRemove = [
+        '#ultramoodle-hero-wrapper',
+        '#ultramoodle-courses-header',
+        '#ultramoodle-course-page-header',
+        '#mye-calendars-container',
+        '.ultramoodle-block-header',
+        '.ultramoodle-profile-pill',
+        '#ultramoodle-doc-viewer'
+      ];
+      elementsToRemove.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => el.remove());
+      });
+
+      document.querySelectorAll('.ultramoodle-card-customized').forEach(card => {
+        card.classList.remove('ultramoodle-card-customized');
+        card.style.display = '';
+      });
+
+      document.querySelectorAll('.block .header').forEach(header => {
+        header.style.display = '';
+      });
+    } catch (e) {
+      console.error('[myMoodle ULTRA] Error cleaning up DOM:', e);
+    }
+  };
+
+  const init = () => {
+    const isEnabled = localStorage.getItem('mymoodle_user_enabled') !== 'false';
+    if (!isEnabled) {
+      console.log('[myMoodle ULTRA] Extension is disabled via settings.');
+      document.documentElement.setAttribute('data-mymoodle-disabled', 'true');
+      cleanupDOM();
+      return;
+    }
+    document.documentElement.removeAttribute('data-mymoodle-disabled');
+    runInit();
+  };
+
+const runInit = () => {
   injectCSSVariables();
   fetchMoodleCourses(); // warm-up API cache early
   replaceFavicon();
@@ -83,6 +125,10 @@ const init = () => {
 
 // Global click handler to close active filter popups when clicking outside
 document.addEventListener('click', (e) => {
+  const isEnabled = localStorage.getItem('mymoodle_user_enabled') !== 'false';
+  if (!isEnabled) {
+    return;
+  }
   const headers = document.querySelectorAll('.ultramoodle-block-header');
   headers.forEach(header => {
     const toggleBtn = header.querySelector('.ultramoodle-filter-toggle-btn');
@@ -99,6 +145,22 @@ document.addEventListener('click', (e) => {
   });
 });
 
+// Watch settings updates
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes.mymoodle_user_enabled) {
+      const isEnabled = changes.mymoodle_user_enabled.newValue !== false && changes.mymoodle_user_enabled.newValue !== 'false';
+      if (isEnabled) {
+        document.documentElement.removeAttribute('data-mymoodle-disabled');
+        init();
+      } else {
+        document.documentElement.setAttribute('data-mymoodle-disabled', 'true');
+        cleanupDOM();
+      }
+    }
+  });
+}
+
 // Try injecting immediately on DOMContentLoaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
@@ -108,6 +170,10 @@ if (document.readyState === 'loading') {
 
 // Observe mutations to ensure elements stay injected and handle dynamic updates (e.g. Moodle Ajax tabs)
 const observer = new MutationObserver((mutations) => {
+  const isEnabled = localStorage.getItem('mymoodle_user_enabled') !== 'false';
+  if (!isEnabled) {
+    return;
+  }
   try {
     if (window._ultramoodleFiltering) return;
 
@@ -167,14 +233,15 @@ const observer = new MutationObserver((mutations) => {
   }
 });
 
-try {
-  observer.observe(document.body || document.documentElement, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['class'],
-    attributeOldValue: true
-  });
-} catch (error) {
-  console.error('[myMoodle ULTRA] Failed to initialize MutationObserver:', error);
-}
+  try {
+    observer.observe(document.body || document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class'],
+      attributeOldValue: true
+    });
+  } catch (error) {
+    console.error('[myMoodle ULTRA] Failed to initialize MutationObserver:', error);
+  }
+})();

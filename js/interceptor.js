@@ -2,6 +2,11 @@
 (function () {
   'use strict';
 
+  // Return early if myMoodle ULTRA is disabled
+  if (localStorage.getItem('mymoodle_user_enabled') === 'false') {
+    return;
+  }
+
   console.log('[myMoodle ULTRA Interceptor] Injected in MAIN world. Location:', window.location.href);
 
   // Export Moodle config keys to document.documentElement synchronously

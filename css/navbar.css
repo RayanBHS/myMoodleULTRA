@@ -1,7 +1,6 @@
-/* myMoodle ULTRA - Navbar & Profile Menu overrides */
 
-/* --- Custom Profile Pill (Figma Navbar Alignment) --- */
-.ultramoodle-profile-pill {
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill {
+
   background-color: #ffffff !important;
   border-radius: 9999px !important;
   padding: 4px 16px !important;
@@ -16,54 +15,59 @@
   transition: transform 0.2s, box-shadow 0.2s !important;
   text-decoration: none !important;
   color: inherit !important;
-}
 
-.ultramoodle-profile-pill:hover,
-.ultramoodle-profile-pill:focus,
-.ultramoodle-profile-pill:active {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill:hover, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill:focus, :root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill:active {
+
   transform: translateY(-1px) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
   text-decoration: none !important;
   color: inherit !important;
   outline: none !important;
-}
 
-.ultramoodle-profile-pill::after {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill::after {
+
   display: none !important;
-}
 
-.ultramoodle-profile-text {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-text {
+
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
   justify-content: center !important;
   line-height: 1.2 !important;
-}
 
-.ultramoodle-profile-firstname {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-firstname {
+
   font-size: 10px !important;
   font-weight: 500 !important;
   color: #64748b !important;
   text-transform: capitalize !important;
-}
 
-.ultramoodle-profile-lastname {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-lastname {
+
   font-size: 12px !important;
   font-weight: 700 !important;
   color: #0f172a !important;
   text-transform: uppercase !important;
-}
 
-.ultramoodle-profile-avatar {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-avatar {
+
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   border: 1.5px solid #e2e8f0 !important;
   background-color: #e2e8f0 !important;
-}
 
-.ultramoodle-profile-avatar-initials {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-avatar-initials {
+
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important;
@@ -76,16 +80,15 @@
   font-weight: 700 !important;
   border: 1.5px solid #d0e1fd !important;
   text-transform: uppercase !important;
-}
 
-/* --- Notification & Message Badges (Red Dot Override) --- */
-#usernavigation .popover-region-toggle,
-#usernavigation .nav-link {
+}
+:root[data-mymoodle-enabled="true"] #usernavigation .popover-region-toggle, :root[data-mymoodle-enabled="true"] #usernavigation .nav-link {
+
   position: relative !important;
-}
 
-#usernavigation .count-container,
-#usernavigation [data-region="count-container"] {
+}
+:root[data-mymoodle-enabled="true"] #usernavigation .count-container, :root[data-mymoodle-enabled="true"] #usernavigation [data-region="count-container"] {
+
   width: 8px !important;
   height: 8px !important;
   min-width: 8px !important;
@@ -105,51 +108,49 @@
   box-shadow: none !important;
   display: block !important;
   z-index: 9 !important;
-}
 
-/* Ensure hidden badges stay hidden */
-#usernavigation .count-container.hidden,
-#usernavigation [data-region="count-container"].hidden,
-#usernavigation .count-container.d-none,
-#usernavigation [data-region="count-container"].d-none {
+}
+:root[data-mymoodle-enabled="true"] #usernavigation .count-container.hidden, :root[data-mymoodle-enabled="true"] #usernavigation [data-region="count-container"].hidden, :root[data-mymoodle-enabled="true"] #usernavigation .count-container.d-none, :root[data-mymoodle-enabled="true"] #usernavigation [data-region="count-container"].d-none {
+
   display: none !important;
-}
 
-/* Force navbar content spacing and figma branding colors */
-#usernavigation {
+}
+:root[data-mymoodle-enabled="true"] #usernavigation {
+
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
-}
 
-.navbar.fixed-top {
+}
+:root[data-mymoodle-enabled="true"] .navbar.fixed-top {
+
   background-color: #143361 !important; /* Deep Blue Efrei Mockup */
   height: 64px !important;
   border-bottom: none !important;
-}
 
-.navbar .nav-link {
+}
+:root[data-mymoodle-enabled="true"] .navbar .nav-link {
+
   color: #ffffff !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   text-shadow: none !important;
-}
 
-/* Push all navbar dropdown menus and popovers down slightly to create a clean gap below the navbar */
-.navbar .dropdown-menu,
-#usernavigation .dropdown-menu,
-.usermenu .dropdown-menu,
-#usernavigation .popover-region-container {
+}
+:root[data-mymoodle-enabled="true"] .navbar .dropdown-menu, :root[data-mymoodle-enabled="true"] #usernavigation .dropdown-menu, :root[data-mymoodle-enabled="true"] .usermenu .dropdown-menu, :root[data-mymoodle-enabled="true"] #usernavigation .popover-region-container {
+
   margin-top: 18px !important;
-}
 
-/* --- Mobile Navbar Adaptations (max-width: 768px) --- */
-@media (max-width: 768px) {
-  .ultramoodle-profile-text {
+}/* --- Mobile Navbar Adaptations (max-width: 768px) --- */
+@media (max-width: 768px){
+
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-text {
+
     display: none !important; /* Hide name text to save width */
-  }
+  
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-pill {
 
-  .ultramoodle-profile-pill {
     padding: 0 !important;
     width: 36px !important;
     height: 36px !important;
@@ -158,19 +159,23 @@
     border: none !important;
     background-color: transparent !important;
     box-shadow: none !important;
-  }
   
-  .ultramoodle-profile-avatar {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-avatar {
+
     width: 36px !important;
     height: 36px !important;
     border: 1.5px solid #ffffff !important; /* Stand out on blue nav */
-  }
+  
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-profile-avatar-initials {
 
-  .ultramoodle-profile-avatar-initials {
     width: 36px !important;
     height: 36px !important;
     border: 1.5px solid #ffffff !important;
     background-color: #ffffff !important;
     color: #143361 !important;
-  }
+  
+}
+
 }

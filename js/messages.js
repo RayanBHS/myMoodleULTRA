@@ -16,6 +16,21 @@
   let activeReplyMessage = null;
   let activeConversationMessages = [];
   let handshakeSentThisSession = {};
+  let _oneuiEnabled = localStorage.getItem('mymoodle_user_oneui') !== 'false';
+  let _handshakeEnabled = localStorage.getItem('mymoodle_user_handshake') !== 'false';
+
+  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName === 'local') {
+        if (changes.oneui) {
+          _oneuiEnabled = changes.oneui.newValue !== false && changes.oneui.newValue !== 'false';
+        }
+        if (changes.handshake) {
+          _handshakeEnabled = changes.handshake.newValue !== false && changes.handshake.newValue !== 'false';
+        }
+      }
+    });
+  }
 
   const loadUltraConversations = () => {
     return new Promise((resolve) => {
@@ -37,6 +52,7 @@
   };
 
   const detectAndProcessHandshake = async (messages, convid, otherUserId) => {
+    if (!_handshakeEnabled) return;
     if (!messages || messages.length === 0) return;
     
     const otherSentCode = messages.some(msg => msg.useridfrom !== currentUserId && msg.text && msg.text.includes('ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA'));
@@ -1205,7 +1221,7 @@
       );
 
       let textWithHandshake = text;
-      if (!isUltra && !weAlreadySentHandshake) {
+      if (_handshakeEnabled && !isUltra && !weAlreadySentHandshake) {
         textWithHandshake += ' <span class="um-handshake-meta" style="display:none;">ULTRA-xvfdgiencuuabusbbdubdeu-ULTRA</span>';
         if (activeConversationId) {
           handshakeSentThisSession[activeConversationId] = true;
@@ -1294,6 +1310,7 @@
   };
 
   const customizeMoodleMessaging = async () => {
+    if (!_oneuiEnabled) return;
     if (!isMessagePage()) return;
     if (document.querySelector('.oneui-messaging-app')) return;
 

@@ -1,8 +1,6 @@
-/* myMoodle ULTRA - Timeline Customization */
 
-/* Style native date grouping titles as large pills */
-[data-region="timeline"] h5,
-[data-region="timeline"] h6 {
+:root[data-mymoodle-enabled="true"] [data-region="timeline"] h5, :root[data-mymoodle-enabled="true"] [data-region="timeline"] h6 {
+
   display: inline-block !important;
   background-color: var(--ultra-surface) !important;
   border: 1px solid var(--ultra-border) !important;
@@ -16,22 +14,23 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   text-transform: capitalize;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-}
 
-:root.ultramoodle-dark [data-region="timeline"] h5,
-:root.ultramoodle-dark [data-region="timeline"] h6 {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark [data-region="timeline"] h5, :root[data-mymoodle-enabled="true"].ultramoodle-dark [data-region="timeline"] h6 {
+
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
 
-[data-region="timeline"] .list-group-item {
+}
+:root[data-mymoodle-enabled="true"] [data-region="timeline"] .list-group-item {
+
   border: none !important;
   padding: 0 !important;
   margin-bottom: 12px !important;
   background: transparent !important;
-}
 
-/* Base custom card for timeline events */
-.ultramoodle-timeline-card {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-card {
+
   display: flex;
   background-color: var(--ultra-surface);
   border: 1px solid var(--ultra-border);
@@ -45,17 +44,18 @@
   gap: 16px;
   align-items: center;
   position: relative;
-}
 
-.ultramoodle-timeline-card:hover {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-card:hover {
+
   transform: translateY(-2px);
   box-shadow: var(--ultra-card-shadow-hover);
   border-color: rgba(var(--ultra-accent-rgb), 0.3);
   background-color: var(--ultra-surface-hover);
-}
 
-/* Image container (Course Image or Icon) */
-.ultramoodle-timeline-image {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-image {
+
   width: 56px;
   height: 56px;
   border-radius: 12px;
@@ -65,26 +65,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.ultramoodle-timeline-image img {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-image img {
+
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
-}
 
-/* Content area */
-.ultramoodle-timeline-content {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-content {
+
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
   justify-content: center;
   gap: 4px;
-}
 
-.ultramoodle-timeline-course {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-course {
+
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--ultra-accent);
@@ -93,9 +95,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
 
-.ultramoodle-timeline-title {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-title {
+
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
@@ -106,19 +109,19 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 2px;
-}
 
-/* Footer / Pills area */
-.ultramoodle-timeline-footer {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-footer {
+
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 4px;
-}
 
-/* Same pill style as courses */
-.ultramoodle-timeline-pill {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-pill {
+
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -129,18 +132,17 @@
   background-color: var(--ultra-bg);
   color: var(--ultra-text-sub);
   border: 1px solid var(--ultra-border);
-}
 
-.ultramoodle-timeline-pill.due {
+}
+:root[data-mymoodle-enabled="true"] .ultramoodle-timeline-pill.due {
+
   color: #ef4444; /* Red for due items */
   background-color: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.2);
-}
 
-/* Hide original content but keep it in DOM just in case */
-.block_timeline .ultramoodle-timeline-hidden-original,
-[data-region="timeline"] .ultramoodle-timeline-hidden-original,
-.list-group-item .ultramoodle-timeline-hidden-original {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline .ultramoodle-timeline-hidden-original, :root[data-mymoodle-enabled="true"] [data-region="timeline"] .ultramoodle-timeline-hidden-original, :root[data-mymoodle-enabled="true"] .list-group-item .ultramoodle-timeline-hidden-original {
+
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
@@ -149,29 +151,26 @@
   overflow: hidden !important;
   padding: 0 !important;
   margin: 0 !important;
-}
 
-/* Dark mode specific tweaks if necessary */
-:root.ultramoodle-dark .ultramoodle-timeline-pill.due {
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ultramoodle-timeline-pill.due {
+
   background-color: rgba(248, 113, 113, 0.15);
   color: #f87171;
-}
 
-/* Style the load more events button container in the timeline block to reduce massive margins */
-.block_timeline [data-region="more-events-button-container"],
-[data-region="timeline"] [data-region="more-events-button-container"] {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-region="more-events-button-container"], :root[data-mymoodle-enabled="true"] [data-region="timeline"] [data-region="more-events-button-container"] {
+
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   width: 100% !important;
-}
 
-/* Style the load more events button in the timeline block */
-.block_timeline [data-action="more-events"],
-[data-region="timeline"] [data-action="more-events"],
-.block_timeline button[data-action="more-events"] {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"], :root[data-mymoodle-enabled="true"] [data-region="timeline"] [data-action="more-events"], :root[data-mymoodle-enabled="true"] .block_timeline button[data-action="more-events"] {
+
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -191,10 +190,10 @@
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   outline: none !important;
   overflow: hidden !important;
-}
 
-.block_timeline [data-action="more-events"]::after,
-[data-region="timeline"] [data-action="more-events"]::after {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"]::after, :root[data-mymoodle-enabled="true"] [data-region="timeline"] [data-action="more-events"]::after {
+
   content: "+" !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   font-size: 32px !important; /* Larger plus sign */
@@ -211,22 +210,22 @@
   height: 100% !important;
   padding-bottom: 4px !important; /* Visual alignment nudge */
   box-sizing: border-box !important;
-}
 
-.block_timeline [data-action="more-events"]:hover,
-[data-region="timeline"] [data-action="more-events"]:hover {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"]:hover, :root[data-mymoodle-enabled="true"] [data-region="timeline"] [data-action="more-events"]:hover {
+
   background-color: var(--ultra-surface-hover) !important;
   transform: scale(1.08) !important;
   box-shadow: var(--ultra-card-shadow-hover) !important;
-}
 
-.block_timeline [data-action="more-events"]:active,
-[data-region="timeline"] [data-action="more-events"]:active {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"]:active, :root[data-mymoodle-enabled="true"] [data-region="timeline"] [data-action="more-events"]:active {
+
   transform: scale(0.95) !important;
-}
 
-/* Hide Moodle's native loading/spinner overlays or text inside this button if any */
-.block_timeline [data-action="more-events"] .loading-icon,
-.block_timeline [data-action="more-events"] .spinner {
+}
+:root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"] .loading-icon, :root[data-mymoodle-enabled="true"] .block_timeline [data-action="more-events"] .spinner {
+
   display: none !important;
+
 }

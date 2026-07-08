@@ -1,15 +1,26 @@
 // myMoodle ULTRA - Course Customizations, Indexing, Header, and Filters
 let _customCourseImages = {};
+let _viewerEnabled = localStorage.getItem('mymoodle_user_viewer') !== 'false';
+
 if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
   chrome.storage.local.get('custom_course_images', (res) => {
     if (res.custom_course_images) {
       _customCourseImages = res.custom_course_images;
     }
   });
+
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local') {
+      if (changes.viewer) {
+        _viewerEnabled = changes.viewer.newValue !== false && changes.viewer.newValue !== 'false';
+      }
+    }
+  });
 }
 
 // Listen to events dispatched by the main world interceptor script (js/interceptor.js)
 window.addEventListener('ultramoodle-preview-click', (e) => {
+  if (!_viewerEnabled) return;
   const { fileUrl, fileName, fileType, mode } = e.detail;
   if (window.openDocumentViewer) {
     window.openDocumentViewer(fileUrl, fileName, fileType, mode);
@@ -378,6 +389,49 @@ const injectBlockHeaders = () => {
 
   const blocks = document.querySelectorAll('.block, section[data-block]');
   blocks.forEach((block) => {
+    // Special configuration for course overview block layout preference
+    const isOverview = block.classList.contains('block_myoverview') || block.querySelector('[data-region="course-overview"]');
+    if (isOverview) {
+      ensureCardLayoutSelected();
+      if (!hasForcedAll) {
+        ensureAllCoursesSelected();
+        hasForcedAll = true;
+      }
+      const currentLayout = localStorage.getItem('mymoodle_layout_pref') || 'grid';
+      if (!block.classList.contains(`ultramoodle-view-${currentLayout}`)) {
+        block.classList.remove('ultramoodle-view-grid', 'ultramoodle-view-list');
+        block.classList.add(`ultramoodle-view-${currentLayout}`);
+      }
+    }
+  });
+
+  const isFiltersEnabled = localStorage.getItem('mymoodle_quick_filters') !== 'false';
+  if (!isFiltersEnabled) {
+    // Cleanup custom headers and restore native titles/filter bar
+    const customHeaders = document.querySelectorAll('.ultramoodle-block-header');
+    customHeaders.forEach(h => h.remove());
+
+    blocks.forEach(block => {
+      const headingEl = block.querySelector('h2, h3.card-title, h3, .block-title, [role="heading"]');
+      if (headingEl) {
+        headingEl.style.removeProperty('display');
+      }
+      block.querySelectorAll('.card-title, h5.card-title, h3.card-title, h2.card-title').forEach(h => {
+        if (!h.closest('.ultramoodle-courses-header')) {
+          h.style.removeProperty('display');
+        }
+      });
+      const filterBar = block.querySelector('.ultramoodle-native-filter-bar');
+      if (filterBar) {
+        filterBar.classList.remove('ultramoodle-native-filter-bar', 'ultramoodle-filter-bar-visible');
+        const customSelector = filterBar.querySelector('#ultramoodle-custom-layout-selector');
+        if (customSelector) customSelector.remove();
+      }
+    });
+    return;
+  }
+
+  blocks.forEach((block) => {
     // Find the title text from native Moodle header
     const headingEl = block.querySelector('h2, h3.card-title, h3, .block-title, [role="heading"]');
     let titleText = '';
@@ -435,20 +489,7 @@ const injectBlockHeaders = () => {
       }
     });
 
-    // Special configuration for course overview block
     const isOverview = block.classList.contains('block_myoverview') || block.querySelector('[data-region="course-overview"]');
-    if (isOverview) {
-      ensureCardLayoutSelected();
-      if (!hasForcedAll) {
-        ensureAllCoursesSelected();
-        hasForcedAll = true;
-      }
-      const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
-      if (!block.classList.contains(`ultramoodle-view-${currentLayout}`)) {
-        block.classList.remove('ultramoodle-view-grid', 'ultramoodle-view-list');
-        block.classList.add(`ultramoodle-view-${currentLayout}`);
-      }
-    }
 
     // Detect if the block has filter/search controls
     let filterBar = null;
@@ -516,7 +557,7 @@ const injectBlockHeaders = () => {
       // If this is the course overview, inject our custom layout selector inside the filter popup
       if (isOverview) {
         if (!filterBar.querySelector('#ultramoodle-custom-layout-selector')) {
-          const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
+          const currentLayout = localStorage.getItem('mymoodle_layout_pref') || 'grid';
           const selectorWrapper = document.createElement('div');
           selectorWrapper.id = 'ultramoodle-custom-layout-selector';
           selectorWrapper.className = 'ultramoodle-custom-layout-selector-wrapper';
@@ -536,7 +577,10 @@ const injectBlockHeaders = () => {
             gridBtn.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
-              localStorage.setItem('ultramoodle-layout-pref', 'grid');
+              localStorage.setItem('mymoodle_layout_pref', 'grid');
+              if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                chrome.storage.local.set({ layout: 'grid' });
+              }
               gridBtn.classList.add('active');
               listBtn.classList.remove('active');
               const courseOverview = getCourseOverviewContainer();
@@ -551,7 +595,10 @@ const injectBlockHeaders = () => {
             listBtn.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
-              localStorage.setItem('ultramoodle-layout-pref', 'list');
+              localStorage.setItem('mymoodle_layout_pref', 'list');
+              if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                chrome.storage.local.set({ layout: 'list' });
+              }
               listBtn.classList.add('active');
               gridBtn.classList.remove('active');
               const courseOverview = getCourseOverviewContainer();
@@ -1064,7 +1111,7 @@ const customizeRecentItems = () => {
 
 // Make card column wrappers fill row space evenly, with a min-width so they wrap properly
 const makeCardsFillRow = () => {
-  const currentLayout = localStorage.getItem('ultramoodle-layout-pref') || 'grid';
+  const currentLayout = localStorage.getItem('mymoodle_layout_pref') || 'grid';
   const container = getCourseOverviewContainer();
   if (!container) return;
 
@@ -1939,6 +1986,20 @@ const bindCoursePageActions = (apiCourse = null) => {
 
 
 const customizeCoursePageHeader = () => {
+  const isHeaderEnabled = localStorage.getItem('mymoodle_course_header') !== 'false';
+  if (!isHeaderEnabled) {
+    const customHeader = document.getElementById('ultramoodle-course-page-header');
+    if (customHeader) customHeader.remove();
+    const pageHeader = document.getElementById('page-header');
+    if (pageHeader) {
+      const nativeHeading = pageHeader.querySelector('h1, h2, .page-header-headings h1');
+      if (nativeHeading) {
+        nativeHeading.style.removeProperty('display');
+      }
+    }
+    return;
+  }
+
   console.log('[myMoodle ULTRA] customizeCoursePageHeader: Running...');
   if (!isCoursePage()) {
     console.log('[myMoodle ULTRA] customizeCoursePageHeader: Not a course page, exiting.');
@@ -2126,6 +2187,7 @@ const customizeCoursePageHeader = () => {
 };
 
 const customizeResourceIcons = () => {
+  if (!_viewerEnabled) return;
   if (!isCoursePage()) return;
 
   const containers = document.querySelectorAll('.activityiconcontainer');
@@ -2329,6 +2391,9 @@ window.fetchMoodleCourses = fetchMoodleCourses;
 window.getMoodleSesskey = getMoodleSesskey;
 
 document.addEventListener('click', (e) => {
+  if (localStorage.getItem('mymoodle_user_enabled') === 'false') {
+    return;
+  }
   const dropdown = document.getElementById('ultramoodle-recent-menu');
   const historyBtn = document.getElementById('ultramoodle-course-btn-history');
   if (dropdown && dropdown.classList.contains('visible')) {
@@ -2340,6 +2405,9 @@ document.addEventListener('click', (e) => {
 
 // Shift + Click file sharing modal listener (intercept in capture phase)
 document.addEventListener('click', (e) => {
+  if (localStorage.getItem('mymoodle_user_enabled') === 'false') {
+    return;
+  }
   if (e.shiftKey) {
     const linkEl = e.target.closest('a[href*="/mod/resource/"], a[href*="/mod/folder/"], a[href*="forcedownload=1"], .ultramoodle-btn-preview');
     if (linkEl) {
