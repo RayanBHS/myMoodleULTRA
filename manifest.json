@@ -92,6 +92,9 @@
     },
     {
       "matches": [
+        "*://*.racywama.com/*",
+        "*://*.myefrei.fr/*",
+        "*://*.efrei.fr/*",
         "file:///*",
         "http://localhost/*",
         "http://localhost:*/*",

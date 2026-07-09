@@ -4,9 +4,9 @@
 :root[data-mymoodle-enabled="true"] {
 
   --ultra-bg: #000000;               /* Pure Black */
-  --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
-  --ultra-surface-hover: #1e2535;
-  --ultra-border: #1d2633;           /* Cold Border */
+  --ultra-surface: #121212;          /* Neutral Dark Card */
+  --ultra-surface-hover: #1c1c1c;
+  --ultra-border: #2c2c2e;           /* Clean Border */
   --ultra-text-main: #ffffff;
   --ultra-text-sub: #8b95a5;
   --ultra-accent: #ff8a00;           /* Orange from Logo */
@@ -20,9 +20,9 @@
 :root[data-mymoodle-enabled="true"].ultramoodle-dark {
 
   --ultra-bg: #000000;               /* Pure Black */
-  --ultra-surface: #151a24;          /* Dark Blue-Gray Card */
-  --ultra-surface-hover: #1e2535;
-  --ultra-border: #1d2633;           /* Cold Border */
+  --ultra-surface: #121212;          /* Neutral Dark Card */
+  --ultra-surface-hover: #1c1c1c;
+  --ultra-border: #2c2c2e;           /* Clean Border */
   --ultra-text-main: #ffffff;
   --ultra-text-sub: #8b95a5;
   --ultra-accent: #ff8a00;           /* Orange from Logo */

@@ -3,9 +3,9 @@
 
   /* Force dark theme palette inside the document viewer (since the backdrop is always dark) */
   --ultra-bg: #000000;
-  --ultra-surface: #151a24;
-  --ultra-surface-hover: #1e2535;
-  --ultra-border: #1d2633;
+  --ultra-surface: #121212;
+  --ultra-surface-hover: #1c1c1c;
+  --ultra-border: #2c2c2e;
   --ultra-text-main: #ffffff;
   --ultra-text-sub: #8b95a5;
   --ultra-accent: #ff8a00;
@@ -319,7 +319,7 @@
   height: 100%;
   flex: 1;
   align-self: stretch;
-  background: #151a24;
+  background: #121212;
   border-radius: 12px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--ultra-border);

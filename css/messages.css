@@ -64,12 +64,12 @@
   position: relative !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-left-panel {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-left-panel {
 
   background-color: #f8fafd !important; /* Soft blue-gray Android-style background */
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-left-panel {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-left-panel {
 
   background-color: #1e1f20 !important; /* Android-style dark background */
 
@@ -130,13 +130,13 @@
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  margin: 90px 0 52px 0 !important; /* Spacious top and bottom margin (5x larger + 2px bottom) */
+  margin: 64px 0 32px 0 !important; /* Elegant spacious margins above/below title */
   width: 100% !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-messages-title {
 
-  font-size: 28px !important;
+  font-size: 26px !important;
   font-weight: 700 !important;
   color: var(--ultra-text-main) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
@@ -149,9 +149,9 @@
 
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
+  justify-content: space-between !important; /* Push tabs left, actions right */
   width: 100% !important;
-  gap: 12px !important;
+  padding: 0 !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-header-right-actions {
@@ -175,7 +175,7 @@
   transition: background-color 0.2s, color 0.2s !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-search-toggle-btn {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-search-toggle-btn {
 
   color: #c7c7cc !important;
 
@@ -186,7 +186,7 @@
   color: #000000 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-search-toggle-btn:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-search-toggle-btn:hover {
 
   background-color: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
@@ -230,7 +230,7 @@
   color: var(--ultra-accent) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-profile-inner {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-profile-inner {
 
   background-color: #1e1f20 !important;
   color: var(--ultra-accent) !important;
@@ -255,16 +255,16 @@
   margin-top: 4px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-search-bar-wrapper {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-search-bar-wrapper {
 
   background-color: #ffffff !important;
   border-color: #dadce0 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-search-bar-wrapper {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-search-bar-wrapper {
 
-  background-color: #303134 !important;
-  border-color: #3c4043 !important;
+  background-color: #000000 !important;
+  border-color: #2c2c2e !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-search-bar-wrapper .search-icon {
@@ -274,11 +274,15 @@
   color: #8e8e93 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .oneui-search-input {
+:root[data-mymoodle-enabled="true"] input.oneui-search-input,
+:root[data-mymoodle-enabled="true"] input.oneui-search-input:focus,
+:root[data-mymoodle-enabled="true"] input.oneui-search-input:active,
+:root[data-mymoodle-enabled="true"] input.oneui-search-input:focus-visible {
 
   background: transparent !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
   width: 100% !important;
   color: var(--ultra-text-main) !important;
   font-size: 14px !important;
@@ -300,7 +304,7 @@
   margin-top: 4px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-message-tabs, :root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-message-tabs {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-message-tabs, :root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-message-tabs {
 
   background-color: transparent !important;
 
@@ -317,31 +321,31 @@
   transition: all 0.2s !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-tab {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-tab {
 
   background-color: #f1f3f4 !important;
   color: #5f6368 !important;
   border-color: #dadce0 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-tab {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-tab {
 
   background-color: #303134 !important;
   color: #e8eaed !important;
   border-color: #3c4043 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-tab:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-tab:hover {
 
   background-color: #e8eaed !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-tab:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-tab:hover {
 
   background-color: #3c4043 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-tab.active {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-tab.active {
 
   background-color: #e8f0fe !important;
   color: #1a73e8 !important;
@@ -349,7 +353,7 @@
   box-shadow: none !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-tab.active {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-tab.active {
 
   background-color: #004a77 !important;
   color: #c2e7ff !important;
@@ -361,18 +365,18 @@
 
   flex: 1 !important;
   overflow-y: auto !important;
-  padding: 16px 8px !important;
+  padding: 16px 8px 80px 8px !important; /* Bottom padding to scroll past FABs */
   border-radius: 28px 28px 0 0 !important;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-list {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-list {
 
   background-color: #ffffff !important;
   border-top: 1px solid #eef2f6 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-list {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-list {
 
   background-color: #131314 !important;
   border-top: 1px solid #28282b !important;
@@ -381,21 +385,39 @@
 :root[data-mymoodle-enabled="true"] .oneui-conv-list::-webkit-scrollbar, :root[data-mymoodle-enabled="true"] .oneui-chat-history::-webkit-scrollbar {
 
   width: 5px !important;
+  height: 5px !important;
+
+}
+:root[data-mymoodle-enabled="true"] .oneui-conv-list::-webkit-scrollbar-track, :root[data-mymoodle-enabled="true"] .oneui-chat-history::-webkit-scrollbar-track {
+
+  background: transparent !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-conv-list::-webkit-scrollbar-thumb, :root[data-mymoodle-enabled="true"] .oneui-chat-history::-webkit-scrollbar-thumb {
 
-  border-radius: 4px !important;
+  border-radius: 10px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-list::-webkit-scrollbar-thumb, :root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-chat-history::-webkit-scrollbar-thumb {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-list::-webkit-scrollbar-thumb, :root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-chat-history::-webkit-scrollbar-thumb {
 
-  background-color: rgba(0,0,0,0.12) !important;
+  background-color: rgba(0, 0, 0, 0.15) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-list::-webkit-scrollbar-thumb, :root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-chat-history::-webkit-scrollbar-thumb {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-list::-webkit-scrollbar-thumb, :root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-chat-history::-webkit-scrollbar-thumb {
 
-  background-color: rgba(255,255,255,0.12) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-list, :root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-chat-history {
+
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent !important;
+
+}
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-list, :root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-chat-history {
+
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-conv-item {
@@ -412,23 +434,23 @@
   border: none !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-item:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-item:hover {
 
   background-color: #f1f3f4 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-item:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-item:hover {
 
   background-color: #202124 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-item.active {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-item.active {
 
   background-color: #e8f0fe !important;
   color: #1967d2 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-item.active {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-item.active {
 
   background-color: #004a77 !important;
   color: #c2e7ff !important;
@@ -465,7 +487,7 @@
   border: none !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-avatar-initials {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-avatar-initials {
 
   background-color: #004a77 !important;
   color: #c2e7ff !important;
@@ -488,7 +510,7 @@
   z-index: 20 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-status-badge {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-status-badge {
 
   border-color: #131314 !important;
   background-color: #8ab4f8 !important;
@@ -503,7 +525,7 @@
   border-radius: 50% !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-status-badge::after {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-status-badge::after {
 
   background-color: #131314 !important;
 
@@ -547,12 +569,12 @@
   flex-shrink: 0 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-item.active .oneui-conv-time {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-item.active .oneui-conv-time {
 
   color: #1967d2 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-item.active .oneui-conv-time {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-item.active .oneui-conv-time {
 
   color: #c2e7ff !important;
 
@@ -581,24 +603,24 @@
   color: var(--ultra-text-main) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-item.active .oneui-conv-preview {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-item.active .oneui-conv-preview {
 
   color: #1967d2 !important;
   opacity: 0.8 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-item.active .oneui-conv-preview {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-item.active .oneui-conv-preview {
 
   color: #c2e7ff !important;
   opacity: 0.8 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-conv-item.active .oneui-conv-name {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-conv-item.active .oneui-conv-name {
 
   color: #1967d2 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-conv-item.active .oneui-conv-name {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-conv-item.active .oneui-conv-name {
 
   color: #c2e7ff !important;
 
@@ -612,12 +634,12 @@
   position: relative !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-right-panel {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-right-panel {
 
   background-color: #ffffff !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-right-panel {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-right-panel {
 
   background-color: #121212 !important;
 
@@ -690,7 +712,7 @@
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.08)) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-placeholder-logo {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-placeholder-logo {
 
   filter: drop-shadow(0 8px 16px rgba(255, 255, 255, 0.05)) !important;
 
@@ -727,7 +749,7 @@
   pointer-events: none !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-chat-header {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-chat-header {
 
   background: rgba(28, 28, 30, 0.88) !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
@@ -758,7 +780,7 @@
   padding: 0 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-back-btn {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-back-btn {
 
   background: rgba(28, 28, 30, 0.85) !important;
 
@@ -827,12 +849,12 @@
   gap: 12px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-chat-history {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-chat-history {
 
   background-color: #ffffff !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-chat-history {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-chat-history {
 
   background-color: #000000 !important; /* Deep pitch black background */
 
@@ -900,12 +922,12 @@
   border-radius: 18px 18px 18px 5px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-message-wrapper.other .oneui-message-bubble {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-message-wrapper.other .oneui-message-bubble {
 
-  background-color: #e9e9eb !important; /* Light iMessage Gray bubble */
+  background-color: #f1f3f4 !important; /* Soft neutral gray */
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-message-wrapper.other .oneui-message-bubble {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-message-wrapper.other .oneui-message-bubble {
 
   background-color: #262629 !important; /* Dark iMessage Gray bubble */
 
@@ -974,7 +996,7 @@
   from { opacity: 0; transform: scale(0.92) translateY(10px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-picker-popup {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-picker-popup {
 
   background: #1c1c1e !important;
 
@@ -1073,7 +1095,7 @@
   transform: scale(1.2) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-emoji-btn:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-emoji-btn:hover {
 
   background: rgba(255,255,255,0.08) !important;
 
@@ -1099,9 +1121,10 @@
   flex-shrink: 0 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-gif-search {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-gif-search {
 
-  background: #2c2c2e !important;
+  background-color: #000000 !important;
+  border: 1px solid #2c2c2e !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-gif-grid {
@@ -1164,12 +1187,12 @@
   gap: 12px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-chat-footer {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-chat-footer {
 
   background-color: #ffffff !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-chat-footer {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-chat-footer {
 
   background-color: #121212 !important;
 
@@ -1206,29 +1229,33 @@
   transition: border-color 0.15s !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-input-pill {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-input-pill {
 
   background-color: #ffffff !important;
   border: 1px solid #d1d1d6 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-input-pill {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-input-pill {
 
   background-color: #000000 !important;
   border: 1px solid #2c2c2e !important;
 
 }
-:root[data-mymoodle-enabled="true"] .oneui-input-field {
+:root[data-mymoodle-enabled="true"] textarea.oneui-input-field,
+:root[data-mymoodle-enabled="true"] textarea.oneui-input-field:focus,
+:root[data-mymoodle-enabled="true"] textarea.oneui-input-field:active,
+:root[data-mymoodle-enabled="true"] textarea.oneui-input-field:focus-visible {
 
   flex: 1 !important;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   background: transparent !important;
   color: var(--ultra-text-main) !important;
   font-size: 14.5px !important;
   line-height: 1.4 !important;
   max-height: 120px !important;
   resize: none !important;
-  outline: none !important;
   padding: 6px 0 !important;
   font-family: inherit !important;
 
@@ -1335,13 +1362,7 @@
 }
 :root[data-mymoodle-enabled="true"] .oneui-fab-container {
 
-  position: absolute !important;
-  bottom: 36px !important;
-  right: 36px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 24px !important;
-  z-index: 100 !important;
+  display: none !important;
 
 }
 :root[data-mymoodle-enabled="true"] .oneui-fab {
@@ -1379,7 +1400,7 @@
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .fab-ai {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .fab-ai {
 
   background-color: #303134 !important;
   color: #8ab4f8 !important;
@@ -1391,7 +1412,7 @@
   color: #001d35 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .fab-chat {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .fab-chat {
 
   background-color: #004a77 !important;
   color: #c2e7ff !important;
@@ -1434,14 +1455,14 @@
   from { transform: translateY(20px) scale(0.95); }
   to { transform: translateY(0) scale(1); }
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-settings-card {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-settings-card {
 
   background-color: #ffffff !important;
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
   color: #1f1f1f !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-settings-card {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-settings-card {
 
   background-color: #1f2023 !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -1456,12 +1477,12 @@
   padding: 24px 24px 16px 24px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-settings-card-header {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-settings-card-header {
 
   border-bottom: 1px solid #f1f3f4 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-settings-card-header {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-settings-card-header {
 
   border-bottom: 1px solid #2d2e30 !important;
 
@@ -1494,7 +1515,7 @@
   color: var(--ultra-text-main) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-settings-close-btn:hover {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-settings-close-btn:hover {
 
   background-color: rgba(255, 255, 255, 0.08) !important;
 
@@ -1529,7 +1550,7 @@
   animation: oneui-spin 0.8s linear infinite !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-spinner {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-spinner {
 
   border: 3px solid rgba(255, 255, 255, 0.1) !important;
   border-top-color: #8ab4f8 !important;
@@ -1557,7 +1578,7 @@
   color: #1a73e8 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-settings-section h3 {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-settings-section h3 {
 
   color: #8ab4f8 !important;
 
@@ -1610,7 +1631,7 @@
   border-radius: 24px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .slider {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .slider {
 
   background-color: #444746 !important;
 
@@ -1634,7 +1655,7 @@
   background-color: #1a73e8 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-switch input:checked + .slider {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-switch input:checked + .slider {
 
   background-color: #8ab4f8 !important;
 
@@ -1671,7 +1692,7 @@
   accent-color: #1a73e8 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-radio-label input[type="radio"] {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-radio-label input[type="radio"] {
 
   accent-color: #8ab4f8 !important;
 
@@ -1701,12 +1722,12 @@
   box-sizing: border-box !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .oneui-request-item {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-request-item {
 
   background-color: #f1f3f4 !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .oneui-request-item {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-request-item {
 
   background-color: #2a2b2e !important;
 
@@ -1740,7 +1761,7 @@
   font-size: 13px !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .req-avatar-initials {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .req-avatar-initials {
 
   background-color: #004a77 !important;
   color: #c2e7ff !important;
@@ -1781,7 +1802,7 @@
   color: #ffffff !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-dark .accept-btn {
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .accept-btn {
 
   background-color: #8ab4f8 !important;
   color: #001d35 !important;
@@ -1794,7 +1815,7 @@
   color: var(--ultra-text-main) !important;
 
 }
-:root[data-mymoodle-enabled="true"] .ultramoodle-light .decline-btn {
+:root[data-mymoodle-enabled="true"].ultramoodle-light .decline-btn {
 
   border-color: #dadce0 !important;
 
@@ -1861,4 +1882,233 @@
   display: none !important;
 
 }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PREMIUM STYLES FOR myMoodle AI SEARCH RESULTS & CARDS
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Header section style */
+:root[data-mymoodle-enabled="true"] .ia-results-header {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: var(--ultra-text-main) !important;
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+
+:root[data-mymoodle-enabled="true"] .ia-results-breakdown {
+  font-weight: 500 !important;
+  color: var(--ultra-text-sub) !important;
+  font-size: 11px !important;
+}
+
+/* Base result cards container */
+:root[data-mymoodle-enabled="true"] .ia-results-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+}
+
+/* Individual card styling overrides (removing default blue/underlines) */
+:root[data-mymoodle-enabled="true"] .ia-result-card,
+:root[data-mymoodle-enabled="true"] .ia-result-card:hover,
+:root[data-mymoodle-enabled="true"] .ia-result-card:visited,
+:root[data-mymoodle-enabled="true"] .ia-result-card:active,
+:root[data-mymoodle-enabled="true"] .oneui-message-text a.ia-result-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease-in-out !important;
+  text-decoration: none !important;
+  outline: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+:root[data-mymoodle-enabled="true"] .ia-result-card * {
+  text-decoration: none !important;
+}
+
+/* Light theme card backgrounds & borders */
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-result-card,
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-message-text a.ia-result-card {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #1a1a1a !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-result-card:hover,
+:root[data-mymoodle-enabled="true"].ultramoodle-light .oneui-message-text a.ia-result-card:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Dark theme card backgrounds & borders */
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-card,
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-message-text a.ia-result-card {
+  background-color: #1e1e1e !important;
+  border: 1px solid #2d2d30 !important;
+  color: #f1f1f1 !important;
+  box-shadow: none !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-card:hover,
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .oneui-message-text a.ia-result-card:hover {
+  background-color: #252528 !important;
+  border-color: #3f3f46 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Left icon container styling */
+:root[data-mymoodle-enabled="true"] .ia-result-icon {
+  font-size: 18px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-result-icon {
+  background-color: #e2e8f0 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-icon {
+  background-color: #2d2d30 !important;
+}
+
+/* Right arrow color/opacity hover adjustment */
+:root[data-mymoodle-enabled="true"] .ia-result-arrow {
+  color: var(--ultra-text-sub) !important;
+  opacity: 0.6 !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+
+:root[data-mymoodle-enabled="true"] .ia-result-card:hover .ia-result-arrow {
+  transform: translateX(3px) !important;
+  opacity: 1 !important;
+  color: #1a73e8 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-card:hover .ia-result-arrow {
+  color: #8ab4f8 !important;
+}
+
+/* Title & Subtitle overrides */
+:root[data-mymoodle-enabled="true"] .ia-result-title {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: var(--ultra-text-main) !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+:root[data-mymoodle-enabled="true"] .ia-result-subtitle {
+  font-size: 11px !important;
+  color: var(--ultra-text-sub) !important;
+  line-height: 1.3 !important;
+  margin-top: 1px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Badge styling for labels and pertinence */
+:root[data-mymoodle-enabled="true"] .ia-result-type,
+:root[data-mymoodle-enabled="true"] .ia-file-badge,
+:root[data-mymoodle-enabled="true"] .ia-deadline-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 2px 8px !important;
+  border-radius: 20px !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+:root[data-mymoodle-enabled="true"] .ia-result-score {
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  color: #1a73e8 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-score {
+  color: #8ab4f8 !important;
+}
+
+/* File specific borders and badges */
+:root[data-mymoodle-enabled="true"] .ia-result-file {
+  border-left-width: 4px !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-result-file {
+  border-left-color: #1a73e8 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-file {
+  border-left-color: #8ab4f8 !important;
+}
+
+/* Deadline specific borders and badges */
+:root[data-mymoodle-enabled="true"] .ia-result-deadline {
+  border-left-width: 4px !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-result-deadline {
+  border-left-color: #ea4335 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-result-deadline {
+  border-left-color: #f89890 !important;
+}
+
+/* Suggestion chips modern styling */
+:root[data-mymoodle-enabled="true"] .ia-suggestion-chip {
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-suggestion-chip {
+  background-color: #e8f0fe !important;
+  color: #1a73e8 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-suggestion-chip {
+  background-color: rgba(138, 180, 248, 0.15) !important;
+  color: #8ab4f8 !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-light .ia-suggestion-chip:hover {
+  background-color: #d2e3fc !important;
+  transform: translateY(-1px) !important;
+}
+
+:root[data-mymoodle-enabled="true"].ultramoodle-dark .ia-suggestion-chip:hover {
+  background-color: rgba(138, 180, 248, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Force AI message bubble container to be completely transparent */
+:root[data-mymoodle-enabled="true"] .oneui-message-wrapper.other .oneui-message-bubble.oneui-message-bubble-ai {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+
 
